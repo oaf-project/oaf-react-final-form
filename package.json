@@ -3,6 +3,10 @@
   "version": "0.2.0",
   "main": "dist",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/oaf-project/oaf-react-final-form.git"
+  },
   "devDependencies": {
     "@types/lodash": "^4.14.136",
     "@types/node": "^12.6.8",
