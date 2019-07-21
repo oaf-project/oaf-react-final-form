@@ -1,16 +1,17 @@
 import React, { ReactNode, SelectHTMLAttributes } from "react";
 import { Field, FieldRenderProps } from "react-final-form";
-import { FieldValue, FormData } from ".";
+import { FieldValue, FormData, SafeMeta } from ".";
 
 type SelectFieldProps = SelectHTMLAttributes<HTMLSelectElement> & {
   // A non-optional label that we render in a <label> element to ensure accessibility.
   readonly label: string;
 };
 
-type SelectRenderProps<FV extends FieldValue> = FieldRenderProps<
-  FV,
-  HTMLSelectElement
+type SelectRenderProps<FV extends FieldValue> = Omit<
+  FieldRenderProps<FV, HTMLSelectElement>,
+  "meta"
 > &
+  SafeMeta<FV> &
   SelectFieldProps;
 
 const RenderComponent = <FV extends FieldValue, _>(
@@ -46,7 +47,6 @@ const RenderComponent = <FV extends FieldValue, _>(
       {isInvalid && (
         <div id={feedbackId} className="invalid-feedback">
           {/* TODO i18n */}
-          {/* TODO props.meta.error should have a better type */}
           {props.meta.error || "This field is invalid."}
         </div>
       )}

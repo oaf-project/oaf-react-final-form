@@ -10,6 +10,8 @@
     ],
     "jsRules": {},
     "rules": {
+        "no-any": true,
+        "no-unsafe-any": true,
         "interface-over-type-literal": false
     },
     "rulesDirectory": []

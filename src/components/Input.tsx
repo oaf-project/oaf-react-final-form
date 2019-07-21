@@ -1,6 +1,6 @@
 import React, { InputHTMLAttributes } from "react";
 import { Field, FieldRenderProps } from "react-final-form";
-import { FieldValue, FormData } from ".";
+import { FieldValue, FormData, SafeMeta } from ".";
 
 type InputType = "text" | "url" | "number" | "search";
 
@@ -12,10 +12,11 @@ export type InputFieldProps = InputHTMLAttributes<HTMLInputElement> & {
   readonly type?: InputType;
 };
 
-export type InputRenderProps<FV extends FieldValue> = FieldRenderProps<
-  FV,
-  HTMLInputElement
+export type InputRenderProps<FV extends FieldValue> = Omit<
+  FieldRenderProps<FV, HTMLInputElement>,
+  "meta"
 > &
+  SafeMeta<FV> &
   InputFieldProps;
 
 const RenderComponent = <FV extends FieldValue, _>(
@@ -50,7 +51,6 @@ const RenderComponent = <FV extends FieldValue, _>(
       {isInvalid && (
         <div id={feedbackId} className="invalid-feedback">
           {/* TODO i18n */}
-          {/* TODO props.meta.error should have a better type */}
           {props.meta.error || "This field is invalid."}
         </div>
       )}
