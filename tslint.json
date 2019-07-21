@@ -1,0 +1,16 @@
+{
+    "defaultSeverity": "error",
+    "extends": [
+        "tslint:recommended",
+        "tslint-immutable/all",
+        "tslint-sonarts",
+        "tslint-react",
+        "tslint-react-a11y",
+        "tslint-config-prettier"
+    ],
+    "jsRules": {},
+    "rules": {
+        "interface-over-type-literal": false
+    },
+    "rulesDirectory": []
+}
