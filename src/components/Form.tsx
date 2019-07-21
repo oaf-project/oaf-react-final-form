@@ -7,7 +7,6 @@ import { FormData } from ".";
 import { runValidators, ValidatorObject } from "../validation";
 import { focusInvalidFormDecorator } from "./focusInvalidFormDecorator";
 
-// tslint:disable-next-line: interface-over-type-literal
 export type FormProps<A extends FormData> = Pick<
   Config<A>,
   // tslint:disable-next-line: max-union-size
@@ -54,7 +53,6 @@ export const Form = <A extends FormData>(props: FormProps<A>) => {
 
   return (
     <ReactFinalForm<A>
-      // TODO https://github.com/final-form/react-final-form/pull/426
       onSubmit={props.onSubmit}
       validate={validate}
       render={render}
