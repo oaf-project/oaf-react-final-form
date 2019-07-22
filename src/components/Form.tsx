@@ -4,15 +4,15 @@ import {
   SubmissionErrors,
   ValidationErrors,
 } from "final-form";
-import { isRight } from "fp-ts/lib/Either";
-import { Type } from "io-ts";
-import { Selector } from "oaf-side-effects/dist";
+import { fold } from "fp-ts/lib/Either";
+import { Errors, Type } from "io-ts";
+import { Selector } from "oaf-side-effects";
 import React, { ReactNode } from "react";
 import { Form as ReactFinalForm, FormRenderProps } from "react-final-form";
 import { FormData, toValidationErrors } from "../validation";
 import { focusInvalidFormDecorator } from "./focusInvalidFormDecorator";
 
-// tslint:disable: no-if-statement no-expression-statement max-union-size
+type SubmissionResponse = ReturnType<Config<unknown>["onSubmit"]>;
 
 export type FormProps<I extends FormData, A extends object = I> = Pick<
   Config<A>,
@@ -23,11 +23,7 @@ export type FormProps<I extends FormData, A extends object = I> = Pick<
       values: A,
       form: FormApi<I>,
       callback?: (errors?: SubmissionErrors) => void,
-    ) =>
-      | SubmissionErrors
-      | Promise<SubmissionErrors | undefined>
-      | undefined
-      | void;
+    ) => SubmissionResponse;
     readonly id?: string;
     readonly codec: Type<A, I>;
     readonly children?: ReactNode;
@@ -56,28 +52,20 @@ export const Form = <I extends FormData, A extends object = I>(
       : props.codec.encode(props.initialValues);
 
   const onSubmit = (
-    raw: I,
+    i: I,
     form: FormApi<I>,
     callback?: (errors?: SubmissionErrors) => void,
-  ) => {
-    const a = props.codec.decode(raw);
-
-    if (isRight(a)) {
-      props.onSubmit(a.right, form, callback);
-    } else {
-      // tslint:disable-next-line: no-console
-      console.error(a.left);
-    }
+  ): SubmissionResponse => {
+    return fold(
+      (e: Errors) => toValidationErrors(e),
+      (a: A) => props.onSubmit(a, form, callback),
+    )(props.codec.decode(i));
   };
 
   const validate = (i: I): ValidationErrors | undefined => {
-    const a = props.codec.decode(i);
-
-    if (isRight(a)) {
-      return undefined;
-    } else {
-      return toValidationErrors(a.left);
-    }
+    return fold((e: Errors) => toValidationErrors(e), () => undefined)(
+      props.codec.decode(i),
+    );
   };
 
   const render = (renderProps: FormRenderProps<I>) => (
@@ -93,7 +81,7 @@ export const Form = <I extends FormData, A extends object = I>(
   );
 
   return (
-    <ReactFinalForm<I>
+    <ReactFinalForm
       onSubmit={onSubmit}
       validate={validate}
       render={render}
