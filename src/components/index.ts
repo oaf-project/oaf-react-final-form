@@ -1,9 +1,4 @@
 import { FieldMetaState } from "react-final-form";
-import { FormData } from "../validation";
-
-export type FormStateProps<A extends FormData> = {
-  readonly initialValues: A;
-};
 
 /**
  * Replace any with unknown for improved type-safety.

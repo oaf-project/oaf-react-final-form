@@ -12,7 +12,7 @@ import { Form as ReactFinalForm, FormRenderProps } from "react-final-form";
 import { FormData, toValidationErrors } from "../validation";
 import { focusInvalidFormDecorator } from "./focusInvalidFormDecorator";
 
-// tslint:disable: no-if-statement no-expression-statement
+// tslint:disable: no-if-statement no-expression-statement max-union-size
 
 export type FormProps<RawFormData extends FormData, ParsedFormData> = Pick<
   Config<ParsedFormData>,
@@ -23,8 +23,11 @@ export type FormProps<RawFormData extends FormData, ParsedFormData> = Pick<
       values: ParsedFormData,
       form: FormApi<RawFormData>,
       callback?: (errors?: SubmissionErrors) => void,
-    ) => // tslint:disable-next-line: max-union-size
-    SubmissionErrors | Promise<SubmissionErrors | undefined> | undefined | void;
+    ) =>
+      | SubmissionErrors
+      | Promise<SubmissionErrors | undefined>
+      | undefined
+      | void;
     readonly id?: string;
     readonly codec: Type<ParsedFormData, RawFormData>;
     readonly children?: ReactNode;
@@ -32,7 +35,10 @@ export type FormProps<RawFormData extends FormData, ParsedFormData> = Pick<
     readonly smoothScroll?: boolean;
   };
 
-export const Form = <RawFormData extends FormData, ParsedFormData>(
+export const Form = <
+  RawFormData extends FormData,
+  ParsedFormData = RawFormData
+>(
   props: FormProps<RawFormData, ParsedFormData>,
 ) => {
   const formRef = React.useRef<HTMLFormElement | null>(null);
@@ -61,6 +67,9 @@ export const Form = <RawFormData extends FormData, ParsedFormData>(
 
     if (isRight(parsed)) {
       props.onSubmit(parsed.right, form, callback);
+    } else {
+      // tslint:disable-next-line: no-console
+      console.error(parsed.left);
     }
   };
 
