@@ -14,17 +14,14 @@ import { focusInvalidFormDecorator } from "./focusInvalidFormDecorator";
 
 // tslint:disable: no-if-statement no-expression-statement max-union-size
 
-export type FormProps<
-  RawFormData extends FormData,
-  ParsedFormData = RawFormData
-> = Pick<
-  Config<ParsedFormData>,
+export type FormProps<I extends FormData, A extends object = I> = Pick<
+  Config<A>,
   "keepDirtyOnReinitialize" | "initialValues" | "destroyOnUnregister"
 > &
-  Pick<Config<RawFormData>, "debug"> & {
+  Pick<Config<I>, "debug"> & {
     readonly onSubmit: (
-      values: ParsedFormData,
-      form: FormApi<RawFormData>,
+      values: A,
+      form: FormApi<I>,
       callback?: (errors?: SubmissionErrors) => void,
     ) =>
       | SubmissionErrors
@@ -32,17 +29,14 @@ export type FormProps<
       | undefined
       | void;
     readonly id?: string;
-    readonly codec: Type<ParsedFormData, RawFormData>;
+    readonly codec: Type<A, I>;
     readonly children?: ReactNode;
     readonly formGroupSelector?: Selector;
     readonly smoothScroll?: boolean;
   };
 
-export const Form = <
-  RawFormData extends FormData,
-  ParsedFormData = RawFormData
->(
-  props: FormProps<RawFormData, ParsedFormData>,
+export const Form = <I extends FormData, A extends object = I>(
+  props: FormProps<I, A>,
 ) => {
   const formRef = React.useRef<HTMLFormElement | null>(null);
 
@@ -62,31 +56,31 @@ export const Form = <
       : props.codec.encode(props.initialValues);
 
   const onSubmit = (
-    raw: RawFormData,
-    form: FormApi<RawFormData>,
+    raw: I,
+    form: FormApi<I>,
     callback?: (errors?: SubmissionErrors) => void,
   ) => {
-    const parsed = props.codec.decode(raw);
+    const a = props.codec.decode(raw);
 
-    if (isRight(parsed)) {
-      props.onSubmit(parsed.right, form, callback);
+    if (isRight(a)) {
+      props.onSubmit(a.right, form, callback);
     } else {
       // tslint:disable-next-line: no-console
-      console.error(parsed.left);
+      console.error(a.left);
     }
   };
 
-  const validate = (raw: RawFormData): ValidationErrors | undefined => {
-    const parsed = props.codec.decode(raw);
+  const validate = (i: I): ValidationErrors | undefined => {
+    const a = props.codec.decode(i);
 
-    if (isRight(parsed)) {
+    if (isRight(a)) {
       return undefined;
     } else {
-      return toValidationErrors(parsed.left);
+      return toValidationErrors(a.left);
     }
   };
 
-  const render = (renderProps: FormRenderProps<RawFormData>) => (
+  const render = (renderProps: FormRenderProps<I>) => (
     <form
       ref={formRef}
       action="." // https://stackoverflow.com/a/26287843/2476884
@@ -99,7 +93,7 @@ export const Form = <
   );
 
   return (
-    <ReactFinalForm<RawFormData>
+    <ReactFinalForm<I>
       onSubmit={onSubmit}
       validate={validate}
       render={render}
