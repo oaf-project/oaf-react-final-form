@@ -9,4 +9,7 @@ An opinionated form library.
 * TypeScript + React Final Form
 * Strict type safety
 * Accessible by default
+  * https://github.com/final-form/final-form/issues/250
+  * https://developer.paciellogroup.com/blog/2019/02/required-attribute-requirements/
+  * https://webaim.org/techniques/formvalidation/
 * Validation built with [io-ts](https://github.com/gcanti/io-ts)
