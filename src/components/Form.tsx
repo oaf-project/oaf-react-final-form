@@ -14,7 +14,10 @@ import { focusInvalidFormDecorator } from "./focusInvalidFormDecorator";
 
 // tslint:disable: no-if-statement no-expression-statement max-union-size
 
-export type FormProps<RawFormData extends FormData, ParsedFormData> = Pick<
+export type FormProps<
+  RawFormData extends FormData,
+  ParsedFormData = RawFormData
+> = Pick<
   Config<ParsedFormData>,
   "keepDirtyOnReinitialize" | "initialValues" | "destroyOnUnregister"
 > &
