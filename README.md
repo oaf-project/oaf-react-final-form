@@ -5,6 +5,7 @@
 [![npm](https://img.shields.io/npm/v/oaf-react-final-form.svg)](https://www.npmjs.com/package/oaf-react-final-form)
 
 An opinionated form library.
+* TypeScript + React Final Form
 * Strict type safety
 * Accessible by default
 * Validation built with [io-ts](https://github.com/gcanti/io-ts)
