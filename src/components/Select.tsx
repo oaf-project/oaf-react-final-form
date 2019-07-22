@@ -1,6 +1,7 @@
 import React, { ReactNode, SelectHTMLAttributes } from "react";
 import { Field, FieldRenderProps } from "react-final-form";
-import { FieldValue, FormData, SafeMeta } from ".";
+import { SafeMeta } from ".";
+import { FieldValue, FormData } from "../validation";
 
 type SelectFieldProps = SelectHTMLAttributes<HTMLSelectElement> & {
   // A non-optional label that we render in a <label> element to ensure accessibility.
@@ -54,7 +55,6 @@ const RenderComponent = <FV extends FieldValue, _>(
   );
 };
 
-// tslint:disable-next-line: interface-name
 export interface SelectProps<A extends FormData> {
   readonly id: keyof A & string;
   readonly label: string;

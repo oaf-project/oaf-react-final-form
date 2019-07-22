@@ -11,7 +11,8 @@
     "noUnusedParameters": true,
     "forceConsistentCasingInFileNames": true,
     "lib": [
-      "esnext"
+      "esnext",
+      "dom"
     ],
     "module": "commonjs",
     "moduleResolution": "node",

@@ -1,29 +1,40 @@
-import React, { ReactNode } from "react";
-
-import { Config } from "final-form";
+import {
+  Config,
+  FormApi,
+  SubmissionErrors,
+  ValidationErrors,
+} from "final-form";
+import { isRight } from "fp-ts/lib/Either";
+import { Type } from "io-ts";
 import { Selector } from "oaf-side-effects/dist";
+import React, { ReactNode } from "react";
 import { Form as ReactFinalForm, FormRenderProps } from "react-final-form";
-import { FormData } from ".";
-import { runValidators, ValidatorObject } from "../validation";
+import { FormData, toValidationErrors } from "../validation";
 import { focusInvalidFormDecorator } from "./focusInvalidFormDecorator";
 
-export type FormProps<A extends FormData> = Pick<
-  Config<A>,
-  // tslint:disable-next-line: max-union-size
-  | "keepDirtyOnReinitialize"
-  | "initialValues"
-  | "onSubmit"
-  | "destroyOnUnregister"
-  | "debug"
-> & {
-  readonly id?: string;
-  readonly validator?: ValidatorObject<A>;
-  readonly children?: ReactNode;
-  readonly formGroupSelector?: Selector;
-  readonly smoothScroll?: boolean;
-};
+// tslint:disable: no-if-statement no-expression-statement
 
-export const Form = <A extends FormData>(props: FormProps<A>) => {
+export type FormProps<RawFormData extends FormData, ParsedFormData> = Pick<
+  Config<ParsedFormData>,
+  "keepDirtyOnReinitialize" | "initialValues" | "destroyOnUnregister"
+> &
+  Pick<Config<RawFormData>, "debug"> & {
+    readonly onSubmit: (
+      values: ParsedFormData,
+      form: FormApi<RawFormData>,
+      callback?: (errors?: SubmissionErrors) => void,
+    ) => // tslint:disable-next-line: max-union-size
+    SubmissionErrors | Promise<SubmissionErrors | undefined> | undefined | void;
+    readonly id?: string;
+    readonly codec: Type<ParsedFormData, RawFormData>;
+    readonly children?: ReactNode;
+    readonly formGroupSelector?: Selector;
+    readonly smoothScroll?: boolean;
+  };
+
+export const Form = <RawFormData extends FormData, ParsedFormData>(
+  props: FormProps<RawFormData, ParsedFormData>,
+) => {
   const formRef = React.useRef<HTMLFormElement | null>(null);
 
   // Stick this in a ref to avoid "Warning: Form decorators should not change
@@ -36,10 +47,34 @@ export const Form = <A extends FormData>(props: FormProps<A>) => {
     ),
   );
 
-  const validate = (values: A) =>
-    props.validator !== undefined ? runValidators(props.validator, values) : {};
+  const initialValues =
+    props.initialValues === undefined
+      ? undefined
+      : props.codec.encode(props.initialValues);
 
-  const render = (renderProps: FormRenderProps<A>) => (
+  const onSubmit = (
+    raw: RawFormData,
+    form: FormApi<RawFormData>,
+    callback?: (errors?: SubmissionErrors) => void,
+  ) => {
+    const parsed = props.codec.decode(raw);
+
+    if (isRight(parsed)) {
+      props.onSubmit(parsed.right, form, callback);
+    }
+  };
+
+  const validate = (raw: RawFormData): ValidationErrors | undefined => {
+    const parsed = props.codec.decode(raw);
+
+    if (isRight(parsed)) {
+      return undefined;
+    } else {
+      return toValidationErrors(parsed.left);
+    }
+  };
+
+  const render = (renderProps: FormRenderProps<RawFormData>) => (
     <form
       ref={formRef}
       action="." // https://stackoverflow.com/a/26287843/2476884
@@ -52,11 +87,11 @@ export const Form = <A extends FormData>(props: FormProps<A>) => {
   );
 
   return (
-    <ReactFinalForm<A>
-      onSubmit={props.onSubmit}
+    <ReactFinalForm<RawFormData>
+      onSubmit={onSubmit}
       validate={validate}
       render={render}
-      initialValues={props.initialValues}
+      initialValues={initialValues}
       keepDirtyOnReinitialize={props.keepDirtyOnReinitialize}
       destroyOnUnregister={props.destroyOnUnregister}
       debug={props.debug}

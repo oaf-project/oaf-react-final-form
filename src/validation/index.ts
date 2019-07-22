@@ -1,9 +1,13 @@
+import { ValidationErrors } from "final-form";
 import { fold } from "fp-ts/lib/Either";
-import { Type } from "io-ts/lib";
-import { Dictionary } from "lodash";
-// TODO remove lodash dependency
-import _ from "lodash/fp";
-import { FieldValue, FormData } from "../components";
+import { Errors, Type } from "io-ts/lib";
+
+// tslint:disable-next-line: readonly-array
+export type FieldValue = undefined | string | string[];
+
+export type FormData = {
+  readonly [index in string]: FieldValue;
+};
 
 /**
  * The result of running a form validator against a value. A string containing an error message
@@ -13,9 +17,7 @@ type FormValidatorResult = string | undefined;
 
 export type FormValidator<A> = (value: A | undefined) => FormValidatorResult;
 
-export type Parser<A> = (s: string) => A | undefined;
-
-export type ValidatorObject<A extends FormData> = {
+export type ValidatorObject<A> = {
   readonly [k in keyof Partial<A>]: FormValidator<A[k]>;
 };
 
@@ -25,7 +27,7 @@ export const runValidators = <A extends FormData>(
   validators: ValidatorObject<A>,
   formData: A,
 ): ValidationResult<A> => {
-  const validatorPairs = _.toPairs(validators);
+  const validatorPairs = Object.entries(validators);
 
   const validationResultPairs = validatorPairs.map(pair => {
     const [key, validator] = pair;
@@ -33,17 +35,19 @@ export const runValidators = <A extends FormData>(
     const typedValidator = validator as FormValidator<FieldValue>;
     const formDataValue = formData[key];
     const validationResult = typedValidator(formDataValue);
-    return [key, validationResult];
+    return { key, validationResult };
   });
 
-  // TODO: remove lodash dependency
-  const validationResults: Dictionary<unknown> = _.fromPairs(
-    validationResultPairs,
+  return validationResultPairs.reduce(
+    (accumulator, value) => {
+      const { key, validationResult } = value;
+      // TODO: get rid of this cast.
+      // tslint:disable-next-line: no-object-mutation no-expression-statement
+      accumulator[key as keyof A] = validationResult;
+      return accumulator;
+    },
+    {} as ValidationResult<A>,
   );
-
-  // HACK we cast back to ValidationResult<T> here because TypeScript & lodash lose all our type information.
-  // See e.g. https://github.com/Microsoft/TypeScript/issues/7698
-  return validationResults as ValidationResult<A>;
 };
 
 export const trueForAll = (
@@ -83,35 +87,38 @@ export const isMissing = (value: unknown) =>
   value === undefined ||
   (typeof value === "string" && value.trim() === "");
 
-export const required: (
+export const required: <A>(
   message: string,
-) => FormValidator<string> = message => value =>
+) => FormValidator<A> = message => value =>
   isMissing(value) ? message : undefined;
 
-export const validatorFromType = <A>(
-  type: Type<unknown, A>,
+export const validatorFromType = <A, O = A, I = unknown>(
+  type: Type<A, O, I>,
   errorMessage: string,
-): FormValidator<A> => (value: A | undefined) =>
+): FormValidator<I | undefined> => (value: I | undefined) =>
   value === undefined || isMissing(value)
     ? undefined
     : fold(() => errorMessage, () => undefined)(type.decode(value));
-
-export const validatorFromParser = (
-  parser: Parser<unknown>,
-): ((message: string) => FormValidator<string | undefined>) => message => s =>
-  s === undefined || isMissing(s)
-    ? undefined
-    : parser(s) === undefined
-    ? message
-    : undefined;
 
 export const composeValidators = <T>(
   first: FormValidator<T>,
   // tslint:disable-next-line: readonly-array
   ...rest: Array<FormValidator<T>>
 ): FormValidator<T> => {
-  const head = _.head(rest);
+  const [head, ...tail] = rest;
   return head === undefined
     ? first
-    : v => first(v) || composeValidators(head, ..._.tail(rest))(v);
+    : v => first(v) || composeValidators(head, ...tail)(v);
+};
+
+export const toValidationErrors = (ioTsErrors: Errors): ValidationErrors => {
+  const initial: ValidationErrors = {};
+
+  return ioTsErrors.reduce((accumulator, error) => {
+    const lastContext = error.context[error.context.length - 1];
+    return {
+      ...accumulator,
+      [lastContext.key]: error.message || "This field is invalid.",
+    };
+  }, initial);
 };
