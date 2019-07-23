@@ -11,7 +11,10 @@ export type FormData = {
 /**
  * Converts an io-ts Errors to a final-form ValidationErrors.
  */
-export const toValidationErrors = (ioTsErrors: Errors, defaultMessage: (e: ValidationError) => string): ValidationErrors => {
+export const toValidationErrors = (
+  ioTsErrors: Errors,
+  defaultMessage: (e: ValidationError) => string,
+): ValidationErrors => {
   const initial: ValidationErrors = {};
 
   return ioTsErrors.reduce((accumulator, error) => {

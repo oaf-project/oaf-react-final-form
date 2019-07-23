@@ -59,7 +59,8 @@ export const Form = <I extends FormData, A extends object = I>(
       : // `encode` will do the right thing here even when given a partial at runtime.
         props.codec.encode(props.initialValues as A);
 
-  const errorMessage = props.defaultErrorMessage || (() => "This field is invalid.");
+  const errorMessage =
+    props.defaultErrorMessage || (() => "This field is invalid.");
 
   const onSubmit = (
     i: I,
@@ -75,9 +76,10 @@ export const Form = <I extends FormData, A extends object = I>(
 
   const validate = (i: I): ValidationErrors | undefined => {
     // TODO: i18n
-    return fold((e: Errors) => toValidationErrors(e, errorMessage), () => undefined)(
-      props.codec.decode(i),
-    );
+    return fold(
+      (e: Errors) => toValidationErrors(e, errorMessage),
+      () => undefined,
+    )(props.codec.decode(i));
   };
 
   const render = (renderProps: FormRenderProps<I>) => (
