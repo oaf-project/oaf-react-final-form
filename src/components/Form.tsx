@@ -16,7 +16,7 @@ type SubmissionResponse = ReturnType<Config<unknown>["onSubmit"]>;
 
 export type FormProps<I extends FormData, A extends object = I> = Pick<
   Config<A>,
-  "keepDirtyOnReinitialize" | "initialValues" | "destroyOnUnregister"
+  "keepDirtyOnReinitialize" | "destroyOnUnregister"
 > &
   Pick<Config<I>, "debug"> & {
     readonly onSubmit: (
@@ -29,6 +29,9 @@ export type FormProps<I extends FormData, A extends object = I> = Pick<
     readonly children?: ReactNode;
     readonly formGroupSelector?: Selector;
     readonly smoothScroll?: boolean;
+    // Initial values are always optional, even if non-optional in A
+    // (i.e. even if the user will have to provide them to submit the form).
+    readonly initialValues?: Partial<A>;
   };
 
 export const Form = <I extends FormData, A extends object = I>(
@@ -46,10 +49,11 @@ export const Form = <I extends FormData, A extends object = I>(
     ),
   );
 
-  const initialValues =
+  const initialValues: I | undefined =
     props.initialValues === undefined
       ? undefined
-      : props.codec.encode(props.initialValues);
+      // `encode` will do the right thing here even when given a partial at runtime.
+      : props.codec.encode(props.initialValues as A);
 
   const onSubmit = (
     i: I,
@@ -71,9 +75,13 @@ export const Form = <I extends FormData, A extends object = I>(
   const render = (renderProps: FormRenderProps<I>) => (
     <form
       ref={formRef}
-      action="." // https://stackoverflow.com/a/26287843/2476884
+      // Persuade iOS to do the right thing.
+      // See https://stackoverflow.com/a/26287843/2476884
+      action="."
       id={props.id}
       onSubmit={renderProps.handleSubmit}
+      // Better accessibility if we do our own inline validation.
+      // See e.g. https://developer.paciellogroup.com/blog/2019/02/required-attribute-requirements/
       noValidate={true}
     >
       {props.children}
