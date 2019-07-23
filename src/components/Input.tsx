@@ -61,7 +61,7 @@ const RenderComponent = <FV extends FieldValue>(
 
 export interface InputProps<A extends FormData> {
   readonly name: keyof A & string;
-  readonly id: string;
+  readonly id?: string;
   readonly label: string;
   readonly required?: boolean;
   readonly type?: InputType;
