@@ -5,7 +5,7 @@ import {
   ValidationErrors,
 } from "final-form";
 import { fold } from "fp-ts/lib/Either";
-import { Errors, Type } from "io-ts";
+import { Errors, Type, ValidationError } from "io-ts";
 import { Selector } from "oaf-side-effects";
 import React, { ReactNode } from "react";
 import { Form as ReactFinalForm, FormRenderProps } from "react-final-form";
@@ -32,6 +32,10 @@ export type FormProps<I extends FormData, A extends object = I> = Pick<
     // Initial values are always optional, even if non-optional in A
     // (i.e. even if the user will have to provide them to submit the form).
     readonly initialValues?: Partial<A>;
+    // If an io-ts validation error occurs but doesn't have a message,
+    // this function will be used as a fallback to get the message to
+    // display to the user.
+    readonly defaultErrorMessage?: (e: ValidationError) => string;
   };
 
 export const Form = <I extends FormData, A extends object = I>(
@@ -55,19 +59,23 @@ export const Form = <I extends FormData, A extends object = I>(
       : // `encode` will do the right thing here even when given a partial at runtime.
         props.codec.encode(props.initialValues as A);
 
+  const errorMessage = props.defaultErrorMessage || (() => "This field is invalid.");
+
   const onSubmit = (
     i: I,
     form: FormApi<I>,
     callback?: (errors?: SubmissionErrors) => void,
   ): SubmissionResponse => {
     return fold(
-      (e: Errors) => toValidationErrors(e),
+      // TODO: i18n
+      (e: Errors) => toValidationErrors(e, errorMessage),
       (a: A) => props.onSubmit(a, form, callback),
     )(props.codec.decode(i));
   };
 
   const validate = (i: I): ValidationErrors | undefined => {
-    return fold((e: Errors) => toValidationErrors(e), () => undefined)(
+    // TODO: i18n
+    return fold((e: Errors) => toValidationErrors(e, errorMessage), () => undefined)(
       props.codec.decode(i),
     );
   };
