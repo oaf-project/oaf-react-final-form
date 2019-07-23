@@ -52,8 +52,8 @@ export const Form = <I extends FormData, A extends object = I>(
   const initialValues: I | undefined =
     props.initialValues === undefined
       ? undefined
-      // `encode` will do the right thing here even when given a partial at runtime.
-      : props.codec.encode(props.initialValues as A);
+      : // `encode` will do the right thing here even when given a partial at runtime.
+        props.codec.encode(props.initialValues as A);
 
   const onSubmit = (
     i: I,
