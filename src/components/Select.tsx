@@ -66,11 +66,8 @@ export interface SelectProps<A extends FormData> {
 
 export const Select = <A extends FormData>(props: SelectProps<A>) => {
   const field = useField<FieldValue>(props.name);
-  // tslint:disable-next-line: no-unsafe-any
-  const value: FieldValue = field.meta.initial;
-
   const { label, ...rest } = props;
-  const multiple = Array.isArray(value);
+  const multiple = Array.isArray(field.meta.initial);
 
   const render = (renderProps: FieldRenderProps<FieldValue, HTMLElement>) =>
     RenderComponent({
@@ -79,5 +76,5 @@ export const Select = <A extends FormData>(props: SelectProps<A>) => {
       multiple,
     });
 
-  return <Field {...rest} value={value} render={render} />;
+  return <Field {...rest} render={render} />;
 };

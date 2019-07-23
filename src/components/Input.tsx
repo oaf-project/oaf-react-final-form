@@ -1,5 +1,5 @@
 import React, { InputHTMLAttributes } from "react";
-import { Field, FieldRenderProps, useField } from "react-final-form";
+import { Field, FieldRenderProps } from "react-final-form";
 import { SafeMeta } from ".";
 import { FieldValue, FormData } from "../validation";
 
@@ -71,12 +71,8 @@ export interface InputProps<A extends FormData> {
 }
 
 export const Input = <A extends FormData>(props: InputProps<A>) => {
-  const field = useField<FieldValue>(props.name);
-  // tslint:disable-next-line: no-unsafe-any
-  const value: FieldValue = field.meta.initial;
-
   const render = (renderProps: FieldRenderProps<FieldValue, HTMLElement>) =>
     RenderComponent({ ...renderProps, ...props });
 
-  return <Field {...props} value={value} render={render} />;
+  return <Field {...props} render={render} />;
 };
