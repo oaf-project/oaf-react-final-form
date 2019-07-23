@@ -1,5 +1,5 @@
 import React, { InputHTMLAttributes } from "react";
-import { Field, FieldRenderProps } from "react-final-form";
+import { Field, FieldRenderProps, useField } from "react-final-form";
 import { SafeMeta } from ".";
 import { FieldValue, FormData } from "../validation";
 
@@ -65,17 +65,18 @@ export interface InputProps<A extends FormData> {
   readonly required?: boolean;
   readonly type?: InputType;
   readonly placeholder?: string;
-  readonly initialValues: Partial<A>;
 
   // TODO: min, max, step but only if type === "number"
 }
 
 export const Input = <A extends FormData>(props: InputProps<A>) => {
-  const { initialValues, ...rest } = props;
-  const value = initialValues[props.id];
+  const field = useField<A[typeof props.id]>(props.id);
+  // tslint:disable-next-line: no-unsafe-any
+  const value: A[typeof props.id] = field.meta.initial;
 
-  const render = (renderProps: FieldRenderProps<typeof value, HTMLElement>) =>
-    RenderComponent({ ...renderProps, ...rest });
+  const render = (
+    renderProps: FieldRenderProps<A[typeof props.id], HTMLElement>,
+  ) => RenderComponent({ ...renderProps, ...props });
 
-  return <Field {...rest} name={props.id} value={value} render={render} />;
+  return <Field {...props} name={props.id} value={value} render={render} />;
 };

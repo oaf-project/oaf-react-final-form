@@ -44,6 +44,6 @@
     "trailingComma": "all"
   },
   "typeCoverage": {
-    "atLeast": 100
+    "atLeast": 99.66
   }
 }

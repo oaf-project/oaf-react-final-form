@@ -1,5 +1,5 @@
 import React, { ReactNode, SelectHTMLAttributes } from "react";
-import { Field, FieldRenderProps } from "react-final-form";
+import { Field, FieldRenderProps, useField } from "react-final-form";
 import { SafeMeta } from ".";
 import { FieldValue, FormData } from "../validation";
 
@@ -60,16 +60,20 @@ export interface SelectProps<A extends FormData> {
   readonly label: string;
   readonly required?: boolean;
   readonly placeholder?: string;
-  readonly initialValues: Partial<A>;
   readonly children?: ReactNode; // TODO strongly typed options and selected value(s)
 }
 
 export const Select = <A extends FormData>(props: SelectProps<A>) => {
-  const { initialValues, label, ...rest } = props;
-  const value = initialValues[props.id];
+  const field = useField<A[typeof props.id]>(props.id);
+  // tslint:disable-next-line: no-unsafe-any
+  const value: A[typeof props.id] = field.meta.initial;
+
+  const { label, ...rest } = props;
   const multiple = Array.isArray(value);
 
-  const render = (renderProps: FieldRenderProps<typeof value, HTMLElement>) =>
+  const render = (
+    renderProps: FieldRenderProps<A[typeof props.id], HTMLElement>,
+  ) =>
     RenderComponent({
       ...renderProps,
       label,
