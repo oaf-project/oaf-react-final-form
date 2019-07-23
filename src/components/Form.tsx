@@ -68,14 +68,12 @@ export const Form = <I extends FormData, A extends object = I>(
     callback?: (errors?: SubmissionErrors) => void,
   ): SubmissionResponse => {
     return fold(
-      // TODO: i18n
       (e: Errors) => toValidationErrors(e, errorMessage),
       (a: A) => props.onSubmit(a, form, callback),
     )(props.codec.decode(i));
   };
 
   const validate = (i: I): ValidationErrors | undefined => {
-    // TODO: i18n
     return fold(
       (e: Errors) => toValidationErrors(e, errorMessage),
       () => undefined,

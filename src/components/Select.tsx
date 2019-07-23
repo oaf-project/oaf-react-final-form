@@ -15,7 +15,7 @@ type SelectRenderProps<FV extends FieldValue> = Omit<
   SafeMeta<FV> &
   SelectFieldProps;
 
-const RenderComponent = <FV extends FieldValue, _>(
+const RenderComponent = <FV extends FieldValue>(
   props: SelectRenderProps<FV>,
 ) => {
   const feedbackId = `${props.id}-feedback`;
@@ -56,7 +56,8 @@ const RenderComponent = <FV extends FieldValue, _>(
 };
 
 export interface SelectProps<A extends FormData> {
-  readonly id: keyof A & string;
+  readonly name: keyof A & string;
+  readonly id: string;
   readonly label: string;
   readonly required?: boolean;
   readonly placeholder?: string;
@@ -64,21 +65,19 @@ export interface SelectProps<A extends FormData> {
 }
 
 export const Select = <A extends FormData>(props: SelectProps<A>) => {
-  const field = useField<A[typeof props.id]>(props.id);
+  const field = useField<FieldValue>(props.name);
   // tslint:disable-next-line: no-unsafe-any
-  const value: A[typeof props.id] = field.meta.initial;
+  const value: FieldValue = field.meta.initial;
 
   const { label, ...rest } = props;
   const multiple = Array.isArray(value);
 
-  const render = (
-    renderProps: FieldRenderProps<A[typeof props.id], HTMLElement>,
-  ) =>
+  const render = (renderProps: FieldRenderProps<FieldValue, HTMLElement>) =>
     RenderComponent({
       ...renderProps,
       label,
       multiple,
     });
 
-  return <Field {...rest} name={props.id} value={value} render={render} />;
+  return <Field {...rest} value={value} render={render} />;
 };

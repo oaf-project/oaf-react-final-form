@@ -20,7 +20,7 @@ export type InputRenderProps<FV extends FieldValue> = Omit<
   SafeMeta<FV> &
   InputFieldProps;
 
-const RenderComponent = <FV extends FieldValue, _>(
+const RenderComponent = <FV extends FieldValue>(
   props: InputRenderProps<FV>,
 ) => {
   const feedbackId = `${props.id}-feedback`;
@@ -60,7 +60,8 @@ const RenderComponent = <FV extends FieldValue, _>(
 };
 
 export interface InputProps<A extends FormData> {
-  readonly id: keyof A & string;
+  readonly name: keyof A & string;
+  readonly id: string;
   readonly label: string;
   readonly required?: boolean;
   readonly type?: InputType;
@@ -70,13 +71,12 @@ export interface InputProps<A extends FormData> {
 }
 
 export const Input = <A extends FormData>(props: InputProps<A>) => {
-  const field = useField<A[typeof props.id]>(props.id);
+  const field = useField<FieldValue>(props.name);
   // tslint:disable-next-line: no-unsafe-any
-  const value: A[typeof props.id] = field.meta.initial;
+  const value: FieldValue = field.meta.initial;
 
-  const render = (
-    renderProps: FieldRenderProps<A[typeof props.id], HTMLElement>,
-  ) => RenderComponent({ ...renderProps, ...props });
+  const render = (renderProps: FieldRenderProps<FieldValue, HTMLElement>) =>
+    RenderComponent({ ...renderProps, ...props });
 
-  return <Field {...props} name={props.id} value={value} render={render} />;
+  return <Field {...props} value={value} render={render} />;
 };
