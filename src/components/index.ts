@@ -19,6 +19,6 @@ export type SafeMeta<FV> = {
   > & {
     readonly error?: unknown;
     readonly submitError?: unknown;
-    readonly initial?: unknown;
+    readonly initial?: FV;
   };
 };
