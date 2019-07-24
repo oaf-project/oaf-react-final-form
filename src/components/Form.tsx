@@ -7,7 +7,7 @@ import {
 import { fold } from "fp-ts/lib/Either";
 import { Errors, Type, ValidationError } from "io-ts";
 import { Selector } from "oaf-side-effects";
-import React, { FormHTMLAttributes, ReactNode } from "react";
+import React, { ReactNode } from "react";
 import { Form as ReactFinalForm, FormRenderProps } from "react-final-form";
 import { FormData } from ".";
 import { toValidationErrors } from "../validation";
@@ -15,17 +15,18 @@ import { focusInvalidFormDecorator } from "./focusInvalidFormDecorator";
 
 type SubmissionResponse = ReturnType<Config<unknown>["onSubmit"]>;
 
-export type FormProps<
-  I extends FormData,
-  A extends object = I
-> = FormHTMLAttributes<HTMLFormElement> &
-  Pick<Config<A>, "keepDirtyOnReinitialize" | "destroyOnUnregister"> &
+export type FormProps<I extends FormData, A extends object = I> = Pick<
+  Config<A>,
+  "keepDirtyOnReinitialize" | "destroyOnUnregister"
+> &
   Pick<Config<I>, "debug"> & {
     readonly onSubmit: (
       values: A,
       form: FormApi<I>,
       callback?: (errors?: SubmissionErrors) => void,
     ) => SubmissionResponse;
+    readonly action?: string;
+    readonly noValidate?: boolean;
     readonly codec: Type<A, I>;
     readonly children?: ReactNode;
     readonly formGroupSelector?: Selector;
