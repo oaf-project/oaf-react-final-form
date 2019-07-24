@@ -13,7 +13,10 @@ export type FormData = {
  * Replace any with unknown for improved type-safety.
  */
 export type SafeMeta<FV> = {
-  readonly meta: Omit<FieldMetaState<FV>, "error" | "submitError" | "initial"> & {
+  readonly meta: Omit<
+    FieldMetaState<FV>,
+    "error" | "submitError" | "initial"
+  > & {
     readonly error?: unknown;
     readonly submitError?: unknown;
     readonly initial?: unknown;
