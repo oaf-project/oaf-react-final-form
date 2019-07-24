@@ -1,5 +1,14 @@
 import { FieldMetaState } from "react-final-form";
 
+// TODO: should this be a recursive type to allow nested fields?
+// See https://github.com/final-form/final-form#field-names
+// tslint:disable-next-line: readonly-array
+export type FieldValue = undefined | string | string[];
+
+export type FormData = {
+  readonly [index in string]: FieldValue;
+};
+
 /**
  * Replace any with unknown for improved type-safety.
  */

@@ -1,12 +1,7 @@
 import { ValidationErrors } from "final-form";
 import { Errors, ValidationError } from "io-ts/lib";
 
-// tslint:disable-next-line: readonly-array
-export type FieldValue = undefined | string | string[];
-
-export type FormData = {
-  readonly [index in string]: FieldValue;
-};
+export { withMessage } from "io-ts-types/lib/withMessage";
 
 /**
  * Converts an io-ts Errors to a final-form ValidationErrors.

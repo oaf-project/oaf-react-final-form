@@ -7,24 +7,25 @@ import {
 import { fold } from "fp-ts/lib/Either";
 import { Errors, Type, ValidationError } from "io-ts";
 import { Selector } from "oaf-side-effects";
-import React, { ReactNode } from "react";
+import React, { FormHTMLAttributes, ReactNode } from "react";
 import { Form as ReactFinalForm, FormRenderProps } from "react-final-form";
-import { FormData, toValidationErrors } from "../validation";
+import { FormData } from ".";
+import { toValidationErrors } from "../validation";
 import { focusInvalidFormDecorator } from "./focusInvalidFormDecorator";
 
 type SubmissionResponse = ReturnType<Config<unknown>["onSubmit"]>;
 
-export type FormProps<I extends FormData, A extends object = I> = Pick<
-  Config<A>,
-  "keepDirtyOnReinitialize" | "destroyOnUnregister"
-> &
+export type FormProps<
+  I extends FormData,
+  A extends object = I
+> = FormHTMLAttributes<HTMLFormElement> &
+  Pick<Config<A>, "keepDirtyOnReinitialize" | "destroyOnUnregister"> &
   Pick<Config<I>, "debug"> & {
     readonly onSubmit: (
       values: A,
       form: FormApi<I>,
       callback?: (errors?: SubmissionErrors) => void,
     ) => SubmissionResponse;
-    readonly id?: string;
     readonly codec: Type<A, I>;
     readonly children?: ReactNode;
     readonly formGroupSelector?: Selector;
@@ -80,21 +81,24 @@ export const Form = <I extends FormData, A extends object = I>(
     )(props.codec.decode(i));
   };
 
-  const render = (renderProps: FormRenderProps<I>) => (
-    <form
-      ref={formRef}
-      // Persuade iOS to do the right thing.
-      // See https://stackoverflow.com/a/26287843/2476884
-      action="."
-      id={props.id}
-      onSubmit={renderProps.handleSubmit}
-      // Better accessibility if we do our own inline validation.
-      // See e.g. https://developer.paciellogroup.com/blog/2019/02/required-attribute-requirements/
-      noValidate={true}
-    >
-      {props.children}
-    </form>
-  );
+  const render = (renderProps: FormRenderProps<I>) => {
+    const { action, noValidate, ...rest } = props;
+    return (
+      <form
+        ref={formRef}
+        {...rest}
+        onSubmit={renderProps.handleSubmit}
+        // Persuade iOS to do the right thing.
+        // See https://stackoverflow.com/a/26287843/2476884
+        action={action !== undefined ? action : "."}
+        // Better accessibility if we do our own inline validation.
+        // See e.g. https://developer.paciellogroup.com/blog/2019/02/required-attribute-requirements/
+        noValidate={noValidate !== undefined ? noValidate : true}
+      >
+        {props.children}
+      </form>
+    );
+  };
 
   return (
     <ReactFinalForm

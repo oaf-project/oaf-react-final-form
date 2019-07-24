@@ -1,7 +1,7 @@
 import React, { InputHTMLAttributes } from "react";
 import { Field, FieldRenderProps } from "react-final-form";
 import { SafeMeta } from ".";
-import { FieldValue, FormData } from "../validation";
+import { FieldValue, FormData } from ".";
 
 type InputType = "text" | "url" | "number" | "search";
 

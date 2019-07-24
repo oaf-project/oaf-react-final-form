@@ -38,6 +38,7 @@
   "dependencies": {
     "fp-ts": "^2.0.2",
     "io-ts": "^2.0.0",
+    "io-ts-types": "^0.5.0",
     "oaf-side-effects": "^2.0.0"
   },
   "prettier": {

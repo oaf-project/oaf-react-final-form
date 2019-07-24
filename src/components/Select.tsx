@@ -1,7 +1,7 @@
 import React, { ReactNode, SelectHTMLAttributes } from "react";
-import { Field, FieldRenderProps, useField } from "react-final-form";
+import { Field, FieldRenderProps } from "react-final-form";
 import { SafeMeta } from ".";
-import { FieldValue, FormData } from "../validation";
+import { FieldValue, FormData } from ".";
 
 type SelectFieldProps = SelectHTMLAttributes<HTMLSelectElement> & {
   // A non-optional label that we render in a <label> element to ensure accessibility.
@@ -40,7 +40,11 @@ const RenderComponent = <FV extends FieldValue>(
         required={props.required}
         aria-required={props.required}
         aria-labelledby={isInvalid ? feedbackId : undefined}
-        multiple={props.multiple}
+        multiple={
+          props.multiple !== undefined
+            ? props.multiple
+            : Array.isArray(props.meta.initial)
+        }
       >
         {/* TODO: type safe children? */}
         {props.children}
@@ -60,20 +64,18 @@ export interface SelectProps<A extends FormData> {
   readonly id?: string;
   readonly label: string;
   readonly required?: boolean;
+  readonly multiple?: boolean;
   readonly placeholder?: string;
   readonly children?: ReactNode; // TODO strongly typed options and selected value(s)
 }
 
 export const Select = <A extends FormData>(props: SelectProps<A>) => {
-  const field = useField<FieldValue>(props.name);
   const { label, ...rest } = props;
-  const multiple = Array.isArray(field.meta.initial);
 
   const render = (renderProps: FieldRenderProps<FieldValue, HTMLElement>) =>
     RenderComponent({
       ...renderProps,
       label,
-      multiple,
     });
 
   return <Field {...rest} render={render} />;

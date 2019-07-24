@@ -314,6 +314,11 @@ inherits@2:
   resolved "https://registry.yarnpkg.com/inherits/-/inherits-2.0.4.tgz#0fa2c64f932917c3433a0ded55363aae37416b7c"
   integrity sha512-k/vGaX4/Yla3WzyMCvTQOXYeIHvqOKtnqBduzTHpzpQZzAskKMhZ2K+EnBiSM9zGSoIFeMpXKxa4dYeZIQqewQ==
 
+io-ts-types@^0.5.0:
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/io-ts-types/-/io-ts-types-0.5.0.tgz#f69be9131362c31bbc6b5044f1d95892604f8f23"
+  integrity sha512-+v88rlA76FmlQQcTImFq5iigoPA3OKO+BIdrpsfXlhWUdiVvOnDDiLKCsiIAW9eRj+OJgG31Sctebr77bqKhzw==
+
 io-ts@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/io-ts/-/io-ts-2.0.0.tgz#560f8ddf92cce7ea73820cedab7b31044e464d1e"
