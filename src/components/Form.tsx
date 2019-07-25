@@ -7,7 +7,7 @@ import {
 import { fold } from "fp-ts/lib/Either";
 import { Errors, Type, ValidationError } from "io-ts";
 import { Selector } from "oaf-side-effects";
-import React, { ReactNode } from "react";
+import React, { FormHTMLAttributes, PropsWithChildren } from "react";
 import { Form as ReactFinalForm, FormRenderProps } from "react-final-form";
 import { FormData } from ".";
 import { toValidationErrors } from "../validation";
@@ -15,22 +15,35 @@ import { focusInvalidFormDecorator } from "./focusInvalidFormDecorator";
 
 type SubmissionResponse = ReturnType<Config<unknown>["onSubmit"]>;
 
-export type FormProps<I extends FormData, A extends object = I> = Pick<
-  Config<A>,
+type PropsFromFinalFormConfig<I extends FormData> = Pick<
+  Config<unknown>,
   "keepDirtyOnReinitialize" | "destroyOnUnregister"
 > &
-  Pick<Config<I>, "debug"> & {
+  Pick<Config<I>, "debug">;
+
+type FormHtmlProps = Pick<
+  FormHTMLAttributes<HTMLFormElement>,
+  "action" | "noValidate"
+>;
+
+type FocusInvalidElementProps = {
+  readonly formGroupSelector?: Selector;
+  readonly smoothScroll?: boolean;
+};
+
+export type FormProps<
+  I extends FormData,
+  A extends object = I
+> = FocusInvalidElementProps &
+  PropsWithChildren<{}> &
+  PropsFromFinalFormConfig<I> &
+  FormHtmlProps & {
     readonly onSubmit: (
       values: A,
       form: FormApi<I>,
       callback?: (errors?: SubmissionErrors) => void,
     ) => SubmissionResponse;
-    readonly action?: string;
-    readonly noValidate?: boolean;
     readonly codec: Type<A, I>;
-    readonly children?: ReactNode;
-    readonly formGroupSelector?: Selector;
-    readonly smoothScroll?: boolean;
     // Initial values are always optional, even if non-optional in A
     // (i.e. even if the user will have to provide them to submit the form).
     readonly initialValues?: Partial<A>;
@@ -83,11 +96,10 @@ export const Form = <I extends FormData, A extends object = I>(
   };
 
   const render = (renderProps: FormRenderProps<I>) => {
-    const { action, noValidate, ...rest } = props;
+    const { action, noValidate } = props;
     return (
       <form
         ref={formRef}
-        {...rest}
         onSubmit={renderProps.handleSubmit}
         // Persuade iOS to do the right thing.
         // See https://stackoverflow.com/a/26287843/2476884

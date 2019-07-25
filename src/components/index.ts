@@ -19,6 +19,7 @@ export type SafeMeta<FV> = {
   > & {
     readonly error?: unknown;
     readonly submitError?: unknown;
+    // TODO https://github.com/final-form/final-form/pull/251
     readonly initial?: FV;
   };
 };

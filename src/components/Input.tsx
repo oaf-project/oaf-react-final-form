@@ -1,11 +1,11 @@
 import React, { InputHTMLAttributes } from "react";
 import { Field, FieldRenderProps } from "react-final-form";
 import { SafeMeta } from ".";
-import { FieldValue, FormData } from ".";
+import { FieldValue } from ".";
 
 type InputType = "text" | "url" | "number" | "search";
 
-export type InputFieldProps = InputHTMLAttributes<HTMLInputElement> & {
+type ExtraProps = {
   /**
    * A non-optional label that we render in a <label> element to ensure accessibility.
    */
@@ -13,16 +13,33 @@ export type InputFieldProps = InputHTMLAttributes<HTMLInputElement> & {
   readonly type?: InputType;
 };
 
-export type InputRenderProps<FV extends FieldValue> = Omit<
+/**
+ * Input props that come directly from InputHTMLAttributes.
+ */
+type HTMLInputProps = Readonly<
+  Pick<
+    InputHTMLAttributes<HTMLInputElement>,
+    // tslint:disable-next-line: max-union-size
+    "id" | "required" | "placeholder" | "min" | "max" | "step" | "name"
+  >
+>;
+
+export type InputProps<
+  A extends { readonly [key: string]: unknown }
+> = HTMLInputProps &
+  ExtraProps & {
+    readonly name: keyof A & string;
+  };
+
+type RenderProps<FV extends FieldValue> = Omit<
   FieldRenderProps<FV, HTMLInputElement>,
   "meta"
 > &
   SafeMeta<FV> &
-  InputFieldProps;
+  HTMLInputProps &
+  ExtraProps;
 
-const RenderComponent = <FV extends FieldValue>(
-  props: InputRenderProps<FV>,
-) => {
+const RenderComponent = <FV extends FieldValue>(props: RenderProps<FV>) => {
   const feedbackId = `${props.id}-feedback`;
   const isInvalid = props.meta.touched && props.meta.invalid;
   const isValid = props.meta.touched && props.meta.valid;
@@ -59,18 +76,9 @@ const RenderComponent = <FV extends FieldValue>(
   );
 };
 
-export interface InputProps<A extends FormData> {
-  readonly name: keyof A & string;
-  readonly id?: string;
-  readonly label: string;
-  readonly required?: boolean;
-  readonly type?: InputType;
-  readonly placeholder?: string;
-
-  // TODO: min, max, step but only if type === "number"
-}
-
-export const Input = <A extends FormData>(props: InputProps<A>) => {
+export const Input = <A extends { readonly [key: string]: unknown }>(
+  props: InputProps<A>,
+) => {
   const render = (renderProps: FieldRenderProps<FieldValue, HTMLElement>) =>
     RenderComponent({ ...renderProps, ...props });
 

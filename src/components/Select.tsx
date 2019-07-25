@@ -1,23 +1,43 @@
 import React, { ReactNode, SelectHTMLAttributes } from "react";
 import { Field, FieldRenderProps } from "react-final-form";
 import { SafeMeta } from ".";
-import { FieldValue, FormData } from ".";
+import { FieldValue } from ".";
 
-type SelectFieldProps = SelectHTMLAttributes<HTMLSelectElement> & {
+type ExtraProps = {
   // A non-optional label that we render in a <label> element to ensure accessibility.
   readonly label: string;
+
+  // TODO strongly typed options and selected value(s)
+  readonly children?: ReactNode;
 };
 
-type SelectRenderProps<FV extends FieldValue> = Omit<
+/**
+ * Select props that come directly from SelectHTMLAttributes.
+ */
+type HTMLSelectProps = Readonly<
+  Pick<
+    SelectHTMLAttributes<HTMLSelectElement>,
+    // tslint:disable-next-line: max-union-size
+    "id" | "required" | "multiple" | "placeholder" | "name"
+  >
+>;
+
+export type SelectProps<
+  A extends { readonly [key: string]: unknown }
+> = HTMLSelectProps &
+  ExtraProps & {
+    readonly name: keyof A & string;
+  };
+
+type RenderProps<FV extends FieldValue> = Omit<
   FieldRenderProps<FV, HTMLSelectElement>,
   "meta"
 > &
   SafeMeta<FV> &
-  SelectFieldProps;
+  HTMLSelectProps &
+  ExtraProps;
 
-const RenderComponent = <FV extends FieldValue>(
-  props: SelectRenderProps<FV>,
-) => {
+const RenderComponent = <FV extends FieldValue>(props: RenderProps<FV>) => {
   const feedbackId = `${props.id}-feedback`;
   const isInvalid = props.meta.touched && props.meta.invalid;
   const isValid = props.meta.touched && props.meta.valid;
@@ -30,6 +50,7 @@ const RenderComponent = <FV extends FieldValue>(
         onBlur={props.input.onBlur}
         onChange={props.input.onChange}
         id={props.id}
+        name={props.name}
         className={
           "form-control" +
           (isInvalid ? " is-invalid" : "") +
@@ -59,17 +80,9 @@ const RenderComponent = <FV extends FieldValue>(
   );
 };
 
-export interface SelectProps<A extends FormData> {
-  readonly name: keyof A & string;
-  readonly id?: string;
-  readonly label: string;
-  readonly required?: boolean;
-  readonly multiple?: boolean;
-  readonly placeholder?: string;
-  readonly children?: ReactNode; // TODO strongly typed options and selected value(s)
-}
-
-export const Select = <A extends FormData>(props: SelectProps<A>) => {
+export const Select = <A extends { readonly [key: string]: unknown }>(
+  props: SelectProps<A>,
+) => {
   const { label, ...rest } = props;
 
   const render = (renderProps: FieldRenderProps<FieldValue, HTMLElement>) =>
