@@ -1,4 +1,4 @@
-import { ValidationErrors } from "final-form";
+import { SubmissionErrors, ValidationErrors } from "final-form";
 import { Errors, ValidationError } from "io-ts/lib";
 
 export { withMessage } from "io-ts-types/lib/withMessage";
@@ -20,3 +20,8 @@ export const toValidationErrors = (
     };
   }, initial);
 };
+
+export const toSubmissionErrors = (
+  ioTsErrors: Errors,
+  defaultMessage: (e: ValidationError) => string,
+): SubmissionErrors => toValidationErrors(ioTsErrors, defaultMessage);

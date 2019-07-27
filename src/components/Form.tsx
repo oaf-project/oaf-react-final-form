@@ -9,15 +9,18 @@ import { Errors, Type, ValidationError } from "io-ts";
 import { Selector } from "oaf-side-effects";
 import React, { FormHTMLAttributes, PropsWithChildren } from "react";
 import { Form as ReactFinalForm, FormRenderProps } from "react-final-form";
-import { toValidationErrors } from "../validation";
+import { toSubmissionErrors, toValidationErrors } from "../validation";
 import { FormData, RawFormData } from "./common";
 import { focusInvalidFormDecorator } from "./decorators";
 
-type SubmissionResponse = ReturnType<Config<unknown>["onSubmit"]>;
+type SubmissionResponse =
+  | SubmissionErrors
+  | undefined
+  | Promise<SubmissionErrors | undefined>;
 
 type PropsFromFinalFormConfig<I extends RawFormData> = Pick<
   Config<unknown>,
-  "keepDirtyOnReinitialize" | "destroyOnUnregister"
+  "keepDirtyOnReinitialize" | "destroyOnUnregister" | "validateOnBlur"
 > &
   Pick<Config<I>, "debug">;
 
@@ -38,11 +41,7 @@ export type FormProps<
   PropsWithChildren<{}> &
   PropsFromFinalFormConfig<I> &
   FormHtmlProps & {
-    readonly onSubmit: (
-      values: A,
-      form: FormApi<I>,
-      callback?: (errors?: SubmissionErrors) => void,
-    ) => SubmissionResponse;
+    readonly onSubmit: (values: A, form: FormApi<I>) => SubmissionResponse;
     readonly codec: Type<A, I>;
     // Initial values are always optional, even if non-optional in A
     // (i.e. even if the user will have to provide them to submit the form).
@@ -77,14 +76,10 @@ export const Form = <I extends RawFormData, A extends FormData>(
   const errorMessage =
     props.defaultErrorMessage || (() => "This field is invalid.");
 
-  const onSubmit = (
-    i: I,
-    form: FormApi<I>,
-    callback?: (errors?: SubmissionErrors) => void,
-  ): SubmissionResponse => {
+  const onSubmit = (i: I, form: FormApi<I>): SubmissionResponse => {
     return fold(
-      (e: Errors) => toValidationErrors(e, errorMessage),
-      (a: A) => props.onSubmit(a, form, callback),
+      (e: Errors) => toSubmissionErrors(e, errorMessage),
+      (a: A) => props.onSubmit(a, form),
     )(props.codec.decode(i));
   };
 
@@ -128,7 +123,9 @@ export const Form = <I extends RawFormData, A extends FormData>(
       decorators={[focusDecorator.current]}
       // Better accessibility if we wait until blur to validate.
       // See e.g. https://developer.paciellogroup.com/blog/2019/02/required-attribute-requirements/
-      validateOnBlur={true}
+      validateOnBlur={
+        props.validateOnBlur !== undefined ? props.validateOnBlur : true
+      }
     />
   );
 };
