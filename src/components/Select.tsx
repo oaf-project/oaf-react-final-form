@@ -1,6 +1,7 @@
+import { Type } from "io-ts";
 import React, { ReactNode, SelectHTMLAttributes } from "react";
 import { Field, FieldRenderProps } from "react-final-form";
-import { SafeMeta } from ".";
+import { FormData, RawFormData, Required, SafeMeta } from ".";
 import { FieldValue } from ".";
 
 type ExtraProps = {
@@ -23,10 +24,11 @@ type HTMLSelectProps = Readonly<
 >;
 
 export type SelectProps<
-  A extends { readonly [key: string]: unknown }
+  A extends RawFormData,
+  Name extends keyof A & string
 > = HTMLSelectProps &
   ExtraProps & {
-    readonly name: keyof A & string;
+    readonly name: Name;
   };
 
 type RenderProps<FV extends FieldValue> = Omit<
@@ -80,8 +82,8 @@ const RenderComponent = <FV extends FieldValue>(props: RenderProps<FV>) => {
   );
 };
 
-export const Select = <A extends { readonly [key: string]: unknown }>(
-  props: SelectProps<A>,
+export const Select = <A extends RawFormData, Name extends keyof A & string>(
+  props: SelectProps<A, Name>,
 ) => {
   const { label, ...rest } = props;
 
@@ -92,4 +94,15 @@ export const Select = <A extends { readonly [key: string]: unknown }>(
     });
 
   return <Field {...rest} render={render} />;
+};
+
+export const SelectForCodec = <A extends FormData, O extends RawFormData>(
+  _: Type<A, O>,
+) => {
+  return <Name extends keyof O & string>(
+    props: SelectProps<O, Name> & Required<O, Name>,
+  ) => {
+    const { required, ...rest } = props;
+    return <Select<O, Name> required={required} {...rest} />;
+  };
 };

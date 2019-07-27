@@ -1,16 +1,33 @@
+import { Type } from "io-ts";
 import React, { InputHTMLAttributes } from "react";
 import { Field, FieldRenderProps } from "react-final-form";
-import { SafeMeta } from ".";
-import { FieldValue } from ".";
+import { FormData, RawFormData, Required, SafeMeta } from ".";
 
-type InputType = "text" | "url" | "number" | "search";
+// https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#Form_%3Cinput%3E_types
+type InputType =
+  | "color"
+  | "date"
+  | "datetime-local"
+  | "email"
+  | "month"
+  | "number"
+  | "password"
+  | "range"
+  | "search"
+  | "tel"
+  | "text"
+  | "time"
+  | "url"
+  | "week";
 
-type ExtraProps = {
+type ExtraProps<A extends RawFormData, Name extends keyof A & string> = {
   /**
    * A non-optional label that we render in a <label> element to ensure accessibility.
    */
   readonly label: string;
   readonly type?: InputType;
+  readonly name: Name;
+  readonly required?: boolean;
 };
 
 /**
@@ -20,26 +37,32 @@ type HTMLInputProps = Readonly<
   Pick<
     InputHTMLAttributes<HTMLInputElement>,
     // tslint:disable-next-line: max-union-size
-    "id" | "required" | "placeholder" | "min" | "max" | "step" | "name"
+    | "id"
+    | "placeholder"
+    | "min"
+    | "minLength"
+    | "max"
+    | "maxLength"
+    | "step"
+    | "name"
   >
 >;
 
 export type InputProps<
-  A extends { readonly [key: string]: unknown }
-> = HTMLInputProps &
-  ExtraProps & {
-    readonly name: keyof A & string;
-  };
+  A extends RawFormData,
+  Name extends keyof A & string
+> = HTMLInputProps & ExtraProps<A, Name>;
 
-type RenderProps<FV extends FieldValue> = Omit<
-  FieldRenderProps<FV, HTMLInputElement>,
+type RenderProps<A extends RawFormData, Name extends keyof A & string> = Omit<
+  FieldRenderProps<A[Name], HTMLInputElement>,
   "meta"
 > &
-  SafeMeta<FV> &
-  HTMLInputProps &
-  ExtraProps;
+  SafeMeta<A[Name]> &
+  InputProps<A, Name>;
 
-const RenderComponent = <FV extends FieldValue>(props: RenderProps<FV>) => {
+const RenderComponent = <A extends RawFormData, Name extends keyof A & string>(
+  props: RenderProps<A, Name>,
+) => {
   const feedbackId = `${props.id}-feedback`;
   const isInvalid = props.meta.touched && props.meta.invalid;
   const isValid = props.meta.touched && props.meta.valid;
@@ -76,11 +99,24 @@ const RenderComponent = <FV extends FieldValue>(props: RenderProps<FV>) => {
   );
 };
 
-export const Input = <A extends { readonly [key: string]: unknown }>(
-  props: InputProps<A>,
+export const Input = <A extends RawFormData, Name extends keyof A & string>(
+  props: InputProps<A, Name>,
 ) => {
-  const render = (renderProps: FieldRenderProps<FieldValue, HTMLElement>) =>
-    RenderComponent({ ...renderProps, ...props });
+  const render = (renderProps: FieldRenderProps<A[Name], HTMLElement>) =>
+    RenderComponent<A, Name>({ ...renderProps, ...props });
 
-  return <Field {...props} render={render} />;
+  const { name, ...rest } = props;
+
+  return <Field name={name} {...rest} render={render} />;
+};
+
+export const InputForCodec = <A extends FormData, O extends RawFormData>(
+  _: Type<A, O>,
+) => {
+  return <Name extends keyof O & string>(
+    props: InputProps<O, Name> & Required<O, Name>,
+  ) => {
+    const { required, ...rest } = props;
+    return <Input<O, Name> required={required} {...rest} />;
+  };
 };

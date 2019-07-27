@@ -5,8 +5,12 @@ import { FieldMetaState } from "react-final-form";
 // tslint:disable-next-line: readonly-array
 export type FieldValue = undefined | string | string[];
 
-export type FormData = {
+export type RawFormData = {
   readonly [index in string]: FieldValue;
+};
+
+export type FormData = {
+  readonly [index in string]: unknown;
 };
 
 /**
@@ -23,3 +27,10 @@ export type SafeMeta<FV> = {
     readonly initial?: FV;
   };
 };
+
+export type Required<
+  A extends RawFormData,
+  Name extends keyof A & string
+> = A[Name] extends Exclude<A[Name], undefined>
+  ? { readonly required: true }
+  : {};
