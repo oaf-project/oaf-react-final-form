@@ -23,7 +23,7 @@ type PropsFromFinalFormConfig<I extends RawFormData> = Pick<
 
 type FormHtmlProps = Pick<
   FormHTMLAttributes<HTMLFormElement>,
-  "action" | "noValidate"
+  "id" | "action" | "noValidate"
 >;
 
 type FocusInvalidElementProps = {
@@ -99,6 +99,7 @@ export const Form = <I extends RawFormData, A extends FormData>(
     const { action, noValidate } = props;
     return (
       <form
+        id={props.id}
         ref={formRef}
         onSubmit={renderProps.handleSubmit}
         // Persuade iOS to do the right thing.

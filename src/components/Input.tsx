@@ -98,9 +98,9 @@ export const Input = <A extends RawFormData, Name extends keyof A & string>(
   const render = (renderProps: FieldRenderProps<A[Name], HTMLElement>) =>
     RenderComponent<A, Name>({ ...renderProps, ...props });
 
-  const { name, ...rest } = props;
+  const { name, id, ...rest } = props;
 
-  return <Field name={name} {...rest} render={render} />;
+  return <Field name={name} id={id || name} {...rest} render={render} />;
 };
 
 export const InputForCodec = <A extends FormData, O extends RawFormData>(
