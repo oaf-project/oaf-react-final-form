@@ -9,9 +9,9 @@ import { Errors, Type, ValidationError } from "io-ts";
 import { Selector } from "oaf-side-effects";
 import React, { FormHTMLAttributes, PropsWithChildren } from "react";
 import { Form as ReactFinalForm, FormRenderProps } from "react-final-form";
-import { RawFormData } from ".";
 import { toValidationErrors } from "../validation";
-import { focusInvalidFormDecorator } from "./focusInvalidFormDecorator";
+import { RawFormData } from "./common";
+import { focusInvalidFormDecorator } from "./decorators";
 
 type SubmissionResponse = ReturnType<Config<unknown>["onSubmit"]>;
 
@@ -33,7 +33,7 @@ type FocusInvalidElementProps = {
 
 export type FormProps<
   I extends RawFormData,
-  A extends object = I
+  A extends FormData
 > = FocusInvalidElementProps &
   PropsWithChildren<{}> &
   PropsFromFinalFormConfig<I> &
@@ -53,7 +53,7 @@ export type FormProps<
     readonly defaultErrorMessage?: (e: ValidationError) => string;
   };
 
-export const Form = <I extends RawFormData, A extends object = I>(
+export const Form = <I extends RawFormData, A extends FormData>(
   props: FormProps<I, A>,
 ) => {
   const formRef = React.useRef<HTMLFormElement | null>(null);

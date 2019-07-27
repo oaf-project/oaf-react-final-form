@@ -1,15 +1,16 @@
 import { Type } from "io-ts";
 import React, { ReactNode, SelectHTMLAttributes } from "react";
 import { Field, FieldRenderProps } from "react-final-form";
-import { FormData, RawFormData, Required, SafeMeta } from ".";
-import { FieldValue } from ".";
+import { FormData, RawFormData, Required, SafeMeta } from "./common";
 
-type ExtraProps = {
+type ExtraProps<A extends RawFormData, Name extends keyof A> = {
   // A non-optional label that we render in a <label> element to ensure accessibility.
   readonly label: string;
 
   // TODO strongly typed options and selected value(s)
   readonly children?: ReactNode;
+
+  readonly name: Name;
 };
 
 /**
@@ -19,27 +20,26 @@ type HTMLSelectProps = Readonly<
   Pick<
     SelectHTMLAttributes<HTMLSelectElement>,
     // tslint:disable-next-line: max-union-size
-    "id" | "required" | "multiple" | "placeholder" | "name"
+    "id" | "required" | "multiple" | "placeholder"
   >
 >;
 
 export type SelectProps<
   A extends RawFormData,
   Name extends keyof A & string
-> = HTMLSelectProps &
-  ExtraProps & {
-    readonly name: Name;
-  };
+> = HTMLSelectProps & ExtraProps<A, Name>;
 
-type RenderProps<FV extends FieldValue> = Omit<
-  FieldRenderProps<FV, HTMLSelectElement>,
+type RenderProps<A extends RawFormData, Name extends keyof A & string> = Omit<
+  FieldRenderProps<A[Name], HTMLSelectElement>,
   "meta"
 > &
-  SafeMeta<FV> &
+  SafeMeta<A[Name]> &
   HTMLSelectProps &
-  ExtraProps;
+  ExtraProps<A, Name>;
 
-const RenderComponent = <FV extends FieldValue>(props: RenderProps<FV>) => {
+const RenderComponent = <A extends RawFormData, Name extends keyof A & string>(
+  props: RenderProps<A, Name>,
+) => {
   const feedbackId = `${props.id}-feedback`;
   const isInvalid = props.meta.touched && props.meta.invalid;
   const isValid = props.meta.touched && props.meta.valid;
@@ -85,15 +85,16 @@ const RenderComponent = <FV extends FieldValue>(props: RenderProps<FV>) => {
 export const Select = <A extends RawFormData, Name extends keyof A & string>(
   props: SelectProps<A, Name>,
 ) => {
-  const { label, ...rest } = props;
+  const { name, label, ...rest } = props;
 
-  const render = (renderProps: FieldRenderProps<FieldValue, HTMLElement>) =>
-    RenderComponent({
+  const render = (renderProps: FieldRenderProps<A[Name], HTMLElement>) =>
+    RenderComponent<A, Name>({
+      name,
       ...renderProps,
       label,
     });
 
-  return <Field {...rest} render={render} />;
+  return <Field name={name} {...rest} render={render} />;
 };
 
 export const SelectForCodec = <A extends FormData, O extends RawFormData>(

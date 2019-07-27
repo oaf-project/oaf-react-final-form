@@ -1,7 +1,7 @@
 import { Type } from "io-ts";
 import React, { InputHTMLAttributes } from "react";
 import { Field, FieldRenderProps } from "react-final-form";
-import { FormData, RawFormData, Required, SafeMeta } from ".";
+import { FormData, RawFormData, Required, SafeMeta } from "./common";
 
 // https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#Form_%3Cinput%3E_types
 type InputType =
@@ -37,14 +37,7 @@ type HTMLInputProps = Readonly<
   Pick<
     InputHTMLAttributes<HTMLInputElement>,
     // tslint:disable-next-line: max-union-size
-    | "id"
-    | "placeholder"
-    | "min"
-    | "minLength"
-    | "max"
-    | "maxLength"
-    | "step"
-    | "name"
+    "id" | "placeholder" | "min" | "minLength" | "max" | "maxLength" | "step"
   >
 >;
 
