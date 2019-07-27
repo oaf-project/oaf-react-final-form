@@ -10,8 +10,8 @@ export const formCodec = <R extends t.Props, O extends t.Props>(fields: {
 }) => {
   return t.readonly(
     t.intersection([
-      t.type(fields.required || {}),
-      t.partial(fields.optional || {}),
+      t.type(fields.required || ({} as R)),
+      t.partial(fields.optional || ({} as O)),
     ]),
   );
 };
