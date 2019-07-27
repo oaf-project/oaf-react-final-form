@@ -13,7 +13,7 @@ import { toSubmissionErrors, toValidationErrors } from "../validation";
 import { FormData, RawFormData } from "./common";
 import { focusInvalidFormDecorator } from "./decorators";
 
-type SubmissionResponse =
+export type SubmissionResponse =
   | SubmissionErrors
   | undefined
   | Promise<SubmissionErrors | undefined>;
