@@ -10,7 +10,7 @@ import { Selector } from "oaf-side-effects";
 import React, { FormHTMLAttributes, PropsWithChildren } from "react";
 import { Form as ReactFinalForm, FormRenderProps } from "react-final-form";
 import { toValidationErrors } from "../validation";
-import { RawFormData } from "./common";
+import { FormData, RawFormData } from "./common";
 import { focusInvalidFormDecorator } from "./decorators";
 
 type SubmissionResponse = ReturnType<Config<unknown>["onSubmit"]>;
