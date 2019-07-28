@@ -2,12 +2,13 @@ import * as t from "io-ts";
 import React from "react";
 import ReactDOM from "react-dom";
 import { Form, formCodec, InputForCodec } from ".";
+import { withMessage } from "../validation";
 
 // tslint:disable: no-expression-statement object-literal-sort-keys
 
 it("renders without crashing", () => {
   const codec = formCodec({
-    required: { bar: t.string },
+    required: { bar: withMessage(t.string, () => "Bar is required.") },
     optional: { foo: t.string },
   });
 
