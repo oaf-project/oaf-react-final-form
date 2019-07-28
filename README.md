@@ -13,3 +13,16 @@ An opinionated form library.
   * https://developer.paciellogroup.com/blog/2019/02/required-attribute-requirements/
   * https://webaim.org/techniques/formvalidation/
 * Validation built with [io-ts](https://github.com/gcanti/io-ts)
+
+## Installation
+
+```sh
+# yarn
+yarn add oaf-react-final-form
+
+# npm
+npm install oaf-react-final-form
+```
+
+## Usage
+See [Form.test.tsx](https://github.com/oaf-project/oaf-react-final-form/blob/master/src/components/Form.test.tsx) for an example.
