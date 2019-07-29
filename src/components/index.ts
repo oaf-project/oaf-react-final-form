@@ -55,4 +55,5 @@ export const elementsForCodec = <A extends FormData, O extends RawFormData>(
   Input: inputForCodec(codec),
   Select: selectForCodec(codec),
   // TODO: checkbox, radio, text area
+  // TODO: file inputs
 });

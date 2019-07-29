@@ -60,12 +60,16 @@ const RenderComponent = <A extends RawFormData, Name extends keyof A & string>(
   const isInvalid = props.meta.touched && props.meta.invalid;
   const isValid = props.meta.touched && props.meta.valid;
 
+  // We have to discard ReadonlyArray<string> from this type to be able to assign it to the input's value.
+  // tslint:disable-next-line: readonly-array
+  const value = props.input.value as string | string[] | number;
+
   return (
     // TODO extract common FormGroup component and share with Select.tsx
     <div className="form-group">
       <label htmlFor={props.id}>{props.label}</label>
       <input
-        value={props.input.value}
+        value={value}
         onBlur={props.input.onBlur}
         onChange={props.input.onChange}
         id={props.id}

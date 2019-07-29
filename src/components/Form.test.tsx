@@ -9,7 +9,7 @@ import { withMessage } from "../validation";
 it("renders without crashing", () => {
   const codec = formCodec({
     required: { bar: withMessage(t.string, () => "Bar is required.") },
-    optional: { foo: t.string, baz: t.string },
+    optional: { foo: t.string, baz: t.readonlyArray(t.string) },
   });
 
   const { Form, Input, Select } = elementsForCodec(codec);
@@ -29,7 +29,7 @@ it("renders without crashing", () => {
     <Form onSubmit={onSubmit} initialValues={initialValues}>
       <Input label="foo" name="foo" type="text" />
       <Input label="bar" name="bar" type="text" required={true} />
-      <Select label="baz" name="baz" />
+      <Select label="baz" name="baz" multiple={true} />
     </Form>,
     div,
   );

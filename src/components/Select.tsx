@@ -1,7 +1,7 @@
 import { Type } from "io-ts";
 import React, { ReactNode, SelectHTMLAttributes } from "react";
 import { Field, FieldRenderProps } from "react-final-form";
-import { FormData, RawFormData, Required, SafeMeta } from "./common";
+import { FormData, Multiple, RawFormData, Required, SafeMeta } from "./common";
 
 type ExtraProps<A extends RawFormData, Name extends keyof A> = {
   // A non-optional label that we render in a <label> element to ensure accessibility.
@@ -44,11 +44,15 @@ const RenderComponent = <A extends RawFormData, Name extends keyof A & string>(
   const isInvalid = props.meta.touched && props.meta.invalid;
   const isValid = props.meta.touched && props.meta.valid;
 
+  // We have to discard ReadonlyArray<string> from this type to be able to assign it to the input's value.
+  // tslint:disable-next-line: readonly-array
+  const value = props.input.value as string | string[] | number;
+
   return (
     <div className="form-group">
       <label htmlFor={props.id}>{props.label}</label>
       <select
-        value={props.input.value}
+        value={value}
         onBlur={props.input.onBlur}
         onChange={props.input.onChange}
         id={props.id}
@@ -63,11 +67,7 @@ const RenderComponent = <A extends RawFormData, Name extends keyof A & string>(
         required={props.required}
         aria-required={props.required}
         aria-labelledby={isInvalid ? feedbackId : undefined}
-        multiple={
-          props.multiple !== undefined
-            ? props.multiple
-            : Array.isArray(props.meta.initial)
-        }
+        multiple={props.multiple}
       >
         {/* TODO: type safe children? */}
         {props.children}
@@ -101,9 +101,11 @@ export const selectForCodec = <A extends FormData, O extends RawFormData>(
   _: Type<A, O>,
 ) => {
   return <Name extends keyof O & string>(
-    props: SelectProps<O, Name> & Required<O, Name>,
+    props: SelectProps<O, Name> & Required<O, Name> & Multiple<O, Name>,
   ) => {
-    const { required, ...rest } = props;
-    return <Select<O, Name> required={required} {...rest} />;
+    const { required, multiple, ...rest } = props;
+    return (
+      <Select<O, Name> required={required} multiple={multiple} {...rest} />
+    );
   };
 };
