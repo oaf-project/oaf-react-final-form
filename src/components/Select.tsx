@@ -97,7 +97,7 @@ export const Select = <A extends RawFormData, Name extends keyof A & string>(
   return <Field name={name} id={id || name} {...rest} render={render} />;
 };
 
-export const SelectForCodec = <A extends FormData, O extends RawFormData>(
+export const selectForCodec = <A extends FormData, O extends RawFormData>(
   _: Type<A, O>,
 ) => {
   return <Name extends keyof O & string>(

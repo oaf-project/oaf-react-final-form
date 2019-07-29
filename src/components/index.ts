@@ -1,4 +1,9 @@
 import * as t from "io-ts";
+import { Type } from "io-ts";
+import { FormData, RawFormData } from "./common";
+import { formForCodec } from "./Form";
+import { inputForCodec } from "./Input";
+import { selectForCodec } from "./Select";
 
 export * from "./Form";
 export * from "./Input";
@@ -42,3 +47,12 @@ export function formCodec<R extends t.Props, O extends t.Props>(
     ? t.readonly(t.type(required))
     : t.readonly(t.partial(optional as O));
 }
+
+export const elementsForCodec = <A extends FormData, O extends RawFormData>(
+  codec: Type<A, O>,
+) => ({
+  Form: formForCodec(codec),
+  Input: inputForCodec(codec),
+  Select: selectForCodec(codec),
+  // TODO: checkbox, radio, text area
+});

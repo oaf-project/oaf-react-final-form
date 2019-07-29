@@ -103,7 +103,7 @@ export const Input = <A extends RawFormData, Name extends keyof A & string>(
   return <Field name={name} id={id || name} {...rest} render={render} />;
 };
 
-export const InputForCodec = <A extends FormData, O extends RawFormData>(
+export const inputForCodec = <A extends FormData, O extends RawFormData>(
   _: Type<A, O>,
 ) => {
   return <Name extends keyof O & string>(

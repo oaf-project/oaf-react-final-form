@@ -35,14 +35,14 @@ type FocusInvalidElementProps = {
 };
 
 export type FormProps<
-  I extends RawFormData,
-  A extends FormData
+  A extends FormData,
+  O extends RawFormData
 > = FocusInvalidElementProps &
   PropsWithChildren<{}> &
-  PropsFromFinalFormConfig<I> &
+  PropsFromFinalFormConfig<O> &
   FormHtmlProps & {
-    readonly onSubmit: (values: A, form: FormApi<I>) => SubmissionResponse;
-    readonly codec: Type<A, I>;
+    readonly onSubmit: (values: A, form: FormApi<O>) => SubmissionResponse;
+    readonly codec: Type<A, O>;
     // Initial values are always optional, even if non-optional in A
     // (i.e. even if the user will have to provide them to submit the form).
     readonly initialValues?: Partial<A>;
@@ -52,8 +52,8 @@ export type FormProps<
     readonly defaultErrorMessage?: (e: ValidationError) => string;
   };
 
-export const Form = <I extends RawFormData, A extends FormData>(
-  props: FormProps<I, A>,
+export const Form = <A extends FormData, O extends RawFormData>(
+  props: FormProps<A, O>,
 ) => {
   const formRef = React.useRef<HTMLFormElement | null>(null);
 
@@ -67,7 +67,7 @@ export const Form = <I extends RawFormData, A extends FormData>(
     ),
   );
 
-  const initialValues: I | undefined =
+  const initialValues: O | undefined =
     props.initialValues === undefined
       ? undefined
       : // `encode` will do the right thing here even when given a partial at runtime.
@@ -76,21 +76,21 @@ export const Form = <I extends RawFormData, A extends FormData>(
   const errorMessage =
     props.defaultErrorMessage || (() => "This field is invalid.");
 
-  const onSubmit = (i: I, form: FormApi<I>): SubmissionResponse => {
+  const onSubmit = (rawFormData: O, form: FormApi<O>): SubmissionResponse => {
     return fold(
       (e: Errors) => toSubmissionErrors(e, errorMessage),
       (a: A) => props.onSubmit(a, form),
-    )(props.codec.decode(i));
+    )(props.codec.decode(rawFormData));
   };
 
-  const validate = (i: I): ValidationErrors | undefined => {
+  const validate = (rawFormData: O): ValidationErrors | undefined => {
     return fold(
       (e: Errors) => toValidationErrors(e, errorMessage),
       () => undefined,
-    )(props.codec.decode(i));
+    )(props.codec.decode(rawFormData));
   };
 
-  const render = (renderProps: FormRenderProps<I>) => {
+  const render = (renderProps: FormRenderProps<O>) => {
     const { action, noValidate } = props;
     return (
       <form
@@ -128,4 +128,12 @@ export const Form = <I extends RawFormData, A extends FormData>(
       }
     />
   );
+};
+
+export const formForCodec = <A extends FormData, O extends RawFormData>(
+  codec: Type<A, O>,
+) => {
+  return (props: Omit<FormProps<A, O>, "codec">) => {
+    return <Form codec={codec} {...props} />;
+  };
 };
