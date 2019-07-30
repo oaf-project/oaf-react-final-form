@@ -1,22 +1,17 @@
-import {
-  Config,
-  FormApi,
-  SubmissionErrors,
-  ValidationErrors,
-} from "final-form";
+import { Config, FormApi } from "final-form";
 import { fold } from "fp-ts/lib/Either";
 import { Errors, Type, ValidationError } from "io-ts";
 import { Selector } from "oaf-side-effects";
 import React, { FormHTMLAttributes, PropsWithChildren } from "react";
 import { Form as ReactFinalForm, FormRenderProps } from "react-final-form";
-import { toSubmissionErrors, toValidationErrors } from "../validation";
+import { toValidationErrors, ValidationErrors } from "../validation";
 import { FormData, RawFormData } from "./common";
 import { focusInvalidFormDecorator } from "./decorators";
 
-export type SubmissionResponse =
-  | SubmissionErrors
+export type SubmissionResponse<O extends RawFormData> =
+  | ValidationErrors<O>
   | undefined
-  | Promise<SubmissionErrors | undefined>;
+  | Promise<ValidationErrors<O> | undefined>;
 
 type PropsFromFinalFormConfig<I extends RawFormData> = Pick<
   Config<unknown>,
@@ -41,7 +36,7 @@ export type FormProps<
   PropsWithChildren<{}> &
   PropsFromFinalFormConfig<O> &
   FormHtmlProps & {
-    readonly onSubmit: (values: A, form: FormApi<O>) => SubmissionResponse;
+    readonly onSubmit: (values: A, form: FormApi<O>) => SubmissionResponse<O>;
     readonly codec: Type<A, O>;
     // Initial values are always optional, even if non-optional in A
     // (i.e. even if the user will have to provide them to submit the form).
@@ -76,22 +71,26 @@ export const Form = <A extends FormData, O extends RawFormData>(
   const errorMessage =
     props.defaultErrorMessage || (() => "This field is invalid.");
 
-  const onSubmit = (rawFormData: O, form: FormApi<O>): SubmissionResponse => {
+  const onSubmit = (
+    rawFormData: O,
+    form: FormApi<O>,
+  ): SubmissionResponse<O> => {
     return fold(
-      (e: Errors) => toSubmissionErrors(e, errorMessage),
+      (e: Errors) => toValidationErrors<O>(e, errorMessage),
       (a: A) => props.onSubmit(a, form),
     )(props.codec.decode(rawFormData));
   };
 
-  const validate = (rawFormData: O): ValidationErrors | undefined => {
+  const validate = (rawFormData: O): ValidationErrors<O> | undefined => {
     return fold(
-      (e: Errors) => toValidationErrors(e, errorMessage),
+      (e: Errors) => toValidationErrors<O>(e, errorMessage),
       () => undefined,
     )(props.codec.decode(rawFormData));
   };
 
   const render = (renderProps: FormRenderProps<O>) => {
     const { action, noValidate } = props;
+
     return (
       <form
         id={props.id}
@@ -104,6 +103,7 @@ export const Form = <A extends FormData, O extends RawFormData>(
         // See e.g. https://developer.paciellogroup.com/blog/2019/02/required-attribute-requirements/
         noValidate={noValidate !== undefined ? noValidate : true}
       >
+        {/* TODO render FINAL_FORM/form-error errors here. */}
         {props.children}
       </form>
     );

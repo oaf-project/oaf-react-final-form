@@ -13,7 +13,8 @@
         "no-any": true,
         "no-unsafe-any": true,
         "interface-over-type-literal": false,
-        "interface-name": false
+        "interface-name": false,
+        "object-literal-sort-keys": false
     },
     "rulesDirectory": []
 }
