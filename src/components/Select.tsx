@@ -106,7 +106,10 @@ const RenderComponent = <A extends RawFormData, Name extends keyof A & string>(
   props: RenderProps<A, Name>,
 ) => {
   const feedbackId = `${props.id}-feedback`;
-  const isInvalid = props.meta.touched && props.meta.invalid;
+  // 'To stop form controls from announcing as invalid by default, one can add aria-invalid="false" to any necessary element.'
+  // See https://developer.paciellogroup.com/blog/2019/02/required-attribute-requirements/
+  const isInvalid: boolean =
+    (props.meta.touched && props.meta.invalid) || false;
   const isValid = props.meta.touched && props.meta.valid;
 
   // We have to discard ReadonlyArray<string> from this type to be able to assign it to the input's value.
