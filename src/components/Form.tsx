@@ -71,6 +71,11 @@ export const Form = <A extends FormData, O extends RawFormData>(
   const errorMessage =
     props.defaultErrorMessage || (() => "This field is invalid.");
 
+  // Better accessibility if we wait until blur to validate.
+  // See e.g. https://developer.paciellogroup.com/blog/2019/02/required-attribute-requirements/
+  const validateOnBlur =
+    props.validateOnBlur !== undefined ? props.validateOnBlur : true;
+
   const onSubmit = (
     rawFormData: O,
     form: FormApi<O>,
@@ -91,11 +96,27 @@ export const Form = <A extends FormData, O extends RawFormData>(
   const render = (renderProps: FormRenderProps<O>) => {
     const { action, noValidate } = props;
 
+    const handleSubmit = (event?: React.SyntheticEvent<HTMLFormElement>) => {
+      // tslint:disable-next-line: no-if-statement
+      if (validateOnBlur) {
+        // Reset the same validate function as we set initially
+        // for the side effect that it will re-run validation.
+        // We need to re-run validation here because react-final-form
+        // doesn't give us one last validation before submitting when
+        // validateOnBlur is true.
+        // See https://github.com/final-form/final-form/issues/213
+        // tslint:disable-next-line: no-expression-statement
+        renderProps.form.setConfig("validate", validate);
+      }
+      // tslint:disable-next-line: no-expression-statement
+      renderProps.handleSubmit(event);
+    };
+
     return (
       <form
         id={props.id}
         ref={formRef}
-        onSubmit={renderProps.handleSubmit}
+        onSubmit={handleSubmit}
         // Persuade iOS to do the right thing.
         // See https://stackoverflow.com/a/26287843/2476884
         action={action !== undefined ? action : "."}
@@ -121,11 +142,7 @@ export const Form = <A extends FormData, O extends RawFormData>(
       // Focus the first invalid element after failed form submission.
       // See e.g. https://webaim.org/techniques/formvalidation/
       decorators={[focusDecorator.current]}
-      // Better accessibility if we wait until blur to validate.
-      // See e.g. https://developer.paciellogroup.com/blog/2019/02/required-attribute-requirements/
-      validateOnBlur={
-        props.validateOnBlur !== undefined ? props.validateOnBlur : true
-      }
+      validateOnBlur={validateOnBlur}
     />
   );
 };

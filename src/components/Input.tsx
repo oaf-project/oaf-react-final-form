@@ -10,11 +10,13 @@ type InputType =
   | "datetime-local"
   | "email"
   | "month"
+  // TODO: only allow number if codec type extends number?
   | "number"
   | "password"
   | "range"
   | "search"
   | "tel"
+  // TODO: only allow text, search, etc if codec type extends string?
   | "text"
   | "time"
   | "url"
