@@ -6,6 +6,7 @@
         "tslint-sonarts",
         "tslint-react",
         "tslint-react-a11y",
+        "tslint-react-hooks",
         "tslint-config-prettier"
     ],
     "jsRules": {},
@@ -14,7 +15,8 @@
         "no-unsafe-any": true,
         "interface-over-type-literal": false,
         "interface-name": false,
-        "object-literal-sort-keys": false
+        "object-literal-sort-keys": false,
+        "react-hooks-nesting": true
     },
     "rulesDirectory": []
 }
