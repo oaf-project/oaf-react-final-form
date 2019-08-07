@@ -142,7 +142,9 @@ const RenderComponent = <A extends RawFormData, Name extends keyof A & string>(
       {isInvalid && (
         <div id={feedbackId} className="invalid-feedback">
           {/* TODO i18n */}
-          {props.meta.error || "This field is invalid."}
+          {props.meta.error ||
+            props.meta.submitError ||
+            "This field is invalid."}
         </div>
       )}
     </div>

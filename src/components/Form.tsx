@@ -93,7 +93,17 @@ export const Form = <A extends FormData, O extends RawFormData>(
     )(props.codec.decode(rawFormData));
   };
 
-  const render = (renderProps: FormRenderProps<O>) => {
+  /**
+   * Replace any with string for improved type-safety.
+   * io-ts error messages are strings, so we can get away
+   * with this here.
+   */
+  type RenderProps = Omit<FormRenderProps<O>, "error" | "submitErrors"> & {
+    readonly error?: string;
+    readonly submitError?: string;
+  };
+
+  const render = (renderProps: RenderProps) => {
     const { action, noValidate } = props;
 
     const handleSubmit = (event?: React.SyntheticEvent<HTMLFormElement>) => {

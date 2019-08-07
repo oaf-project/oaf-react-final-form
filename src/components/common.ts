@@ -14,15 +14,17 @@ export type FormData = {
 };
 
 /**
- * Replace any with unknown for improved type-safety.
+ * Replace any with string for improved type-safety.
+ * io-ts error messages are strings, so we can get away
+ * with this here.
  */
 export type SafeMeta<FV> = {
   readonly meta: Omit<
     FieldMetaState<FV>,
     "error" | "submitError" | "initial"
   > & {
-    readonly error?: unknown;
-    readonly submitError?: unknown;
+    readonly error?: string;
+    readonly submitError?: string;
     // TODO https://github.com/final-form/final-form/pull/251
     readonly initial?: FV;
   };

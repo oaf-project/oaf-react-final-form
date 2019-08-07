@@ -11,9 +11,7 @@ export const FORM_ERROR = "FINAL_FORM/form-error" as const;
 // "Submission errors must be in the same shape as the values of the form. You may return a generic error for the whole form (e.g. 'Login Failed') using the special FORM_ERROR string key."
 // "Validation errors must be in the same shape as the values of the form. You may return a generic error for the whole form using the special FORM_ERROR string key."
 export type ValidationErrors<O> = Partial<
-  // TODO don't use `any` here.
-  // tslint:disable-next-line: no-any
-  { readonly [key in keyof O | typeof FORM_ERROR]: any }
+  { readonly [key in keyof O | typeof FORM_ERROR]: string }
 >;
 
 /**
