@@ -15,6 +15,15 @@ import { withMessage } from "../validation";
 // tslint:disable: react-a11y-role-has-required-aria-props
 
 it("renders without crashing", () => {
+  // First, we define the form codec using io-ts.
+  // See https://github.com/gcanti/io-ts#the-idea
+  //
+  // `formCodec` is just a convenience function over the top of
+  // `intersection`, `type` and `partial` from io-ts.
+  // See https://github.com/gcanti/io-ts#mixing-required-and-optional-props
+  //
+  // `withMessage` comes from io-ts-types. We use it to add custom validation messages.
+  // See https://gcanti.github.io/io-ts-types/modules/withMessage.ts.html
   const codec = formCodec({
     required: { bar: withMessage(t.string, () => "Bar is required.") },
     optional: {
@@ -25,6 +34,8 @@ it("renders without crashing", () => {
     },
   });
 
+  // We derive React components for our form elements from the form codec. This
+  // gives us some type-safety benefits when rendering these form elements (below).
   const { Form, Input, Select } = elementsForCodec(codec);
 
   type FormData = t.TypeOf<typeof codec>;

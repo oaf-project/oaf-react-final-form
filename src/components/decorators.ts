@@ -33,6 +33,7 @@ const isInvalid = (state: FormState<object>): boolean =>
 export const focusInvalidFormDecorator = (
   getFormElement: () => Element | null,
   formGroupSelector: Selector,
+  invalidElementSelector: Selector | undefined,
   smoothScroll: boolean | undefined = undefined,
 ): Decorator => {
   return form => {
@@ -55,10 +56,11 @@ export const focusInvalidFormDecorator = (
 
             const invalid = isInvalid(formState);
 
-            // TODO: use invalidElementSelector if provided, falling back on this
-            const selector = Object.keys(formState.errors)
-              .map(id => `#${id}`)
-              .join(", ");
+            const selector =
+              invalidElementSelector ||
+              Object.keys(formState.errors)
+                .map(id => `#${id}`)
+                .join(", ");
 
             if (invalid) {
               // TODO: remove this setTimeout?

@@ -26,6 +26,7 @@ type FormHtmlProps = Pick<
 
 type FocusInvalidElementProps = {
   readonly formGroupSelector?: Selector;
+  readonly invalidElementSelector?: Selector;
   readonly smoothScroll?: boolean;
 };
 
@@ -58,6 +59,7 @@ export const Form = <A extends FormData, O extends RawFormData>(
     focusInvalidFormDecorator(
       () => formRef.current,
       props.formGroupSelector || ".form-group",
+      props.invalidElementSelector || "[aria-invalid=true], .alert",
       props.smoothScroll,
     ),
   );
@@ -98,7 +100,7 @@ export const Form = <A extends FormData, O extends RawFormData>(
    * io-ts error messages are strings, so we can get away
    * with this here.
    */
-  type RenderProps = Omit<FormRenderProps<O>, "error" | "submitErrors"> & {
+  type RenderProps = Omit<FormRenderProps<O>, "error" | "submitError"> & {
     readonly error?: string;
     readonly submitError?: string;
   };
@@ -122,6 +124,8 @@ export const Form = <A extends FormData, O extends RawFormData>(
       renderProps.handleSubmit(event);
     };
 
+    const formError = renderProps.error || renderProps.submitError;
+
     return (
       <form
         id={props.id}
@@ -134,7 +138,11 @@ export const Form = <A extends FormData, O extends RawFormData>(
         // See e.g. https://developer.paciellogroup.com/blog/2019/02/required-attribute-requirements/
         noValidate={noValidate !== undefined ? noValidate : true}
       >
-        {/* TODO render FINAL_FORM/form-error errors here. */}
+        {formError && (
+          <div className="alert alert-danger" role="alert">
+            {formError}
+          </div>
+        )}
         {props.children}
       </form>
     );
