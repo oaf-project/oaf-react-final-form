@@ -4,6 +4,7 @@ import { Errors, Type, ValidationError } from "io-ts";
 import { Selector } from "oaf-side-effects";
 import React, { FormHTMLAttributes, PropsWithChildren } from "react";
 import { Form as ReactFinalForm, FormRenderProps } from "react-final-form";
+import { OmitStrict as Omit } from "type-zoo";
 import { toValidationErrors, ValidationErrors } from "../validation";
 import { FormData, RawFormData } from "./common";
 import { focusInvalidFormDecorator } from "./decorators";
@@ -120,8 +121,7 @@ export const Form = <A extends FormData, O extends RawFormData>(
         // tslint:disable-next-line: no-expression-statement
         renderProps.form.setConfig("validate", validate);
       }
-      // tslint:disable-next-line: no-expression-statement
-      renderProps.handleSubmit(event);
+      return renderProps.handleSubmit(event);
     };
 
     const formError = renderProps.error || renderProps.submitError;

@@ -1,4 +1,5 @@
 import { FieldMetaState } from "react-final-form";
+import { OmitStrict as Omit } from "type-zoo";
 
 // TODO: should this be a recursive type to allow nested fields?
 // See https://github.com/final-form/final-form#field-names

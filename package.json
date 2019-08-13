@@ -48,7 +48,8 @@
     "io-ts": "^2.0.0",
     "io-ts-types": "^0.5.0",
     "monocle-ts": "^2.0.0",
-    "oaf-side-effects": "^2.0.0"
+    "oaf-side-effects": "^2.0.0",
+    "type-zoo": "^3.4.1"
   },
   "prettier": {
     "trailingComma": "all"

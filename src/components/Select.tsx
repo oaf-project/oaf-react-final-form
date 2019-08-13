@@ -1,6 +1,7 @@
 import { Type } from "io-ts";
 import React, { Key, SelectHTMLAttributes } from "react";
 import { Field, FieldRenderProps } from "react-final-form";
+import { OmitStrict as Omit } from "type-zoo";
 import { FormData, Multiple, RawFormData, Required, SafeMeta } from "./common";
 
 // TODO https://github.com/Microsoft/tslint-microsoft-contrib/issues/409

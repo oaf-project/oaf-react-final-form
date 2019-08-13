@@ -1,6 +1,7 @@
 import { Type } from "io-ts";
 import React, { InputHTMLAttributes } from "react";
 import { Field, FieldRenderProps } from "react-final-form";
+import { OmitStrict as Omit } from "type-zoo";
 import { FormData, RawFormData, Required, SafeMeta } from "./common";
 
 // https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#Form_%3Cinput%3E_types
