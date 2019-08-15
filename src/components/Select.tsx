@@ -164,7 +164,15 @@ export const Select = <A extends RawFormData, Name extends keyof A & string>(
       ...renderProps,
     });
 
-  return <Field name={name} id={id || name} {...rest} render={render} />;
+  return (
+    <Field
+      type="select"
+      name={name}
+      id={id || name}
+      {...rest}
+      render={render}
+    />
+  );
 };
 
 export const selectForCodec = <A extends FormData, O extends RawFormData>(
