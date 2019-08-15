@@ -28,7 +28,8 @@ it("renders without crashing", () => {
     required: { bar: withMessage(t.string, () => "Bar is required.") },
     optional: {
       foo: t.string,
-      baz: t.readonlyArray(
+      baz: t.union([t.literal("first-option"), t.literal("second-option")]),
+      qux: t.readonlyArray(
         t.union([t.literal("first-option"), t.literal("second-option")]),
       ),
     },
@@ -46,6 +47,8 @@ it("renders without crashing", () => {
 
   const initialValues: Partial<FormData> = {
     foo: "foo",
+    baz: "first-option",
+    qux: ["second-option"],
   };
 
   const selectOptions: SelectOptions<FormData["baz"]> = [
@@ -69,13 +72,14 @@ it("renders without crashing", () => {
     <Form onSubmit={onSubmit} initialValues={initialValues}>
       <Input label="foo" name="foo" type="text" />
       <Input label="bar" name="bar" type="text" required={true} />
-      <Select label="baz" name="baz" multiple={true} options={selectOptions} />
+      <Select label="baz" name="baz" options={selectOptions} />
+      <Select label="qux" name="qux" multiple={true} options={selectOptions} />
     </Form>,
     div,
   );
 
   expect(div.innerHTML).toBe(
-    '<form action="." novalidate=""><div class="form-group"><label for="foo">foo</label><input id="foo" name="foo" class="form-control" type="text" aria-invalid="false" value="foo"></div><div class="form-group"><label for="bar">bar</label><input id="bar" name="bar" class="form-control" type="text" aria-invalid="false" required="" aria-required="true" value=""></div><div class="form-group"><label for="baz">baz</label><select multiple="" id="baz" name="baz" class="form-control" aria-invalid="false"><option value=""></option><option value="first-option">first option</option><optgroup label="an opt group"><option value="second-option">second option</option></optgroup></select></div></form>',
+    '<form action="." novalidate=""><div class="form-group"><label for="foo">foo</label><input id="foo" name="foo" class="form-control" type="text" aria-invalid="false" value="foo"></div><div class="form-group"><label for="bar">bar</label><input id="bar" name="bar" class="form-control" type="text" aria-invalid="false" required="" aria-required="true" value=""></div><div class="form-group"><label for="baz">baz</label><select id="baz" name="baz" class="form-control" aria-invalid="false"><option value=""></option><option value="first-option">first option</option><optgroup label="an opt group"><option value="second-option">second option</option></optgroup></select></div><div class="form-group"><label for="qux">qux</label><select multiple="" id="qux" name="qux" class="form-control" aria-invalid="false"><option value=""></option><option value="first-option">first option</option><optgroup label="an opt group"><option value="second-option">second option</option></optgroup></select></div></form>',
   );
 
   ReactDOM.unmountComponentAtNode(div);

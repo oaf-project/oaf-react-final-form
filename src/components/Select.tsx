@@ -12,7 +12,6 @@ export type SelectOption<A> = {
   readonly value: A | "";
   readonly label: string;
   readonly disabled?: boolean;
-  readonly selected?: boolean;
   // https://reactjs.org/docs/lists-and-keys.html#keys
   readonly key?: Key;
 };
@@ -88,7 +87,6 @@ const RenderOptions = <A extends RawFormData, Name extends keyof A & string>({
             // TODO remove this horrible cast
             value={(o.value as unknown) as string}
             disabled={o.disabled}
-            selected={o.selected}
           >
             {o.label}
           </option>
