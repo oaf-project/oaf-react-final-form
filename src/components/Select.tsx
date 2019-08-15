@@ -114,14 +114,14 @@ const RenderComponent = <A extends RawFormData, Name extends keyof A & string>(
   const isValid = props.meta.touched && props.meta.valid;
 
   // We have to discard ReadonlyArray<string> from this type to be able to assign it to the input's value.
-  // tslint:disable-next-line: readonly-array
-  const value = props.input.value as string | string[] | number;
+  // tslint:disable-next-line: readonly-array max-union-size
+  const value = props.input.value as string | string[] | number | undefined;
 
   return (
     <div className="form-group">
       <label htmlFor={props.id}>{props.label}</label>
       <select
-        value={value}
+        value={props.multiple && !Array.isArray(value) ? [] : value}
         onBlur={props.input.onBlur}
         onChange={props.input.onChange}
         id={props.id}
