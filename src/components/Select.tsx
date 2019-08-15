@@ -33,7 +33,7 @@ const isSelectOption = <A, _>(
   (o as SelectOption<A>).value !== undefined;
 
 export type SelectOptionType<A> = Exclude<
-  A extends ReadonlyArray<infer X> ? X : A,
+  Exclude<A, undefined> extends ReadonlyArray<infer X> ? X : A,
   undefined
 >;
 
