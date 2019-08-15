@@ -155,13 +155,14 @@ const RenderComponent = <A extends RawFormData, Name extends keyof A & string>(
 export const Select = <A extends RawFormData, Name extends keyof A & string>(
   props: SelectProps<A, Name>,
 ) => {
-  const { name, id, label, options, ...rest } = props;
+  const { name, id, label, options, multiple, ...rest } = props;
 
   const render = (renderProps: FieldRenderProps<A[Name], HTMLElement>) =>
     RenderComponent<A, Name>({
       name,
       label,
       options,
+      multiple,
       ...renderProps,
     });
 

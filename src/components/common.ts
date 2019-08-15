@@ -34,9 +34,9 @@ export type SafeMeta<FV> = {
 export type Required<
   A extends RawFormData,
   Name extends keyof A & string
-> = A[Name] extends Exclude<A[Name], undefined>
-  ? { readonly required: true }
-  : { readonly required?: false };
+> = undefined extends A[Name]
+  ? { readonly required?: false }
+  : { readonly required: true };
 
 export type Multiple<
   A extends RawFormData,
