@@ -1,4 +1,5 @@
 import * as t from "io-ts";
+import { axe, toHaveNoViolations } from "jest-axe";
 import React from "react";
 import ReactDOM from "react-dom";
 import {
@@ -11,10 +12,12 @@ import { withMessage } from "../validation";
 
 // tslint:disable: no-expression-statement no-duplicate-string
 
+expect.extend(toHaveNoViolations);
+
 // TODO https://github.com/Microsoft/tslint-microsoft-contrib/issues/409
 // tslint:disable: react-a11y-role-has-required-aria-props
 
-it("renders without crashing", () => {
+it("renders without crashing", async () => {
   // First, we define the form codec using io-ts.
   // See https://github.com/gcanti/io-ts#the-idea
   //
@@ -81,6 +84,10 @@ it("renders without crashing", () => {
   expect(div.innerHTML).toBe(
     '<form action="." novalidate=""><div class="form-group"><label for="foo">foo</label><input id="foo" name="foo" class="form-control" type="text" aria-invalid="false" value="foo"></div><div class="form-group"><label for="bar">bar</label><input id="bar" name="bar" class="form-control" type="text" aria-invalid="false" required="" aria-required="true" value=""></div><div class="form-group"><label for="baz">baz</label><select id="baz" name="baz" class="form-control" aria-invalid="false"><option value=""></option><option value="first-option">first option</option><optgroup label="an opt group"><option value="second-option">second option</option></optgroup></select></div><div class="form-group"><label for="qux">qux</label><select multiple="" id="qux" name="qux" class="form-control" aria-invalid="false"><option value=""></option><option value="first-option">first option</option><optgroup label="an opt group"><option value="second-option">second option</option></optgroup></select></div></form>',
   );
+
+  // HACK: The JestAxe TypeScript type is wrong.
+  // tslint:disable-next-line: no-any
+  expect(await axe(div as any)).toHaveNoViolations();
 
   ReactDOM.unmountComponentAtNode(div);
 });
