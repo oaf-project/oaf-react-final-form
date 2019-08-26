@@ -1,10 +1,13 @@
+import arrayMutators from "final-form-arrays";
 import * as t from "io-ts";
 import { axe, toHaveNoViolations } from "jest-axe";
 import React from "react";
 import ReactDOM from "react-dom";
+import { FieldArray } from "react-final-form-arrays";
 import {
   elementsForCodec,
   formCodec,
+  Input as RawInput,
   SelectOptions,
   SubmissionResponse,
 } from ".";
@@ -35,6 +38,14 @@ it("renders without crashing", async () => {
       qux: t.readonlyArray(
         t.union([t.literal("first-option"), t.literal("second-option")]),
       ),
+      customers: t.readonlyArray(
+        t.readonly(
+          t.type({
+            firstName: t.string,
+            lastName: t.string,
+          }),
+        ),
+      ),
     },
   });
 
@@ -52,6 +63,7 @@ it("renders without crashing", async () => {
     foo: "foo",
     baz: "first-option",
     qux: ["second-option"],
+    customers: [{ firstName: "Jane", lastName: "Doe" }],
   };
 
   const selectOptions: SelectOptions<FormData["baz"]> = [
@@ -72,17 +84,45 @@ it("renders without crashing", async () => {
 
   const div = document.createElement("div");
   ReactDOM.render(
-    <Form onSubmit={onSubmit} initialValues={initialValues}>
+    <Form
+      onSubmit={onSubmit}
+      initialValues={initialValues}
+      // https://github.com/final-form/react-final-form-arrays#usage
+      mutators={{
+        // potentially other mutators could be merged here
+        ...arrayMutators,
+      }}
+    >
       <Input label="foo" name="foo" type="text" />
       <Input label="bar" name="bar" type="text" required={true} />
       <Select label="baz" name="baz" options={selectOptions} />
       <Select label="qux" name="qux" multiple={true} options={selectOptions} />
+      <FieldArray name="customers">
+        {({ fields }) =>
+          fields.map((name, key) => (
+            <div key={name}>
+              <RawInput
+                label="First Name"
+                id={`customers-${key}-firstName`}
+                name={`${name}.firstName`}
+                type="text"
+              />
+              <RawInput
+                label="Last Name"
+                id={`customers-${key}-lastName`}
+                name={`${name}.lastName`}
+                type="text"
+              />
+            </div>
+          ))
+        }
+      </FieldArray>
     </Form>,
     div,
   );
 
   expect(div.innerHTML).toBe(
-    '<form action="." novalidate=""><div class="form-group"><label for="foo">foo</label><input id="foo" name="foo" class="form-control" type="text" aria-invalid="false" value="foo"></div><div class="form-group"><label for="bar">bar</label><input id="bar" name="bar" class="form-control" type="text" aria-invalid="false" required="" aria-required="true" value=""></div><div class="form-group"><label for="baz">baz</label><select id="baz" name="baz" class="form-control" aria-invalid="false"><option value=""></option><option value="first-option">first option</option><optgroup label="an opt group"><option value="second-option">second option</option></optgroup></select></div><div class="form-group"><label for="qux">qux</label><select multiple="" id="qux" name="qux" class="form-control" aria-invalid="false"><option value=""></option><option value="first-option">first option</option><optgroup label="an opt group"><option value="second-option">second option</option></optgroup></select></div></form>',
+    '<form action="." novalidate=""><div class="form-group"><label for="foo">foo</label><input id="foo" name="foo" class="form-control" type="text" aria-invalid="false" value="foo"></div><div class="form-group"><label for="bar">bar</label><input id="bar" name="bar" class="form-control" type="text" aria-invalid="false" required="" aria-required="true" value=""></div><div class="form-group"><label for="baz">baz</label><select id="baz" name="baz" class="form-control" aria-invalid="false"><option value=""></option><option value="first-option">first option</option><optgroup label="an opt group"><option value="second-option">second option</option></optgroup></select></div><div class="form-group"><label for="qux">qux</label><select multiple="" id="qux" name="qux" class="form-control" aria-invalid="false"><option value=""></option><option value="first-option">first option</option><optgroup label="an opt group"><option value="second-option">second option</option></optgroup></select></div><div><div class="form-group"><label for="customers-0-firstName">First Name</label><input id="customers-0-firstName" name="customers[0].firstName" class="form-control" type="text" aria-invalid="false" value="Jane"></div><div class="form-group"><label for="customers-0-lastName">Last Name</label><input id="customers-0-lastName" name="customers[0].lastName" class="form-control" type="text" aria-invalid="false" value="Doe"></div></div></form>',
   );
 
   // HACK: The JestAxe TypeScript type is wrong.

@@ -2,7 +2,7 @@ import { Type } from "io-ts";
 import React, { InputHTMLAttributes } from "react";
 import { Field, FieldRenderProps } from "react-final-form";
 import { OmitStrict as Omit } from "type-zoo";
-import { FormData, RawFormData, Required, SafeMeta } from "./common";
+import { FormData, Required, SafeMeta } from "./common";
 
 // https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#Form_%3Cinput%3E_types
 type InputType =
@@ -23,7 +23,7 @@ type InputType =
   | "url"
   | "week";
 
-type ExtraProps<A extends RawFormData, Name extends keyof A & string> = {
+type ExtraProps<Name extends string> = {
   /**
    * A non-optional label that we render in a <label> element to ensure accessibility.
    */
@@ -44,19 +44,16 @@ type HTMLInputProps = Readonly<
   >
 >;
 
-export type InputProps<
-  A extends RawFormData,
-  Name extends keyof A & string
-> = HTMLInputProps & ExtraProps<A, Name>;
+export type InputProps<Name extends string> = HTMLInputProps & ExtraProps<Name>;
 
-type RenderProps<A extends RawFormData, Name extends keyof A & string> = Omit<
+type RenderProps<A extends FormData, Name extends keyof A & string> = Omit<
   FieldRenderProps<A[Name], HTMLInputElement>,
   "meta"
 > &
   SafeMeta<A[Name]> &
-  InputProps<A, Name>;
+  InputProps<Name>;
 
-const RenderComponent = <A extends RawFormData, Name extends keyof A & string>(
+const RenderComponent = <A extends FormData, Name extends keyof A & string>(
   props: RenderProps<A, Name>,
 ) => {
   const feedbackId = `${props.id}-feedback`;
@@ -104,8 +101,8 @@ const RenderComponent = <A extends RawFormData, Name extends keyof A & string>(
   );
 };
 
-export const Input = <A extends RawFormData, Name extends keyof A & string>(
-  props: InputProps<A, Name>,
+export const Input = <A extends FormData, Name extends keyof A & string>(
+  props: InputProps<Name>,
 ) => {
   const render = (renderProps: FieldRenderProps<A[Name], HTMLElement>) =>
     RenderComponent<A, Name>({ ...renderProps, ...props });
@@ -115,11 +112,11 @@ export const Input = <A extends RawFormData, Name extends keyof A & string>(
   return <Field name={name} id={id || name} {...rest} render={render} />;
 };
 
-export const inputForCodec = <A extends FormData, O extends RawFormData>(
+export const inputForCodec = <A extends FormData, O extends FormData>(
   _: Type<A, O>,
 ) => {
   return <Name extends keyof O & string>(
-    props: InputProps<O, Name> & Required<O, Name>,
+    props: InputProps<Name> & Required<O[Name]>,
   ) => {
     const { required, ...rest } = props;
     return <Input<O, Name> required={required} {...rest} />;

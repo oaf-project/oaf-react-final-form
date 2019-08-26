@@ -1,15 +1,7 @@
 import { FieldMetaState } from "react-final-form";
 import { OmitStrict as Omit } from "type-zoo";
 
-// TODO: should this be a recursive type to allow nested fields?
-// See https://github.com/final-form/final-form#field-names
-// tslint:disable-next-line: readonly-array
-export type FieldValue = undefined | string | string[] | ReadonlyArray<string>;
-
-export type RawFormData = {
-  readonly [index in string]: FieldValue;
-};
-
+// TODO: tighten up unknown here
 export type FormData = {
   readonly [index in string]: unknown;
 };
@@ -26,22 +18,14 @@ export type SafeMeta<FV> = {
   > & {
     readonly error?: string;
     readonly submitError?: string;
-    // TODO https://github.com/final-form/final-form/pull/251
-    readonly initial?: FV;
   };
 };
 
-export type Required<
-  A extends RawFormData,
-  Name extends keyof A & string
-> = undefined extends A[Name]
+export type Required<Value> = undefined extends Value
   ? { readonly required?: false }
   : { readonly required: true };
 
-export type Multiple<
-  A extends RawFormData,
-  Name extends keyof A & string
-  // tslint:disable-next-line: readonly-array no-any
-> = any[] extends A[Name]
+// tslint:disable-next-line: readonly-array no-any
+export type Multiple<Value> = any[] extends Value
   ? { readonly multiple: true }
   : { readonly multiple?: false };

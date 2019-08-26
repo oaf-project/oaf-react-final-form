@@ -2,7 +2,7 @@ import { Type } from "io-ts";
 import React, { Key, SelectHTMLAttributes } from "react";
 import { Field, FieldRenderProps } from "react-final-form";
 import { OmitStrict as Omit } from "type-zoo";
-import { FormData, Multiple, RawFormData, Required, SafeMeta } from "./common";
+import { FormData, Multiple, Required, SafeMeta } from "./common";
 
 // TODO https://github.com/Microsoft/tslint-microsoft-contrib/issues/409
 // tslint:disable: react-a11y-role-has-required-aria-props
@@ -41,7 +41,7 @@ export type SelectOptions<A> = ReadonlyArray<
   SelectOptionOrGroup<SelectOptionType<A>>
 >;
 
-type ExtraProps<A extends RawFormData, Name extends keyof A> = {
+type ExtraProps<A extends FormData, Name extends keyof A> = {
   // A non-optional label that we render in a <label> element to ensure accessibility.
   readonly label: string;
   readonly name: Name;
@@ -60,11 +60,11 @@ type HTMLSelectProps = Readonly<
 >;
 
 export type SelectProps<
-  A extends RawFormData,
+  A extends FormData,
   Name extends keyof A & string
 > = HTMLSelectProps & ExtraProps<A, Name>;
 
-type RenderProps<A extends RawFormData, Name extends keyof A & string> = Omit<
+type RenderProps<A extends FormData, Name extends keyof A & string> = Omit<
   FieldRenderProps<A[Name], HTMLSelectElement>,
   "meta"
 > &
@@ -72,7 +72,7 @@ type RenderProps<A extends RawFormData, Name extends keyof A & string> = Omit<
   HTMLSelectProps &
   ExtraProps<A, Name>;
 
-const RenderOptions = <A extends RawFormData, Name extends keyof A & string>({
+const RenderOptions = <A extends FormData, Name extends keyof A & string>({
   options,
 }: {
   readonly options: SelectOptions<A[Name]>;
@@ -101,7 +101,7 @@ const RenderOptions = <A extends RawFormData, Name extends keyof A & string>({
   // tslint:enable: readonly-array
 };
 
-const RenderComponent = <A extends RawFormData, Name extends keyof A & string>(
+const RenderComponent = <A extends FormData, Name extends keyof A & string>(
   props: RenderProps<A, Name>,
 ) => {
   const feedbackId = `${props.id}-feedback`;
@@ -150,7 +150,7 @@ const RenderComponent = <A extends RawFormData, Name extends keyof A & string>(
   );
 };
 
-export const Select = <A extends RawFormData, Name extends keyof A & string>(
+export const Select = <A extends FormData, Name extends keyof A & string>(
   props: SelectProps<A, Name>,
 ) => {
   const { name, id, label, options, multiple, ...rest } = props;
@@ -175,11 +175,11 @@ export const Select = <A extends RawFormData, Name extends keyof A & string>(
   );
 };
 
-export const selectForCodec = <A extends FormData, O extends RawFormData>(
+export const selectForCodec = <A extends FormData, O extends FormData>(
   _: Type<A, O>,
 ) => {
   return <Name extends keyof O & string>(
-    props: SelectProps<O, Name> & Required<O, Name> & Multiple<O, Name>,
+    props: SelectProps<O, Name> & Required<O[Name]> & Multiple<O[Name]>,
   ) => {
     const { required, multiple, ...rest } = props;
     return (

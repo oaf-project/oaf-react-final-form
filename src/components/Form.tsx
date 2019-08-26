@@ -6,17 +6,21 @@ import React, { FormHTMLAttributes, PropsWithChildren } from "react";
 import { Form as ReactFinalForm, FormRenderProps } from "react-final-form";
 import { OmitStrict as Omit } from "type-zoo";
 import { toValidationErrors, ValidationErrors } from "../validation";
-import { FormData, RawFormData } from "./common";
+import { FormData } from "./common";
 import { focusInvalidFormDecorator } from "./decorators";
 
-export type SubmissionResponse<O extends RawFormData> =
+export type SubmissionResponse<O extends FormData> =
   | ValidationErrors<O>
   | undefined
   | Promise<ValidationErrors<O> | undefined>;
 
-type PropsFromFinalFormConfig<I extends RawFormData> = Pick<
+type PropsFromFinalFormConfig<I extends FormData> = Pick<
   Config<unknown>,
-  "keepDirtyOnReinitialize" | "destroyOnUnregister" | "validateOnBlur"
+  // tslint:disable-next-line: max-union-size
+  | "keepDirtyOnReinitialize"
+  | "destroyOnUnregister"
+  | "validateOnBlur"
+  | "mutators"
 > &
   Pick<Config<I>, "debug">;
 
@@ -33,7 +37,7 @@ type FocusInvalidElementProps = {
 
 export type FormProps<
   A extends FormData,
-  O extends RawFormData
+  O extends FormData
 > = FocusInvalidElementProps &
   PropsWithChildren<{}> &
   PropsFromFinalFormConfig<O> &
@@ -49,7 +53,7 @@ export type FormProps<
     readonly defaultErrorMessage?: (e: ValidationError) => string;
   };
 
-export const Form = <A extends FormData, O extends RawFormData>(
+export const Form = <A extends FormData, O extends FormData>(
   props: FormProps<A, O>,
 ) => {
   const formRef = React.useRef<HTMLFormElement | null>(null);
@@ -161,11 +165,12 @@ export const Form = <A extends FormData, O extends RawFormData>(
       // See e.g. https://webaim.org/techniques/formvalidation/
       decorators={[focusDecorator.current]}
       validateOnBlur={validateOnBlur}
+      mutators={props.mutators}
     />
   );
 };
 
-export const formForCodec = <A extends FormData, O extends RawFormData>(
+export const formForCodec = <A extends FormData, O extends FormData>(
   codec: Type<A, O>,
 ) => {
   return (props: Omit<FormProps<A, O>, "codec">) => {
