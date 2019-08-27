@@ -347,10 +347,10 @@
     "@types/istanbul-lib-coverage" "*"
     "@types/istanbul-lib-report" "*"
 
-"@types/jest-axe@^2.2.3":
-  version "2.2.3"
-  resolved "https://registry.yarnpkg.com/@types/jest-axe/-/jest-axe-2.2.3.tgz#ae6900def4adca4605f45980e91836e0f94f5233"
-  integrity sha512-oe+7tfyUHn3weTgw+xnzPe+O8jzfl/++fouSIw1mxbTeTE9r6kfFP/ufIWzeCHimpbLr5MNA/YDb8bNSu9DDSg==
+"@types/jest-axe@^2.2.4":
+  version "2.2.4"
+  resolved "https://registry.yarnpkg.com/@types/jest-axe/-/jest-axe-2.2.4.tgz#b58c7f6390abcc69d507332636bcdd20c83d0f4a"
+  integrity sha512-JuZ8YTXuOqyxcgZ1lSNCpIjKZfUcAQzE8REAUqwVra+Bc2GlFiJ7ZB2L90Ocl0ztlGX3fkQ/GosfXq2Qg8xppQ==
   dependencies:
     "@types/jest" "*"
     axe-core "^3.0.3"
