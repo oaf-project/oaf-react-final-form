@@ -22,7 +22,7 @@ type InputType =
   | "url"
   | "week";
 
-export type ExtraProps = {
+export type ExtraInputProps = {
   /**
    * A non-optional label that we render in a <label> element to ensure accessibility.
    */
@@ -55,7 +55,7 @@ export type InputRenderProps<
   FieldRenderProps<FormValueType<A[Name]>, HTMLInputElement>,
   SafeMeta<FormValueType<A[Name]>>
 > &
-  ExtraProps;
+  ExtraInputProps;
 
 export const InputRenderComponent = <
   A extends FormData,
@@ -69,10 +69,6 @@ export const InputRenderComponent = <
   const isInvalid: boolean =
     (props.meta.touched && props.meta.invalid) || false;
   const isValid = props.meta.touched && props.meta.valid;
-
-  // We have to discard ReadonlyArray<string> from this type to be able to assign it to the input's value.
-  // tslint:disable-next-line: readonly-array
-  // const value = (props.input.value as unknown) as string | string[] | number;
 
   return (
     // TODO extract common FormGroup component and share with Select.tsx

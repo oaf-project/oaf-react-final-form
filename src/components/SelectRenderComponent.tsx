@@ -37,7 +37,7 @@ export type SelectOptions<A extends unknown> = ReadonlyArray<
   SelectOptionOrGroup<FormValueType<A>>
 >;
 
-export type ExtraProps<A extends FormData, Name extends keyof A> = {
+export type ExtraSelectProps<A extends FormData, Name extends keyof A> = {
   // A non-noptional label that we render in a <label> element to ensure accessibility.
   readonly label: string | JSX.Element;
   readonly options: SelectOptions<A[Name]>;
@@ -61,7 +61,7 @@ export type SelectRenderProps<
   FieldRenderProps<FormValueType<A[Name]>, HTMLSelectElement>,
   SafeMeta<FormValueType<A[Name]>>
 > &
-  ExtraProps<A, Name>;
+  ExtraSelectProps<A, Name>;
 
 export const RenderOptions = <
   A extends FormData,

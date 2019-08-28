@@ -7,6 +7,7 @@ import { selectForCodec } from "./Select";
 
 export * from "./Form";
 export * from "./Input";
+export * from "./InputRenderComponent";
 export * from "./Select";
 export * from "./SelectRenderComponent";
 

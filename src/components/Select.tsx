@@ -1,12 +1,15 @@
 import React from "react";
 import { Field, FieldRenderProps } from "react-final-form";
 import { FormData, FormValueType, Multiple, Required } from "./common";
-import { ExtraProps, SelectRenderComponent } from "./SelectRenderComponent";
+import {
+  ExtraSelectProps,
+  SelectRenderComponent,
+} from "./SelectRenderComponent";
 
 export type SelectProps<
   A extends FormData,
   Name extends keyof A & string
-> = ExtraProps<A, Name> & { readonly name: Name };
+> = ExtraSelectProps<A, Name> & { readonly name: Name };
 
 export const Select = <A extends FormData, Name extends keyof A & string>(
   props: SelectProps<A, Name>,

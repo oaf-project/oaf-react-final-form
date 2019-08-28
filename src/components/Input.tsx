@@ -1,12 +1,12 @@
 import React from "react";
 import { Field, FieldRenderProps } from "react-final-form";
 import { FormData, FormValueType, Required } from "./common";
-import { ExtraProps, InputRenderComponent } from "./InputRenderComponent";
+import { ExtraInputProps, InputRenderComponent } from "./InputRenderComponent";
 
 export type InputProps<
   A extends FormData,
   Name extends keyof A & string
-> = ExtraProps & {
+> = ExtraInputProps & {
   readonly name: Name;
 };
 
