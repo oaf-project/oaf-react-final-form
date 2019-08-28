@@ -1,10 +1,8 @@
+import { FORM_ERROR } from "final-form";
 import { Errors, ValidationError } from "io-ts/lib";
 
 // We re-export `withMessage` just for the convenience of users.
 export { withMessage } from "io-ts-types/lib/withMessage";
-
-// TODO https://github.com/final-form/final-form/pull/254
-export const FORM_ERROR = "FINAL_FORM/form-error" as const;
 
 /**
  * A strongly typed version of the ValidationErrors type from final-form.

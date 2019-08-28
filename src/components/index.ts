@@ -8,6 +8,7 @@ import { selectForCodec } from "./Select";
 export * from "./Form";
 export * from "./Input";
 export * from "./Select";
+export * from "./SelectRenderComponent";
 
 // tslint:disable: readonly-array
 
@@ -52,8 +53,8 @@ export const elementsForCodec = <A extends FormData, O extends FormData>(
   codec: Type<A, O>,
 ) => ({
   Form: formForCodec(codec),
-  Input: inputForCodec(codec),
-  Select: selectForCodec(codec),
+  Input: inputForCodec<O>(),
+  Select: selectForCodec<O>(),
   // TODO: checkbox, radio, text area
   // TODO: file inputs
 });

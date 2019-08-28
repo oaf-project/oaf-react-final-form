@@ -4,7 +4,7 @@ import { Errors, Type, ValidationError } from "io-ts";
 import { Selector } from "oaf-side-effects";
 import React, { FormHTMLAttributes, PropsWithChildren } from "react";
 import { Form as ReactFinalForm, FormRenderProps } from "react-final-form";
-import { OmitStrict as Omit } from "type-zoo";
+import { OmitStrict } from "type-zoo";
 import { toValidationErrors, ValidationErrors } from "../validation";
 import { FormData } from "./common";
 import { focusInvalidFormDecorator } from "./decorators";
@@ -105,7 +105,7 @@ export const Form = <A extends FormData, O extends FormData>(
    * io-ts error messages are strings, so we can get away
    * with this here.
    */
-  type RenderProps = Omit<FormRenderProps<O>, "error" | "submitError"> & {
+  type RenderProps = OmitStrict<FormRenderProps<O>, "error" | "submitError"> & {
     readonly error?: string;
     readonly submitError?: string;
   };
@@ -173,7 +173,7 @@ export const Form = <A extends FormData, O extends FormData>(
 export const formForCodec = <A extends FormData, O extends FormData>(
   codec: Type<A, O>,
 ) => {
-  return (props: Omit<FormProps<A, O>, "codec">) => {
+  return (props: OmitStrict<FormProps<A, O>, "codec">) => {
     return <Form codec={codec} {...props} />;
   };
 };

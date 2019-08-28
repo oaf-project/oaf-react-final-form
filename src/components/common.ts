@@ -1,10 +1,28 @@
+import { AllHTMLAttributes } from "react";
 import { FieldMetaState } from "react-final-form";
-import { OmitStrict as Omit } from "type-zoo";
+import { ExcludeStrict, Overwrite } from "type-zoo";
 
 // TODO: tighten up unknown here
 export type FormData = {
   readonly [index in string]: unknown;
 };
+
+// TODO: should we exclude undefined here? and number?
+// string | number | string[]
+export type FormValue = ExcludeStrict<
+  AllHTMLAttributes<HTMLSelectElement>["value"],
+  undefined
+>;
+
+// string | number
+// tslint:disable-next-line: readonly-array
+export type FormValueOption = ExcludeStrict<FormValue, string[]>;
+
+export type FormValueType<A> = Exclude<A, undefined> extends ReadonlyArray<
+  infer X
+>
+  ? Extract<X, FormValueOption>
+  : Extract<A, FormValueOption>;
 
 /**
  * Replace any with string for improved type-safety.
@@ -12,13 +30,13 @@ export type FormData = {
  * with this here.
  */
 export type SafeMeta<FV> = {
-  readonly meta: Omit<
+  readonly meta: Overwrite<
     FieldMetaState<FV>,
-    "error" | "submitError" | "initial"
-  > & {
-    readonly error?: string;
-    readonly submitError?: string;
-  };
+    {
+      readonly error?: string;
+      readonly submitError?: string;
+    }
+  >;
 };
 
 export type Required<Value> = undefined extends Value

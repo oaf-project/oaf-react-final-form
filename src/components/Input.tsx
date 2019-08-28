@@ -1,124 +1,35 @@
-import { Type } from "io-ts";
-import React, { InputHTMLAttributes } from "react";
+import React from "react";
 import { Field, FieldRenderProps } from "react-final-form";
-import { OmitStrict as Omit } from "type-zoo";
-import { FormData, Required, SafeMeta } from "./common";
+import { FormData, FormValueType, Required } from "./common";
+import { ExtraProps, InputRenderComponent } from "./InputRenderComponent";
 
-// https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#Form_%3Cinput%3E_types
-type InputType =
-  | "color"
-  | "date"
-  | "datetime-local"
-  | "email"
-  | "month"
-  // TODO: only allow number if codec type extends number?
-  | "number"
-  | "password"
-  | "range"
-  | "search"
-  | "tel"
-  // TODO: only allow text, search, etc if codec type extends string?
-  | "text"
-  | "time"
-  | "url"
-  | "week";
-
-type ExtraProps<Name extends string> = {
-  /**
-   * A non-optional label that we render in a <label> element to ensure accessibility.
-   */
-  readonly label: string;
-  readonly type?: InputType;
+export type InputProps<
+  A extends FormData,
+  Name extends keyof A & string
+> = ExtraProps & {
   readonly name: Name;
-  readonly required?: boolean;
-};
-
-/**
- * Input props that come directly from InputHTMLAttributes.
- */
-type HTMLInputProps = Readonly<
-  Pick<
-    InputHTMLAttributes<HTMLInputElement>,
-    // tslint:disable-next-line: max-union-size
-    "id" | "placeholder" | "min" | "minLength" | "max" | "maxLength" | "step"
-  >
->;
-
-export type InputProps<Name extends string> = HTMLInputProps & ExtraProps<Name>;
-
-type RenderProps<A extends FormData, Name extends keyof A & string> = Omit<
-  FieldRenderProps<A[Name], HTMLInputElement>,
-  "meta"
-> &
-  SafeMeta<A[Name]> &
-  InputProps<Name>;
-
-const RenderComponent = <A extends FormData, Name extends keyof A & string>(
-  props: RenderProps<A, Name>,
-) => {
-  const feedbackId = `${props.id}-feedback`;
-  // 'To stop form controls from announcing as invalid by default, one can add aria-invalid="false" to any necessary element.'
-  // See https://developer.paciellogroup.com/blog/2019/02/required-attribute-requirements/
-  const isInvalid: boolean =
-    (props.meta.touched && props.meta.invalid) || false;
-  const isValid = props.meta.touched && props.meta.valid;
-
-  // We have to discard ReadonlyArray<string> from this type to be able to assign it to the input's value.
-  // tslint:disable-next-line: readonly-array
-  const value = props.input.value as string | string[] | number;
-
-  return (
-    // TODO extract common FormGroup component and share with Select.tsx
-    <div className="form-group">
-      <label htmlFor={props.id}>{props.label}</label>
-      <input
-        value={value}
-        onBlur={props.input.onBlur}
-        onChange={props.input.onChange}
-        id={props.id}
-        name={props.name}
-        className={
-          "form-control" +
-          (isInvalid ? " is-invalid" : "") +
-          (isValid ? " is-valid" : "")
-        }
-        placeholder={props.placeholder}
-        type={props.type}
-        aria-invalid={isInvalid}
-        required={props.required}
-        aria-required={props.required}
-        aria-describedby={isInvalid ? feedbackId : undefined}
-      />
-      {isInvalid && (
-        <div id={feedbackId} className="invalid-feedback">
-          {/* TODO i18n */}
-          {props.meta.error ||
-            props.meta.submitError ||
-            "This field is invalid."}
-        </div>
-      )}
-    </div>
-  );
 };
 
 export const Input = <A extends FormData, Name extends keyof A & string>(
-  props: InputProps<Name>,
+  props: InputProps<A, Name>,
 ) => {
-  const render = (renderProps: FieldRenderProps<A[Name], HTMLElement>) =>
-    RenderComponent<A, Name>({ ...renderProps, ...props });
+  const { name, id, label, type, ...rest } = props;
 
-  const { name, id, ...rest } = props;
+  // TODO render min, max, etc.
+  const render = (
+    renderProps: FieldRenderProps<FormValueType<A[Name]>, HTMLElement>,
+  ) => InputRenderComponent({ label, ...renderProps });
 
-  return <Field name={name} id={id || name} {...rest} render={render} />;
+  return (
+    <Field name={name} id={id || name} type={type} {...rest} render={render} />
+  );
 };
 
-export const inputForCodec = <A extends FormData, O extends FormData>(
-  _: Type<A, O>,
-) => {
-  return <Name extends keyof O & string>(
-    props: InputProps<Name> & Required<O[Name]>,
+export const inputForCodec = <FD extends FormData>() => {
+  return <Name extends keyof FD & string>(
+    props: Exclude<InputProps<FD, Name>, "required"> & Required<FD[Name]>,
   ) => {
     const { required, ...rest } = props;
-    return <Input<O, Name> required={required} {...rest} />;
+    return <Input<FD, Name> required={required} {...rest} />;
   };
 };
