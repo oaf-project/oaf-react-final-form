@@ -2,6 +2,7 @@ import React, { Key, SelectHTMLAttributes } from "react";
 import { FieldRenderProps } from "react-final-form";
 import { Overwrite } from "type-zoo";
 import { FormData, FormValueOption, FormValueType, SafeMeta } from "./common";
+import { FormGroup } from "./FormGroup";
 
 // TODO https://github.com/Microsoft/tslint-microsoft-contrib/issues/409
 // tslint:disable: react-a11y-role-has-required-aria-props
@@ -94,48 +95,30 @@ export const SelectRenderComponent = <
 >(
   props: SelectRenderProps<A, Name>,
 ) => {
-  const feedbackId = `${props.id}-feedback`;
-  // 'To stop form controls from announcing as invalid by default, one can add aria-invalid="false" to any necessary element.'
-  // See https://developer.paciellogroup.com/blog/2019/02/required-attribute-requirements/
-  const isInvalid: boolean =
-    (props.meta.touched && props.meta.invalid) || false;
-  const isValid = props.meta.touched && props.meta.valid;
-
   return (
-    <div className="form-group">
-      <label htmlFor={props.id}>{props.label}</label>
-      <select
-        value={
-          props.multiple && !Array.isArray(props.input.value)
-            ? []
-            : props.input.value
-        }
-        onBlur={props.input.onBlur}
-        onChange={props.input.onChange}
-        id={props.id}
-        name={props.input.name}
-        className={
-          "form-control" +
-          (isInvalid ? " is-invalid" : "") +
-          (isValid ? " is-valid" : "")
-        }
-        placeholder={props.placeholder}
-        aria-invalid={isInvalid}
-        required={props.required}
-        aria-required={props.required}
-        aria-labelledby={isInvalid ? feedbackId : undefined}
-        multiple={props.multiple}
-      >
-        <RenderOptions options={props.options} />
-      </select>
-      {isInvalid && (
-        <div id={feedbackId} className="invalid-feedback">
-          {/* TODO i18n */}
-          {props.meta.error ||
-            props.meta.submitError ||
-            "This field is invalid."}
-        </div>
+    <FormGroup {...props}>
+      {({ isInvalid, className, describedby }) => (
+        <select
+          value={
+            props.multiple && !Array.isArray(props.input.value)
+              ? []
+              : props.input.value
+          }
+          onBlur={props.input.onBlur}
+          onChange={props.input.onChange}
+          id={props.id}
+          name={props.input.name}
+          className={className}
+          placeholder={props.placeholder}
+          aria-invalid={isInvalid}
+          required={props.required}
+          aria-required={props.required}
+          aria-describedby={describedby}
+          multiple={props.multiple}
+        >
+          <RenderOptions options={props.options} />
+        </select>
       )}
-    </div>
+    </FormGroup>
   );
 };

@@ -2,6 +2,7 @@ import React, { InputHTMLAttributes } from "react";
 import { FieldRenderProps } from "react-final-form";
 import { Overwrite } from "type-zoo";
 import { FormData, FormValueType, SafeMeta } from "./common";
+import { FormGroup } from "./FormGroup";
 
 // https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#Form_%3Cinput%3E_types
 type InputType =
@@ -63,48 +64,29 @@ export const InputRenderComponent = <
 >(
   props: InputRenderProps<A, Name>,
 ) => {
-  const feedbackId = `${props.id}-feedback`;
-  // 'To stop form controls from announcing as invalid by default, one can add aria-invalid="false" to any necessary element.'
-  // See https://developer.paciellogroup.com/blog/2019/02/required-attribute-requirements/
-  const isInvalid: boolean =
-    (props.meta.touched && props.meta.invalid) || false;
-  const isValid = props.meta.touched && props.meta.valid;
-
   return (
-    // TODO extract common FormGroup component and share with Select.tsx
-    <div className="form-group">
-      <label htmlFor={props.id}>{props.label}</label>
-      <input
-        value={props.input.value}
-        onBlur={props.input.onBlur}
-        onChange={props.input.onChange}
-        id={props.id}
-        name={props.input.name}
-        className={
-          "form-control" +
-          (isInvalid ? " is-invalid" : "") +
-          (isValid ? " is-valid" : "")
-        }
-        placeholder={props.placeholder}
-        min={props.min}
-        minLength={props.minLength}
-        max={props.max}
-        maxLength={props.maxLength}
-        step={props.step}
-        type={props.input.type}
-        aria-invalid={isInvalid}
-        required={props.required}
-        aria-required={props.required}
-        aria-describedby={isInvalid ? feedbackId : undefined}
-      />
-      {isInvalid && (
-        <div id={feedbackId} className="invalid-feedback">
-          {/* TODO i18n */}
-          {props.meta.error ||
-            props.meta.submitError ||
-            "This field is invalid."}
-        </div>
+    <FormGroup {...props}>
+      {({ isInvalid, className, describedby }) => (
+        <input
+          value={props.input.value}
+          onBlur={props.input.onBlur}
+          onChange={props.input.onChange}
+          id={props.id}
+          name={props.input.name}
+          className={className}
+          placeholder={props.placeholder}
+          min={props.min}
+          minLength={props.minLength}
+          max={props.max}
+          maxLength={props.maxLength}
+          step={props.step}
+          type={props.input.type}
+          aria-invalid={isInvalid}
+          required={props.required}
+          aria-required={props.required}
+          aria-describedby={describedby}
+        />
       )}
-    </div>
+    </FormGroup>
   );
 };

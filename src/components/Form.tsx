@@ -64,7 +64,7 @@ export const Form = <A extends FormData, O extends FormData>(
     focusInvalidFormDecorator(
       () => formRef.current,
       props.formGroupSelector || ".form-group",
-      props.invalidElementSelector || "[aria-invalid=true], .alert",
+      props.invalidElementSelector || "[aria-invalid=true], [role=alert]",
       props.smoothScroll,
     ),
   );
