@@ -2,9 +2,14 @@ import { AllHTMLAttributes } from "react";
 import { FieldMetaState } from "react-final-form";
 import { ExcludeStrict, Overwrite } from "type-zoo";
 
-// TODO: tighten up unknown here
-export type FormData = {
-  readonly [index in string]: unknown;
+export type FormData<I extends string = string, J extends string = string> = {
+  readonly [index in I]:  // tslint:disable-next-line: max-union-size
+    | FormValue
+    | undefined
+    | FormData<J>
+    // tslint:disable-next-line: readonly-array
+    | Array<FormData<J>>
+    | ReadonlyArray<FormData<J>>;
 };
 
 // TODO: should we exclude undefined here? and number?

@@ -9,12 +9,12 @@ import { toValidationErrors, ValidationErrors } from "../validation";
 import { FormData } from "./common";
 import { focusInvalidFormDecorator } from "./decorators";
 
-export type SubmissionResponse<O extends FormData> =
+export type SubmissionResponse<O extends object = object> =
   | ValidationErrors<O>
   | undefined
   | Promise<ValidationErrors<O> | undefined>;
 
-type PropsFromFinalFormConfig<I extends FormData> = Pick<
+type PropsFromFinalFormConfig<I extends object = object> = Pick<
   Config<unknown>,
   // tslint:disable-next-line: max-union-size
   | "keepDirtyOnReinitialize"
