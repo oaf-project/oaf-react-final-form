@@ -1,27 +1,24 @@
-import { AllHTMLAttributes } from "react";
 import { FieldMetaState } from "react-final-form";
 import { ExcludeStrict, Overwrite } from "type-zoo";
 
+// tslint:disable: readonly-array
 export type FormData<I extends string = string, J extends string = string> = {
   readonly [index in I]:  // tslint:disable-next-line: max-union-size
     | FormValue
     | undefined
     | FormData<J>
-    // tslint:disable-next-line: readonly-array
     | Array<FormData<J>>
     | ReadonlyArray<FormData<J>>;
 };
 
 // TODO: should we exclude undefined here? and number?
-// string | number | string[]
-export type FormValue = ExcludeStrict<
-  AllHTMLAttributes<HTMLSelectElement>["value"],
-  undefined
->;
+export type FormValue = string | number | string[] | readonly string[];
 
-// string | number
-// tslint:disable-next-line: readonly-array
-export type FormValueOption = ExcludeStrict<FormValue, string[]>;
+export type FormValueOption = ExcludeStrict<
+  FormValue,
+  string[] | readonly string[]
+>;
+// tslint:enable: readonly-array
 
 export type FormValueType<A> = Exclude<A, undefined> extends ReadonlyArray<
   infer X

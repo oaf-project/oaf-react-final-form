@@ -102,7 +102,10 @@ export const SelectRenderComponent = <
           value={
             props.multiple && !Array.isArray(props.input.value)
               ? []
-              : props.input.value
+              : ((props.input.value as unknown) as Exclude<
+                  typeof props.input.value,
+                  ReadonlyArray<string>
+                >)
           }
           onBlur={props.input.onBlur}
           onChange={props.input.onChange}

@@ -68,7 +68,12 @@ export const InputRenderComponent = <
     <FormGroup {...props}>
       {({ isInvalid, className, describedby }) => (
         <input
-          value={props.input.value}
+          value={
+            (props.input.value as unknown) as Exclude<
+              typeof props.input.value,
+              ReadonlyArray<string>
+            >
+          }
           onBlur={props.input.onBlur}
           onChange={props.input.onChange}
           id={props.id}
