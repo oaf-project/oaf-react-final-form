@@ -85,8 +85,7 @@ it("validates nested object form data with sibling errors", async () => {
   });
 });
 
-// TODO
-xit("validates array form data", async () => {
+it("validates array form data", async () => {
   const codec = formCodec({
     required: { foo: t.readonlyArray(t.string) },
   });
@@ -107,6 +106,10 @@ xit("validates array form data", async () => {
   );
 
   expect(validationErrors).toEqual({
-    foo: [undefined, "This field is invalid.", undefined],
+    foo: [undefined, "This field is invalid."],
   });
+});
+
+xit("validates descendant of array", async () => {
+  // TODO
 });

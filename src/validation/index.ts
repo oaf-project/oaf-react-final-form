@@ -1,5 +1,5 @@
 import { FORM_ERROR } from "final-form";
-import { ValidationError as IoTsValidationError } from "io-ts";
+import { ContextEntry } from "io-ts";
 import { Errors, ValidationError } from "io-ts/lib";
 import { FormData } from "../components/common";
 
@@ -22,43 +22,45 @@ export { withMessage } from "io-ts-types/lib/withMessage";
  * @see https://github.com/final-form/final-form#form_error-string
  * @see https://github.com/final-form/final-form#onsubmit-values-object-form-formapi-callback-errors-object--void--object--promiseobject--void
  */
-export type ValidationErrors<FD extends FormData, ErrorType = string> = Partial<
+export type ValidationErrors<FD extends object, ErrorType = string> = Partial<
   Readonly<Record<keyof FD | typeof FORM_ERROR, ErrorType>>
 >;
 // TODO the type above only works for "flat" form data objects.
 
-// tslint:disable: no-if-statement no-object-mutation no-expression-statement
+// TODO: make this smarter
+const isArray = (c: ContextEntry) =>
+  Array.isArray(c.actual) ||
+  ((c.type as unknown) as { readonly _tag?: string })._tag ===
+    "ReadonlyArrayType";
+
+// tslint:disable: no-if-statement readonly-array no-throw
 const renderError = (
-  error: IoTsValidationError,
-  defaultMessage: (e: ValidationError) => string,
-) => {
-  // Discard the first context entry because it's of no use to us here.
-  const context = error.context.slice(1);
+  errorMessage: string,
+  c: ContextEntry,
+  cs: ContextEntry[],
+  isArrayEntry: boolean = false,
+): string | string[] | Record<string, unknown> => {
+  const [nextC, ...nextCs] = cs;
 
-  // tslint:disable-next-line: readonly-keyword
-  const result: { [k: string]: unknown } = {};
+  const nextResult = (nextIsArrayEntry: boolean) =>
+    cs.length > 0
+      ? renderError(errorMessage, nextC, nextCs, nextIsArrayEntry)
+      : errorMessage; // This is a leaf, so render the error message string.
 
-  // tslint:disable-next-line: no-let
-  let cursor: typeof result = result;
-
-  // tslint:disable-next-line: no-loop-statement
-  context.forEach((c, i) => {
-    const isLastContextEntry = i === context.length - 1;
-    if (isLastContextEntry) {
-      // This is a leaf, so render the error message string.
-      const errorMessage = error.message || defaultMessage(error);
-      cursor[c.key] = errorMessage;
-    } else {
-      // Not a leaf, so move the cursor down to next level.
-      const nextLevel: typeof result = {};
-      cursor[c.key] = nextLevel;
-      cursor = nextLevel;
+  if (isArray(c)) {
+    if (nextC === undefined) {
+      throw new Error(`Expect next context entry to exist.`);
     }
-  });
-
-  return result;
+    const index = Number.parseInt(nextC.key, 10);
+    if (Number.isNaN(index)) {
+      throw new Error(`Index [${nextC.key}] not an integer`);
+    }
+    return { [c.key]: [...new Array(index), nextResult(true)] };
+  } else {
+    return isArrayEntry ? nextResult(false) : { [c.key]: nextResult(false) };
+  }
 };
-// tslint:enable: no-if-statement no-object-mutation no-expression-statement
+// tslint:enable: no-if-statement readonly-array no-throw
 
 const isObject = (item: unknown): item is object => {
   return item && typeof item === "object" && !Array.isArray(item);
@@ -100,6 +102,16 @@ export const toValidationErrors = <FD extends FormData>(
   const initial = {} as ValidationErrors<FD>;
 
   return ioTsErrors.reduce((accumulator, error) => {
-    return mergeDeep(accumulator, renderError(error, defaultMessage));
+    const [c, ...cs] = error.context.slice(1);
+
+    const errorMessage = error.message || defaultMessage(error);
+
+    const nextError = renderError(errorMessage, c, cs);
+    // tslint:disable-next-line: no-if-statement
+    if (!isObject(nextError)) {
+      // tslint:disable-next-line: no-throw
+      throw new Error("Unexpected validation result.");
+    }
+    return mergeDeep(accumulator, nextError);
   }, initial);
 };
