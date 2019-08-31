@@ -88,7 +88,8 @@ const mergeDeep = <A extends unknown, B extends unknown>(
 
     return output;
   } else if (Array.isArray(target) && Array.isArray(source)) {
-    const targetExtended =
+    // tslint:disable-next-line: readonly-array
+    const targetExtended: unknown[] =
       target.length >= source.length
         ? target
         : [...target, ...new Array(source.length - target.length)];
