@@ -30,8 +30,8 @@ export type ValidationErrors<FD extends object, ErrorType = string> = Partial<
 // TODO: make this smarter
 const isArray = (c: ContextEntry) =>
   Array.isArray(c.actual) ||
-  ((c.type as unknown) as { readonly _tag?: string })._tag ===
-    "ReadonlyArrayType";
+  ((c as unknown) as { readonly type: { readonly _tag?: string } }).type
+    ._tag === "ReadonlyArrayType";
 
 // tslint:disable: no-if-statement readonly-array no-throw
 const renderError = (
