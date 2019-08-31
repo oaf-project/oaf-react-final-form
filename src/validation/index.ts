@@ -62,22 +62,20 @@ const renderError = (
 };
 // tslint:enable: no-if-statement readonly-array no-throw
 
-const isObject = (item: unknown): item is object => {
+const isObject = (item: unknown): item is Record<string, unknown> => {
   return item && typeof item === "object" && !Array.isArray(item);
 };
 
-// tslint:disable no-expression-statement no-if-statement no-object-mutation no-any
-const mergeDeep = <
-  A extends Record<string, any>,
-  B extends Record<string, any>
->(
+// tslint:disable no-expression-statement no-if-statement no-object-mutation
+const mergeDeep = <A extends unknown, B extends unknown>(
   target: A,
   source: B,
-): A & B => {
-  const output: Record<string, any> = Object.assign({}, target);
+): unknown => {
   if (isObject(target) && isObject(source)) {
+    const output: Record<string, unknown> = Object.assign({}, target);
+
     Object.keys(source).forEach(key => {
-      if (isObject(source[key])) {
+      if (isObject(source[key]) || Array.isArray(source[key])) {
         if (!(key in target)) {
           Object.assign(output, { [key]: source[key] });
         } else {
@@ -87,10 +85,22 @@ const mergeDeep = <
         Object.assign(output, { [key]: source[key] });
       }
     });
+
+    return output;
+  } else if (Array.isArray(target) && Array.isArray(source)) {
+    const targetExtended =
+      target.length >= source.length
+        ? target
+        : [...target, ...new Array(source.length - target.length)];
+
+    return targetExtended.map((value, index) => {
+      return mergeDeep(value, source[index]);
+    });
+  } else {
+    return target || source;
   }
-  return output as A & B;
 };
-// tslint:enable no-expression-statement no-if-statement no-object-mutation no-any
+// tslint:enable no-expression-statement no-if-statement no-object-mutation
 
 /**
  * Converts an io-ts Errors to a (strongly typed version of) final-form ValidationErrors.
@@ -99,19 +109,12 @@ export const toValidationErrors = <FD extends FormData>(
   ioTsErrors: Errors,
   defaultMessage: (e: ValidationError) => string,
 ): ValidationErrors<FD> => {
-  const initial = {} as ValidationErrors<FD>;
-
   return ioTsErrors.reduce((accumulator, error) => {
     const [c, ...cs] = error.context.slice(1);
 
     const errorMessage = error.message || defaultMessage(error);
 
     const nextError = renderError(errorMessage, c, cs);
-    // tslint:disable-next-line: no-if-statement
-    if (!isObject(nextError)) {
-      // tslint:disable-next-line: no-throw
-      throw new Error("Unexpected validation result.");
-    }
-    return mergeDeep(accumulator, nextError);
-  }, initial);
+    return mergeDeep(accumulator, nextError) as ValidationErrors<FD>;
+  }, {});
 };

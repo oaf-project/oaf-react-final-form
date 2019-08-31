@@ -110,6 +110,84 @@ it("validates array form data", async () => {
   });
 });
 
-xit("validates descendant of array", async () => {
-  // TODO
+it("validates descendant of array", async () => {
+  const codec = formCodec({
+    required: { foo: t.readonlyArray(t.type({ bar: t.string })) },
+  });
+
+  const formData = {
+    foo: [{ bar: "a" }, {}, { bar: "a" }],
+  };
+
+  const result = codec.decode(formData);
+
+  if (isRight(result)) {
+    throw new Error("Expected result to be a left");
+  }
+
+  const validationErrors = toValidationErrors(
+    result.left,
+    () => "This field is invalid.",
+  );
+
+  expect(validationErrors).toEqual({
+    foo: [undefined, { bar: "This field is invalid." }],
+  });
+});
+
+it("combines descendant errors for same array element", async () => {
+  const codec = formCodec({
+    required: {
+      foo: t.readonlyArray(t.type({ bar: t.string, baz: t.string })),
+    },
+  });
+
+  const formData = {
+    foo: [{ bar: "a", baz: "a" }, {}, { bar: "a", baz: "a" }],
+  };
+
+  const result = codec.decode(formData);
+
+  if (isRight(result)) {
+    throw new Error("Expected result to be a left");
+  }
+
+  const validationErrors = toValidationErrors(
+    result.left,
+    () => "This field is invalid.",
+  );
+
+  expect(validationErrors).toEqual({
+    foo: [
+      undefined,
+      { bar: "This field is invalid.", baz: "This field is invalid." },
+    ],
+  });
+});
+
+it("combines sibling errors in same array", async () => {
+  const codec = formCodec({
+    required: {
+      foo: t.readonlyArray(t.type({ bar: t.string })),
+    },
+  });
+
+  const formData = {
+    foo: [{}, {}],
+  };
+
+  const result = codec.decode(formData);
+
+  if (isRight(result)) {
+    throw new Error("Expected result to be a left");
+  }
+
+  const validationErrors = toValidationErrors(
+    result.left,
+    () => "This field is invalid.",
+  );
+
+  expect(validationErrors).toEqual({
+    foo: [{ bar: "This field is invalid." }, { bar: "This field is invalid." }],
+  });
 });

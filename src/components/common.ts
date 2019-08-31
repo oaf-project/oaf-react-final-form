@@ -18,13 +18,15 @@ export type FormValueOption = ExcludeStrict<
   FormValue,
   string[] | readonly string[]
 >;
-// tslint:enable: readonly-array
 
 export type FormValueType<A> = Exclude<A, undefined> extends ReadonlyArray<
   infer X
 >
   ? Extract<X, FormValueOption>
+  : Exclude<A, undefined> extends Array<infer Y>
+  ? Extract<Y, FormValueOption>
   : Extract<A, FormValueOption>;
+// tslint:enable: readonly-array
 
 /**
  * Replace any with string for improved type-safety.
