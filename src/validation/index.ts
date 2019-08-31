@@ -28,18 +28,33 @@ export type ValidationErrors<FD extends object, ErrorType = string> = Partial<
 // TODO the type above only works for "flat" form data objects.
 
 // TODO: make this smarter
-const isArray = (c: ContextEntry) =>
-  Array.isArray(c.actual) ||
-  ((c as unknown) as { readonly type: { readonly _tag?: string } }).type
-    ._tag === "ReadonlyArrayType";
+const isArray = (c: ContextEntry) => {
+  const tag = ((c as unknown) as { readonly type: { readonly _tag?: string } })
+    .type._tag;
+  return (
+    Array.isArray(c.actual) ||
+    (tag !== undefined &&
+      ["AnyArrayType", "ArrayType", "ReadonlyArrayType"].includes(tag))
+  );
+};
 
-// tslint:disable: no-if-statement readonly-array no-throw
+type FinalFormValidationError =
+  | undefined
+  | string
+  | FinalFormValidationArray
+  | FinalFormValidationRecord;
+interface FinalFormValidationRecord
+  extends Record<string, FinalFormValidationError> {}
+interface FinalFormValidationArray
+  extends ReadonlyArray<FinalFormValidationError> {}
+
+// tslint:disable: no-if-statement
 const renderError = (
   errorMessage: string,
   c: ContextEntry,
-  cs: ContextEntry[],
+  cs: ReadonlyArray<ContextEntry>,
   isArrayEntry: boolean = false,
-): string | string[] | Record<string, unknown> => {
+): FinalFormValidationError => {
   const [nextC, ...nextCs] = cs;
 
   const nextResult = (nextIsArrayEntry: boolean) =>
@@ -49,59 +64,62 @@ const renderError = (
 
   if (isArray(c)) {
     if (nextC === undefined) {
-      throw new Error(`Expect next context entry to exist.`);
+      return { [c.key]: "Expected next context entry to exist." };
     }
     const index = Number.parseInt(nextC.key, 10);
     if (Number.isNaN(index)) {
-      throw new Error(`Index [${nextC.key}] not an integer`);
+      return { [c.key]: `Index [${nextC.key}] not an integer` };
     }
     return { [c.key]: [...new Array(index), nextResult(true)] };
   } else {
     return isArrayEntry ? nextResult(false) : { [c.key]: nextResult(false) };
   }
 };
-// tslint:enable: no-if-statement readonly-array no-throw
+// tslint:enable: no-if-statement
 
-const isObject = (item: unknown): item is Record<string, unknown> => {
-  return item && typeof item === "object" && !Array.isArray(item);
+const isObject = (item: unknown): item is FinalFormValidationRecord =>
+  item && typeof item === "object" && !Array.isArray(item);
+
+const mergeDeepObjects = <
+  A extends FinalFormValidationRecord,
+  B extends FinalFormValidationRecord
+>(
+  a: A,
+  b: B,
+) =>
+  Object.keys(b).reduce(
+    (acc, key) => ({
+      ...acc,
+      [key]: mergeDeep(a[key], b[key]),
+    }),
+    a,
+  ) as A & B;
+
+const mergeDeepArrays = <
+  A extends FinalFormValidationArray,
+  B extends FinalFormValidationArray
+>(
+  a: A,
+  b: B,
+): FinalFormValidationArray => {
+  const targetExtended: FinalFormValidationArray =
+    a.length >= b.length ? a : [...a, ...new Array(b.length - a.length)];
+
+  return targetExtended.map((value, index) => mergeDeep(value, b[index]));
 };
 
-// tslint:disable no-expression-statement no-if-statement no-object-mutation
-const mergeDeep = <A extends unknown, B extends unknown>(
-  target: A,
-  source: B,
-): unknown => {
-  if (isObject(target) && isObject(source)) {
-    const output: Record<string, unknown> = Object.assign({}, target);
-
-    Object.keys(source).forEach(key => {
-      if (isObject(source[key]) || Array.isArray(source[key])) {
-        if (!(key in target)) {
-          Object.assign(output, { [key]: source[key] });
-        } else {
-          output[key] = mergeDeep(target[key], source[key]);
-        }
-      } else {
-        Object.assign(output, { [key]: source[key] });
-      }
-    });
-
-    return output;
-  } else if (Array.isArray(target) && Array.isArray(source)) {
-    // tslint:disable-next-line: readonly-array
-    const targetExtended: unknown[] =
-      target.length >= source.length
-        ? target
-        : [...target, ...new Array(source.length - target.length)];
-
-    return targetExtended.map((value, index) => {
-      return mergeDeep(value, source[index]);
-    });
-  } else {
-    return target || source;
-  }
-};
-// tslint:enable no-expression-statement no-if-statement no-object-mutation
+const mergeDeep = <
+  A extends FinalFormValidationError,
+  B extends FinalFormValidationError
+>(
+  a: A,
+  b: B,
+): FinalFormValidationError =>
+  isObject(a) && isObject(b)
+    ? mergeDeepObjects(a, b)
+    : Array.isArray(a) && Array.isArray(b)
+    ? mergeDeepArrays(a, b)
+    : a || b;
 
 /**
  * Converts an io-ts Errors to a (strongly typed version of) final-form ValidationErrors.
@@ -109,8 +127,8 @@ const mergeDeep = <A extends unknown, B extends unknown>(
 export const toValidationErrors = <FD extends FormData>(
   ioTsErrors: Errors,
   defaultMessage: (e: ValidationError) => string,
-): ValidationErrors<FD> => {
-  return ioTsErrors.reduce((accumulator, error) => {
+): ValidationErrors<FD> =>
+  ioTsErrors.reduce((accumulator, error) => {
     const [c, ...cs] = error.context.slice(1);
 
     const errorMessage = error.message || defaultMessage(error);
@@ -118,4 +136,3 @@ export const toValidationErrors = <FD extends FormData>(
     const nextError = renderError(errorMessage, c, cs);
     return mergeDeep(accumulator, nextError) as ValidationErrors<FD>;
   }, {});
-};
