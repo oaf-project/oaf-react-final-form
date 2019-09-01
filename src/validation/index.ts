@@ -6,6 +6,17 @@ import { FormData } from "../components/common";
 // We re-export `withMessage` just for the convenience of users.
 export { withMessage } from "io-ts-types/lib/withMessage";
 
+type FinalFormValidationError =
+  | undefined
+  | string
+  | FinalFormValidationArray
+  | FinalFormValidationRecord;
+interface FinalFormValidationRecord
+  extends Record<string, FinalFormValidationError> {}
+interface FinalFormValidationArray
+  extends ReadonlyArray<FinalFormValidationError> {}
+
+// TODO: this type loses type safety below the first level
 /**
  * A strongly typed version of the ValidationErrors type from final-form.
  *
@@ -22,10 +33,9 @@ export { withMessage } from "io-ts-types/lib/withMessage";
  * @see https://github.com/final-form/final-form#form_error-string
  * @see https://github.com/final-form/final-form#onsubmit-values-object-form-formapi-callback-errors-object--void--object--promiseobject--void
  */
-export type ValidationErrors<FD extends object, ErrorType = string> = Partial<
-  Readonly<Record<keyof FD | typeof FORM_ERROR, ErrorType>>
+export type ValidationErrors<FD extends FormData> = Partial<
+  Readonly<Record<keyof FD | typeof FORM_ERROR, FinalFormValidationError>>
 >;
-// TODO the type above only works for "flat" form data objects.
 
 // TODO: make this smarter
 const isArray = (c: ContextEntry) => {
@@ -37,16 +47,6 @@ const isArray = (c: ContextEntry) => {
       ["AnyArrayType", "ArrayType", "ReadonlyArrayType"].includes(tag))
   );
 };
-
-type FinalFormValidationError =
-  | undefined
-  | string
-  | FinalFormValidationArray
-  | FinalFormValidationRecord;
-interface FinalFormValidationRecord
-  extends Record<string, FinalFormValidationError> {}
-interface FinalFormValidationArray
-  extends ReadonlyArray<FinalFormValidationError> {}
 
 // tslint:disable: no-if-statement
 const renderError = (
@@ -102,10 +102,10 @@ const mergeDeepArrays = <
   a: A,
   b: B,
 ): FinalFormValidationArray => {
-  const targetExtended: FinalFormValidationArray =
+  const aExtended: FinalFormValidationArray =
     a.length >= b.length ? a : [...a, ...new Array(b.length - a.length)];
 
-  return targetExtended.map((value, index) => mergeDeep(value, b[index]));
+  return aExtended.map((value, index) => mergeDeep(value, b[index]));
 };
 
 const mergeDeep = <

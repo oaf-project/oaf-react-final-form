@@ -9,7 +9,7 @@ import { toValidationErrors, ValidationErrors } from "../validation";
 import { FormData } from "./common";
 import { focusInvalidFormDecorator } from "./decorators";
 
-export type SubmissionResponse<O extends object = object> =
+export type SubmissionResponse<O extends FormData> =
   | ValidationErrors<O>
   | undefined
   | Promise<ValidationErrors<O> | undefined>;

@@ -1,3 +1,4 @@
+import { FORM_ERROR } from "final-form";
 import arrayMutators from "final-form-arrays";
 import * as t from "io-ts";
 import { axe, toHaveNoViolations } from "jest-axe";
@@ -55,7 +56,10 @@ it("renders without crashing", async () => {
   type FormData = t.TypeOf<typeof codec>;
 
   const onSubmit = (_: FormData): SubmissionResponse<FormData> => {
-    return undefined;
+    return {
+      [FORM_ERROR]: "global form error",
+      customers: [{ firstName: "asdf" }],
+    };
   };
 
   const initialValues: Partial<FormData> = {
