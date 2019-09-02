@@ -14,8 +14,8 @@ export type FormData<I extends string = string, J extends string = string> = {
     | ReadonlyArray<FormData<J>>;
 };
 
-// TODO: should we exclude undefined here? and number?
-export type FormValue = string | number;
+// TODO: should we include undefined here?
+export type FormValue = string;
 
 export type FormValueType<A> = Exclude<A, undefined> extends ReadonlyArray<
   infer X
