@@ -1,7 +1,6 @@
-import { FORM_ERROR } from "final-form";
 import { ContextEntry } from "io-ts";
 import { Errors, ValidationError } from "io-ts/lib";
-import { FormData } from "../components/common";
+import { FormData, ValidationErrors } from "../components/common";
 
 // We re-export `withMessage` just for the convenience of users.
 export { withMessage } from "io-ts-types/lib/withMessage";
@@ -12,30 +11,9 @@ type FinalFormValidationError =
   | FinalFormValidationArray
   | FinalFormValidationRecord;
 interface FinalFormValidationRecord
-  extends Record<string, FinalFormValidationError> {}
+  extends Readonly<Record<string, FinalFormValidationError>> {}
 interface FinalFormValidationArray
   extends ReadonlyArray<FinalFormValidationError> {}
-
-// TODO: this type loses type safety below the first level
-/**
- * A strongly typed version of the ValidationErrors type from final-form.
- *
- * Also doubles as submission errors.
- *
- * "Submission errors must be in the same shape as the values of the form.
- * You may return a generic error for the whole form (e.g. 'Login Failed')
- * using the special FORM_ERROR string key."
- *
- * "Validation errors must be in the same shape as the values of the form.
- * You may return a generic error for the whole form using the special
- * FORM_ERROR string key."
- *
- * @see https://github.com/final-form/final-form#form_error-string
- * @see https://github.com/final-form/final-form#onsubmit-values-object-form-formapi-callback-errors-object--void--object--promiseobject--void
- */
-export type ValidationErrors<FD extends FormData> = Partial<
-  Readonly<Record<keyof FD | typeof FORM_ERROR, FinalFormValidationError>>
->;
 
 // TODO: make this smarter
 const isArray = (c: ContextEntry) => {
@@ -134,5 +112,6 @@ export const toValidationErrors = <FD extends FormData>(
     const errorMessage = error.message || defaultMessage(error);
 
     const nextError = renderError(errorMessage, c, cs);
+    // TODO remove this gnarly cast
     return mergeDeep(accumulator, nextError) as ValidationErrors<FD>;
   }, {});

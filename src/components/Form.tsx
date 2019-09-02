@@ -5,8 +5,8 @@ import { Selector } from "oaf-side-effects";
 import React, { FormHTMLAttributes, PropsWithChildren } from "react";
 import { Form as ReactFinalForm, FormRenderProps } from "react-final-form";
 import { OmitStrict } from "type-zoo";
-import { toValidationErrors, ValidationErrors } from "../validation";
-import { FormData } from "./common";
+import { toValidationErrors } from "../validation";
+import { FormData, ValidationErrors } from "./common";
 import { focusInvalidFormDecorator } from "./decorators";
 
 export type SubmissionResponse<O extends FormData> =

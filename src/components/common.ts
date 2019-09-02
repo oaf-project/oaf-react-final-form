@@ -1,3 +1,4 @@
+import { FORM_ERROR } from "final-form";
 import { FieldMetaState } from "react-final-form";
 import { ExcludeStrict, Overwrite } from "type-zoo";
 
@@ -26,7 +27,46 @@ export type FormValueType<A> = Exclude<A, undefined> extends ReadonlyArray<
   : Exclude<A, undefined> extends Array<infer Y>
   ? Extract<Y, FormValueOption>
   : Extract<A, FormValueOption>;
+
+// TODO: push MapToErrorType and ValidationErrors upstream to final-form
+// TODO: include ARRAY_ERROR in the below
+
+type MapToErrorType<A> = {
+  readonly object: {
+    readonly [key in keyof A]?: undefined | MapToErrorType<A[key]>;
+  };
+  readonly array: ReadonlyArray<
+    undefined | MapToErrorType<A extends Array<infer X> ? X : never>
+  >;
+  readonly string: string;
+}[A extends object
+  ? "object"
+  : A extends unknown[]
+  ? "array"
+  : A extends ReadonlyArray<unknown>
+  ? "array"
+  : "string"];
 // tslint:enable: readonly-array
+
+/**
+ * A strongly typed version of the ValidationErrors type from final-form.
+ *
+ * Also doubles as submission errors.
+ *
+ * "Submission errors must be in the same shape as the values of the form.
+ * You may return a generic error for the whole form (e.g. 'Login Failed')
+ * using the special FORM_ERROR string key."
+ *
+ * "Validation errors must be in the same shape as the values of the form.
+ * You may return a generic error for the whole form using the special
+ * FORM_ERROR string key."
+ *
+ * @see https://github.com/final-form/final-form#form_error-string
+ * @see https://github.com/final-form/final-form#onsubmit-values-object-form-formapi-callback-errors-object--void--object--promiseobject--void
+ */
+export type ValidationErrors<FD extends FormData> = {
+  readonly [FORM_ERROR]?: string;
+} & MapToErrorType<FD>;
 
 /**
  * Replace any with string for improved type-safety.
