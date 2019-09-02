@@ -11,7 +11,7 @@ import {
   Input as RawInput,
   SubmissionResponse,
 } from ".";
-import { withMessage } from "../validation";
+import { NumberFromString, withMessage } from "../validation";
 
 // tslint:disable: no-expression-statement no-duplicate-string
 
@@ -33,7 +33,7 @@ it("renders without crashing", async () => {
   const codec = formCodec({
     required: { bar: withMessage(t.string, () => "Bar is required.") },
     optional: {
-      foo: t.string,
+      foo: NumberFromString,
       baz: t.union([t.literal("first-option"), t.literal("second-option")]),
       qux: t.array(
         t.union([t.literal("first-option"), t.literal("second-option")]),
@@ -53,17 +53,17 @@ it("renders without crashing", async () => {
   // gives us some type-safety benefits when rendering these form elements (below).
   const { Form, Input, Select } = elementsForCodec(codec);
 
-  type FormData = t.TypeOf<typeof codec>;
+  type ParsedFormData = t.TypeOf<typeof codec>;
 
-  const onSubmit = (_: FormData): SubmissionResponse<FormData> => {
+  const onSubmit = (_: ParsedFormData): SubmissionResponse<ParsedFormData> => {
     return {
       [FORM_ERROR]: "global form error",
       customers: [{ firstName: "asdf" }],
     };
   };
 
-  const initialValues: Partial<FormData> = {
-    foo: "foo",
+  const initialValues: Partial<ParsedFormData> = {
+    foo: 42,
     baz: "first-option",
     qux: ["second-option"],
     customers: [{ firstName: "Jane", lastName: "Doe" }],
@@ -96,7 +96,7 @@ it("renders without crashing", async () => {
         ...arrayMutators,
       }}
     >
-      <Input label="foo" name="foo" type="text" />
+      <Input label="foo" name="foo" type="number" />
       <Input label="bar" name="bar" type="text" required={true} />
       <Select label="baz" name="baz" options={selectOptions} />
       <Select label="qux" name="qux" multiple={true} options={selectOptions} />
@@ -125,7 +125,7 @@ it("renders without crashing", async () => {
   );
 
   expect(div.innerHTML).toBe(
-    '<form action="." novalidate=""><div class="form-group"><label for="foo">foo</label><input id="foo" name="foo" class="form-control" type="text" aria-invalid="false" value="foo"></div><div class="form-group"><label for="bar">bar</label><input id="bar" name="bar" class="form-control" type="text" aria-invalid="false" required="" aria-required="true" value=""></div><div class="form-group"><label for="baz">baz</label><select id="baz" name="baz" class="form-control" aria-invalid="false"><option value=""></option><option value="first-option">first option</option><optgroup label="an opt group"><option value="second-option">second option</option></optgroup></select></div><div class="form-group"><label for="qux">qux</label><select multiple="" id="qux" name="qux" class="form-control" aria-invalid="false"><option value=""></option><option value="first-option">first option</option><optgroup label="an opt group"><option value="second-option">second option</option></optgroup></select></div><div class="form-group"><label for="customers-0-firstName">First Name</label><input id="customers-0-firstName" name="customers[0].firstName" class="form-control" type="text" aria-invalid="false" value="Jane"></div><div class="form-group"><label for="customers-0-lastName">Last Name</label><input id="customers-0-lastName" name="customers[0].lastName" class="form-control" type="text" aria-invalid="false" value="Doe"></div></form>',
+    '<form action="." novalidate=""><div class="form-group"><label for="foo">foo</label><input id="foo" name="foo" class="form-control" type="number" aria-invalid="false" value="42"></div><div class="form-group"><label for="bar">bar</label><input id="bar" name="bar" class="form-control" type="text" aria-invalid="false" required="" aria-required="true" value=""></div><div class="form-group"><label for="baz">baz</label><select id="baz" name="baz" class="form-control" aria-invalid="false"><option value=""></option><option value="first-option">first option</option><optgroup label="an opt group"><option value="second-option">second option</option></optgroup></select></div><div class="form-group"><label for="qux">qux</label><select multiple="" id="qux" name="qux" class="form-control" aria-invalid="false"><option value=""></option><option value="first-option">first option</option><optgroup label="an opt group"><option value="second-option">second option</option></optgroup></select></div><div class="form-group"><label for="customers-0-firstName">First Name</label><input id="customers-0-firstName" name="customers[0].firstName" class="form-control" type="text" aria-invalid="false" value="Jane"></div><div class="form-group"><label for="customers-0-lastName">Last Name</label><input id="customers-0-lastName" name="customers[0].lastName" class="form-control" type="text" aria-invalid="false" value="Doe"></div></form>',
   );
   expect(await axe(div)).toHaveNoViolations();
 

@@ -6,10 +6,10 @@ import React, { FormHTMLAttributes, PropsWithChildren } from "react";
 import { Form as ReactFinalForm, FormRenderProps } from "react-final-form";
 import { OmitStrict } from "type-zoo";
 import { toValidationErrors } from "../validation";
-import { FormData, ValidationErrors } from "./common";
+import { FormData, ParsedFormData, ValidationErrors } from "./common";
 import { focusInvalidFormDecorator } from "./decorators";
 
-export type SubmissionResponse<FD extends FormData> =
+export type SubmissionResponse<FD extends ParsedFormData> =
   | ValidationErrors<FD>
   | undefined
   | Promise<ValidationErrors<FD> | undefined>;
@@ -36,7 +36,7 @@ type FocusInvalidElementProps = {
 };
 
 export type FormProps<
-  A extends FormData,
+  A extends ParsedFormData,
   O extends FormData
 > = FocusInvalidElementProps &
   PropsWithChildren<{}> &
@@ -53,7 +53,7 @@ export type FormProps<
     readonly defaultErrorMessage?: (e: ValidationError) => string;
   };
 
-export const Form = <A extends FormData, O extends FormData>(
+export const Form = <A extends ParsedFormData, O extends FormData>(
   props: FormProps<A, O>,
 ) => {
   const formRef = React.useRef<HTMLFormElement | null>(null);
@@ -170,7 +170,8 @@ export const Form = <A extends FormData, O extends FormData>(
   );
 };
 
-export const formForCodec = <A extends FormData, O extends FormData>(
+// TODO relate A to O so they are constrained to be structurally the same.
+export const formForCodec = <A extends ParsedFormData, O extends FormData>(
   codec: Type<A, O>,
 ) => {
   return (props: OmitStrict<FormProps<A, O>, "codec">) => {

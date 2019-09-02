@@ -2,8 +2,9 @@ import { ContextEntry } from "io-ts";
 import { Errors, ValidationError } from "io-ts/lib";
 import { FormData, ValidationErrors } from "../components/common";
 
-// We re-export `withMessage` just for the convenience of users.
+// We re-export some types from io-ts-types just for the convenience of users.
 export { withMessage } from "io-ts-types/lib/withMessage";
+export { NumberFromString } from "io-ts-types/lib/NumberFromString";
 
 type FinalFormValidationError =
   | undefined

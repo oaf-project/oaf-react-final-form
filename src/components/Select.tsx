@@ -1,17 +1,20 @@
 import React from "react";
 import { Field, FieldRenderProps } from "react-final-form";
-import { FormData, FormValueType, Multiple, Required } from "./common";
+import { FormValueType, Multiple, ParsedFormData, Required } from "./common";
 import {
   ExtraSelectProps,
   SelectRenderComponent,
 } from "./SelectRenderComponent";
 
 export type SelectProps<
-  FD extends FormData,
+  FD extends ParsedFormData,
   Name extends keyof FD & string
 > = ExtraSelectProps<FD, Name> & { readonly name: Name };
 
-export const Select = <FD extends FormData, Name extends keyof FD & string>(
+export const Select = <
+  FD extends ParsedFormData,
+  Name extends keyof FD & string
+>(
   props: SelectProps<FD, Name>,
 ) => {
   const { name, id, label, options, multiple, required, placeholder } = props;
@@ -39,7 +42,7 @@ export const Select = <FD extends FormData, Name extends keyof FD & string>(
   );
 };
 
-export const selectForCodec = <FD extends FormData>() => {
+export const selectForCodec = <FD extends ParsedFormData>() => {
   return <Name extends keyof FD & string>(
     props: Exclude<SelectProps<FD, Name>, "required" | "multiple"> &
       Required<FD[Name]> &

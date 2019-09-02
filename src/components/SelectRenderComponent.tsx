@@ -1,7 +1,13 @@
 import React, { Key, SelectHTMLAttributes } from "react";
 import { FieldRenderProps } from "react-final-form";
 import { Overwrite } from "type-zoo";
-import { FieldMetaState, FormData, FormValue, FormValueType } from "./common";
+import {
+  FieldMetaState,
+  FormData,
+  FormValue,
+  FormValueType,
+  ParsedFormData,
+} from "./common";
 import { FormGroup } from "./FormGroup";
 
 // TODO https://github.com/Microsoft/tslint-microsoft-contrib/issues/409
@@ -38,7 +44,10 @@ export type SelectOptions<A extends unknown> = ReadonlyArray<
   SelectOptionOrGroup<FormValueType<A>>
 >;
 
-export type ExtraSelectProps<FD extends FormData, Name extends keyof FD> = {
+export type ExtraSelectProps<
+  FD extends ParsedFormData,
+  Name extends keyof FD
+> = {
   // A non-optional label that we render in a <label> element to ensure accessibility.
   readonly label: string | JSX.Element;
   readonly options: SelectOptions<FD[Name]>;

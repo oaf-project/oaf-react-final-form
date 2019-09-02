@@ -1,16 +1,19 @@
 import React from "react";
 import { Field, FieldRenderProps } from "react-final-form";
-import { FormData, FormValueType, Required } from "./common";
+import { FormValueType, ParsedFormData, Required } from "./common";
 import { ExtraInputProps, InputRenderComponent } from "./InputRenderComponent";
 
 export type InputProps<
-  FD extends FormData,
+  FD extends ParsedFormData,
   Name extends keyof FD & string
 > = ExtraInputProps & {
   readonly name: Name;
 };
 
-export const Input = <FD extends FormData, Name extends keyof FD & string>(
+export const Input = <
+  FD extends ParsedFormData,
+  Name extends keyof FD & string
+>(
   props: InputProps<FD, Name>,
 ) => {
   const { name, id, label, type, ...rest } = props;
@@ -25,7 +28,7 @@ export const Input = <FD extends FormData, Name extends keyof FD & string>(
   );
 };
 
-export const inputForCodec = <FD extends FormData>() => {
+export const inputForCodec = <FD extends ParsedFormData>() => {
   return <Name extends keyof FD & string>(
     props: Exclude<InputProps<FD, Name>, "required"> & Required<FD[Name]>,
   ) => {

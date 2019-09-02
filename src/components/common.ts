@@ -2,6 +2,8 @@ import { FORM_ERROR } from "final-form";
 import { FieldMetaState } from "react-final-form";
 import { Overwrite } from "type-zoo";
 
+export type FormValue = string;
+
 // tslint:disable: readonly-array
 export type FormData<I extends string = string, J extends string = string> = {
   readonly [index in I]:  // tslint:disable-next-line: max-union-size
@@ -14,8 +16,21 @@ export type FormData<I extends string = string, J extends string = string> = {
     | ReadonlyArray<FormData<J>>;
 };
 
-// TODO: should we include undefined here?
-export type FormValue = string;
+export type ParsedFormValue = string | number | boolean | symbol;
+
+export type ParsedFormData<
+  I extends string = string,
+  J extends string = string
+> = {
+  readonly [index in I]:  // tslint:disable-next-line: max-union-size
+    | undefined
+    | ParsedFormValue
+    | ParsedFormValue[]
+    | ReadonlyArray<ParsedFormValue>
+    | FormData<J>
+    | Array<FormData<J>>
+    | ReadonlyArray<FormData<J>>;
+};
 
 export type FormValueType<A> = Exclude<A, undefined> extends ReadonlyArray<
   infer X
@@ -61,7 +76,7 @@ type MapToErrorType<A> = {
  * @see https://github.com/final-form/final-form#form_error-string
  * @see https://github.com/final-form/final-form#onsubmit-values-object-form-formapi-callback-errors-object--void--object--promiseobject--void
  */
-export type ValidationErrors<FD extends FormData> = {
+export type ValidationErrors<FD extends ParsedFormData> = {
   readonly [FORM_ERROR]?: string;
 } & MapToErrorType<FD>;
 
