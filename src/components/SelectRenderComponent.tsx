@@ -1,13 +1,13 @@
 import React, { Key, SelectHTMLAttributes } from "react";
 import { FieldRenderProps } from "react-final-form";
 import { Overwrite } from "type-zoo";
-import { FormData, FormValueOption, FormValueType, SafeMeta } from "./common";
+import { FieldMetaState, FormData, FormValue, FormValueType } from "./common";
 import { FormGroup } from "./FormGroup";
 
 // TODO https://github.com/Microsoft/tslint-microsoft-contrib/issues/409
 // tslint:disable: react-a11y-role-has-required-aria-props
 
-export type SelectOption<A extends FormValueOption> = {
+export type SelectOption<A extends FormValue> = {
   // Union with empty string to allow default empty value as first select option.
   readonly value: A | "";
   readonly label: string;
@@ -16,7 +16,7 @@ export type SelectOption<A extends FormValueOption> = {
   readonly key?: Key;
 };
 
-export type SelectOptionGroup<A extends FormValueOption> = {
+export type SelectOptionGroup<A extends FormValue> = {
   readonly label?: string;
   readonly disabled?: boolean;
   readonly options: ReadonlyArray<SelectOption<A>>;
@@ -24,11 +24,11 @@ export type SelectOptionGroup<A extends FormValueOption> = {
   readonly key?: Key;
 };
 
-type SelectOptionOrGroup<A extends FormValueOption> =
+type SelectOptionOrGroup<A extends FormValue> =
   | SelectOptionGroup<A>
   | SelectOption<A>;
 
-const isSelectOption = <A extends FormValueOption>(
+const isSelectOption = <A extends FormValue>(
   o: SelectOptionOrGroup<A>,
 ): o is SelectOption<A> =>
   (o as SelectOption<A>).label !== undefined &&
@@ -38,10 +38,10 @@ export type SelectOptions<A extends unknown> = ReadonlyArray<
   SelectOptionOrGroup<FormValueType<A>>
 >;
 
-export type ExtraSelectProps<A extends FormData, Name extends keyof A> = {
-  // A non-noptional label that we render in a <label> element to ensure accessibility.
+export type ExtraSelectProps<FD extends FormData, Name extends keyof FD> = {
+  // A non-optional label that we render in a <label> element to ensure accessibility.
   readonly label: string | JSX.Element;
-  readonly options: SelectOptions<A[Name]>;
+  readonly options: SelectOptions<FD[Name]>;
 } & HTMLSelectProps;
 
 /**
@@ -56,21 +56,21 @@ export type HTMLSelectProps = Readonly<
 >;
 
 export type SelectRenderProps<
-  A extends FormData,
-  Name extends keyof A & string
+  FD extends FormData,
+  Name extends keyof FD & string
 > = Overwrite<
-  FieldRenderProps<FormValueType<A[Name]>, HTMLSelectElement>,
-  SafeMeta<FormValueType<A[Name]>>
+  FieldRenderProps<FormValueType<FD[Name]>, HTMLSelectElement>,
+  FieldMetaState<FormValueType<FD[Name]>>
 > &
-  ExtraSelectProps<A, Name>;
+  ExtraSelectProps<FD, Name>;
 
 export const RenderOptions = <
-  A extends FormData,
-  Name extends keyof A & string
+  FD extends FormData,
+  Name extends keyof FD & string
 >({
   options,
 }: {
-  readonly options: SelectOptions<A[Name]>;
+  readonly options: SelectOptions<FD[Name]>;
 }) => {
   return (
     <>
@@ -90,10 +90,10 @@ export const RenderOptions = <
 };
 
 export const SelectRenderComponent = <
-  A extends FormData,
-  Name extends keyof A & string
+  FD extends FormData,
+  Name extends keyof FD & string
 >(
-  props: SelectRenderProps<A, Name>,
+  props: SelectRenderProps<FD, Name>,
 ) => {
   return (
     <FormGroup {...props}>
@@ -102,10 +102,7 @@ export const SelectRenderComponent = <
           value={
             props.multiple && !Array.isArray(props.input.value)
               ? []
-              : ((props.input.value as unknown) as Exclude<
-                  typeof props.input.value,
-                  ReadonlyArray<string>
-                >)
+              : props.input.value
           }
           onBlur={props.input.onBlur}
           onChange={props.input.onChange}

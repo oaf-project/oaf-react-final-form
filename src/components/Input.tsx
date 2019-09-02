@@ -4,20 +4,20 @@ import { FormData, FormValueType, Required } from "./common";
 import { ExtraInputProps, InputRenderComponent } from "./InputRenderComponent";
 
 export type InputProps<
-  A extends FormData,
-  Name extends keyof A & string
+  FD extends FormData,
+  Name extends keyof FD & string
 > = ExtraInputProps & {
   readonly name: Name;
 };
 
-export const Input = <A extends FormData, Name extends keyof A & string>(
-  props: InputProps<A, Name>,
+export const Input = <FD extends FormData, Name extends keyof FD & string>(
+  props: InputProps<FD, Name>,
 ) => {
   const { name, id, label, type, ...rest } = props;
 
   // TODO render min, max, etc.
   const render = (
-    renderProps: FieldRenderProps<FormValueType<A[Name]>, HTMLElement>,
+    renderProps: FieldRenderProps<FormValueType<FD[Name]>, HTMLElement>,
   ) => InputRenderComponent({ label, ...renderProps });
 
   return (

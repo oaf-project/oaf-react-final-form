@@ -7,17 +7,17 @@ import {
 } from "./SelectRenderComponent";
 
 export type SelectProps<
-  A extends FormData,
-  Name extends keyof A & string
-> = ExtraSelectProps<A, Name> & { readonly name: Name };
+  FD extends FormData,
+  Name extends keyof FD & string
+> = ExtraSelectProps<FD, Name> & { readonly name: Name };
 
-export const Select = <A extends FormData, Name extends keyof A & string>(
-  props: SelectProps<A, Name>,
+export const Select = <FD extends FormData, Name extends keyof FD & string>(
+  props: SelectProps<FD, Name>,
 ) => {
   const { name, id, label, options, multiple, required, placeholder } = props;
 
   const render = (
-    renderProps: FieldRenderProps<FormValueType<A[Name]>, HTMLElement>,
+    renderProps: FieldRenderProps<FormValueType<FD[Name]>, HTMLElement>,
   ) =>
     SelectRenderComponent({
       label,

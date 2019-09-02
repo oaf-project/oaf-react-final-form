@@ -1,15 +1,15 @@
 import React from "react";
 import { FieldRenderProps } from "react-final-form";
 import { Overwrite } from "type-zoo";
-import { FormData, FormValueType, SafeMeta } from "./common";
+import { FieldMetaState, FormData, FormValueType } from "./common";
 
 type FormGroupProps<
-  A extends FormData,
-  Name extends keyof A & string,
+  FD extends FormData,
+  Name extends keyof FD,
   Elem extends HTMLElement
 > = Overwrite<
-  FieldRenderProps<FormValueType<A[Name]>, Elem>,
-  SafeMeta<FormValueType<A[Name]>>
+  FieldRenderProps<FormValueType<FD[Name]>, Elem>,
+  FieldMetaState<FormValueType<FD[Name]>>
 > & {
   readonly id?: string; // TODO make this required
   readonly label: string | JSX.Element;
@@ -22,21 +22,21 @@ type ChildrenProps = {
 };
 
 type FormGroupChildrenProps<
-  A extends FormData,
-  Name extends keyof A & string,
+  FD extends FormData,
+  Name extends keyof FD,
   Elem extends HTMLElement
-> = FormGroupProps<A, Name, Elem> & {
+> = FormGroupProps<FD, Name, Elem> & {
   readonly children: (
-    props: FormGroupProps<A, Name, Elem> & ChildrenProps,
+    props: FormGroupProps<FD, Name, Elem> & ChildrenProps,
   ) => React.ReactNode;
 };
 
 export const FormGroup = <
-  A extends FormData,
-  Name extends keyof A & string,
+  FD extends FormData,
+  Name extends keyof FD,
   Elem extends HTMLElement
 >(
-  props: FormGroupChildrenProps<A, Name, Elem>,
+  props: FormGroupChildrenProps<FD, Name, Elem>,
 ) => {
   const feedbackId = `${props.id}-feedback`;
   // 'To stop form controls from announcing as invalid by default, one can add aria-invalid="false" to any necessary element.'

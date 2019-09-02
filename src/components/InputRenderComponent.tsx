@@ -1,7 +1,7 @@
 import React, { InputHTMLAttributes } from "react";
 import { FieldRenderProps } from "react-final-form";
 import { Overwrite } from "type-zoo";
-import { FormData, FormValueType, SafeMeta } from "./common";
+import { FieldMetaState, FormData, FormValueType } from "./common";
 import { FormGroup } from "./FormGroup";
 
 // https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#Form_%3Cinput%3E_types
@@ -50,30 +50,25 @@ export type HTMLInputProps = Readonly<
 >;
 
 export type InputRenderProps<
-  A extends FormData,
-  Name extends keyof A & string
+  FD extends FormData,
+  Name extends keyof FD & string
 > = Overwrite<
-  FieldRenderProps<FormValueType<A[Name]>, HTMLInputElement>,
-  SafeMeta<FormValueType<A[Name]>>
+  FieldRenderProps<FormValueType<FD[Name]>, HTMLInputElement>,
+  FieldMetaState<FormValueType<FD[Name]>>
 > &
   ExtraInputProps;
 
 export const InputRenderComponent = <
-  A extends FormData,
-  Name extends keyof A & string
+  FD extends FormData,
+  Name extends keyof FD & string
 >(
-  props: InputRenderProps<A, Name>,
+  props: InputRenderProps<FD, Name>,
 ) => {
   return (
     <FormGroup {...props}>
       {({ isInvalid, className, describedby }) => (
         <input
-          value={
-            (props.input.value as unknown) as Exclude<
-              typeof props.input.value,
-              ReadonlyArray<string>
-            >
-          }
+          value={props.input.value}
           onBlur={props.input.onBlur}
           onChange={props.input.onChange}
           id={props.id}

@@ -1,32 +1,29 @@
 import { FORM_ERROR } from "final-form";
 import { FieldMetaState } from "react-final-form";
-import { ExcludeStrict, Overwrite } from "type-zoo";
+import { Overwrite } from "type-zoo";
 
 // tslint:disable: readonly-array
 export type FormData<I extends string = string, J extends string = string> = {
   readonly [index in I]:  // tslint:disable-next-line: max-union-size
-    | FormValue
     | undefined
+    | FormValue
+    | FormValue[]
+    | ReadonlyArray<FormValue>
     | FormData<J>
     | Array<FormData<J>>
     | ReadonlyArray<FormData<J>>;
 };
 
 // TODO: should we exclude undefined here? and number?
-export type FormValue = string | number | string[] | readonly string[];
-
-export type FormValueOption = ExcludeStrict<
-  FormValue,
-  string[] | readonly string[]
->;
+export type FormValue = string | number;
 
 export type FormValueType<A> = Exclude<A, undefined> extends ReadonlyArray<
   infer X
 >
-  ? Extract<X, FormValueOption>
+  ? Extract<X, FormValue>
   : Exclude<A, undefined> extends Array<infer Y>
-  ? Extract<Y, FormValueOption>
-  : Extract<A, FormValueOption>;
+  ? Extract<Y, FormValue>
+  : Extract<A, FormValue>;
 
 // TODO: push MapToErrorType and ValidationErrors upstream to final-form
 // TODO: include ARRAY_ERROR in the below
@@ -73,7 +70,7 @@ export type ValidationErrors<FD extends FormData> = {
  * io-ts error messages are strings, so we can get away
  * with this here.
  */
-export type SafeMeta<FV> = {
+export type FieldMetaState<FV> = {
   readonly meta: Overwrite<
     FieldMetaState<FV>,
     {

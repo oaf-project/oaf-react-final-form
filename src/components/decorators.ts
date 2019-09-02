@@ -1,13 +1,9 @@
 import { Decorator, FormState } from "final-form";
 import { focusInvalidForm, Selector } from "oaf-side-effects";
 
-// tslint:disable-next-line: no-commented-code
-// tslint:disable: no-object-mutation
-// tslint:disable: no-expression-statement
-// tslint:disable: no-empty
-// tslint:disable: no-if-statement
+// tslint:disable: no-expression-statement no-empty no-if-statement
 
-const isInvalid = (state: FormState<object>): boolean =>
+const isInvalid = (state: FormState<unknown>): boolean =>
   state.hasValidationErrors || state.hasSubmitErrors;
 
 /**
@@ -39,6 +35,7 @@ export const focusInvalidFormDecorator = (
   return form => {
     const originalSubmit = form.submit;
 
+    // tslint:disable-next-line: no-object-mutation
     form.submit = () => {
       const formElement = getFormElement();
 
@@ -81,6 +78,7 @@ export const focusInvalidFormDecorator = (
       return result;
     };
 
+    // tslint:disable-next-line: no-object-mutation
     return () => (form.submit = originalSubmit);
   };
 };

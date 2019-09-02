@@ -9,20 +9,20 @@ import { toValidationErrors } from "../validation";
 import { FormData, ValidationErrors } from "./common";
 import { focusInvalidFormDecorator } from "./decorators";
 
-export type SubmissionResponse<O extends FormData> =
-  | ValidationErrors<O>
+export type SubmissionResponse<FD extends FormData> =
+  | ValidationErrors<FD>
   | undefined
-  | Promise<ValidationErrors<O> | undefined>;
+  | Promise<ValidationErrors<FD> | undefined>;
 
-type PropsFromFinalFormConfig<I extends object = object> = Pick<
-  Config<unknown>,
+type PropsFromFinalFormConfig<FD extends FormData> = Pick<
+  Config<FD>,
   // tslint:disable-next-line: max-union-size
   | "keepDirtyOnReinitialize"
   | "destroyOnUnregister"
   | "validateOnBlur"
   | "mutators"
-> &
-  Pick<Config<I>, "debug">;
+  | "debug"
+>;
 
 type FormHtmlProps = Pick<
   FormHTMLAttributes<HTMLFormElement>,
