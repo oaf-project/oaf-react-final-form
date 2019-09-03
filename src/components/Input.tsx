@@ -1,6 +1,6 @@
 import React from "react";
 import { Field, FieldRenderProps } from "react-final-form";
-import { FormValueType, ParsedFormData, Required } from "./common";
+import { ExtractFormValue, ParsedFormData, Required } from "./common";
 import { ExtraInputProps, InputRenderComponent } from "./InputRenderComponent";
 
 export type InputProps<
@@ -20,7 +20,7 @@ export const Input = <
 
   // TODO render min, max, etc.
   const render = (
-    renderProps: FieldRenderProps<FormValueType<FD[Name]>, HTMLElement>,
+    renderProps: FieldRenderProps<ExtractFormValue<FD[Name]>, HTMLElement>,
   ) => InputRenderComponent({ label, ...renderProps });
 
   return (

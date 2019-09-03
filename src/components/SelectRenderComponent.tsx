@@ -2,10 +2,10 @@ import React, { Key, SelectHTMLAttributes } from "react";
 import { FieldRenderProps } from "react-final-form";
 import { Overwrite } from "type-zoo";
 import {
+  ExtractFormValue,
   FieldMetaState,
   FormData,
   FormValue,
-  FormValueType,
   ParsedFormData,
 } from "./common";
 import { FormGroup } from "./FormGroup";
@@ -41,7 +41,7 @@ const isSelectOption = <A extends FormValue>(
   (o as SelectOption<A>).value !== undefined;
 
 export type SelectOptions<A extends unknown> = ReadonlyArray<
-  SelectOptionOrGroup<FormValueType<A>>
+  SelectOptionOrGroup<ExtractFormValue<A>>
 >;
 
 export type ExtraSelectProps<
@@ -68,8 +68,8 @@ export type SelectRenderProps<
   FD extends FormData,
   Name extends keyof FD & string
 > = Overwrite<
-  FieldRenderProps<FormValueType<FD[Name]>, HTMLSelectElement>,
-  FieldMetaState<FormValueType<FD[Name]>>
+  FieldRenderProps<ExtractFormValue<FD[Name]>, HTMLSelectElement>,
+  FieldMetaState<ExtractFormValue<FD[Name]>>
 > &
   ExtraSelectProps<FD, Name>;
 

@@ -2,45 +2,59 @@ import { FORM_ERROR } from "final-form";
 import { FieldMetaState } from "react-final-form";
 import { Overwrite } from "type-zoo";
 
+// tslint:disable: readonly-array
+
+type FormDataValues<A, B> =
+  | undefined
+  | A
+  | A[]
+  | ReadonlyArray<A>
+  | B
+  | B[]
+  | ReadonlyArray<B>;
+
+/**
+ * A form value that can survive the DOM round trip.
+ * These constitute the leaves in a FormData type.
+ *
+ * This type _could_ perhaps be expanded thanks to `HTMLInputElement`'s
+ * `valueAsNumber` (and even `valueAsDate` maybe), but these aren't easy
+ * to get at via final-form so we omit the corresponding types here.
+ */
 export type FormValue = string;
 
-// tslint:disable: readonly-array
 export type FormData<I extends string = string, J extends string = string> = {
-  readonly [index in I]:  // tslint:disable-next-line: max-union-size
-    | undefined
-    | FormValue
-    | FormValue[]
-    | ReadonlyArray<FormValue>
-    | FormData<J>
-    | Array<FormData<J>>
-    | ReadonlyArray<FormData<J>>;
+  readonly [key in I]: FormDataValues<FormValue, FormData<J>>;
 };
 
-export type ParsedFormValue = string | number | boolean | symbol;
+/**
+ * All JavaScript types except arrays and objects (and void).
+ * These constitute the leaves in a ParsedFormData type.
+ */
+export type ParsedFormValue =
+  | string
+  | number
+  | boolean
+  | symbol
+  | null
+  | undefined;
 
 export type ParsedFormData<
   I extends string = string,
   J extends string = string
 > = {
-  readonly [index in I]:  // tslint:disable-next-line: max-union-size
-    | undefined
-    | ParsedFormValue
-    | ParsedFormValue[]
-    | ReadonlyArray<ParsedFormValue>
-    | FormData<J>
-    | Array<FormData<J>>
-    | ReadonlyArray<FormData<J>>;
+  readonly [key in I]: FormDataValues<ParsedFormValue, FormData<J>>;
 };
 
-export type FormValueType<A> = Exclude<A, undefined> extends ReadonlyArray<
-  infer X
->
-  ? Extract<X, FormValue>
-  : Exclude<A, undefined> extends Array<infer Y>
-  ? Extract<Y, FormValue>
-  : Extract<A, FormValue>;
+export type ExtractFormValue<A> = Extract<
+  NonNullable<A> extends ReadonlyArray<infer X>
+    ? X
+    : NonNullable<A> extends Array<infer Y>
+    ? Y
+    : A,
+  FormValue
+>;
 
-// TODO: push MapToErrorType and ValidationErrors upstream to final-form
 // TODO: include ARRAY_ERROR in the below
 
 type MapToErrorType<A> = {

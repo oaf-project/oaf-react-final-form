@@ -1,15 +1,15 @@
 import React from "react";
 import { FieldRenderProps } from "react-final-form";
 import { Overwrite } from "type-zoo";
-import { FieldMetaState, FormData, FormValueType } from "./common";
+import { ExtractFormValue, FieldMetaState, FormData } from "./common";
 
 type FormGroupProps<
   FD extends FormData,
   Name extends keyof FD,
   Elem extends HTMLElement
 > = Overwrite<
-  FieldRenderProps<FormValueType<FD[Name]>, Elem>,
-  FieldMetaState<FormValueType<FD[Name]>>
+  FieldRenderProps<ExtractFormValue<FD[Name]>, Elem>,
+  FieldMetaState<ExtractFormValue<FD[Name]>>
 > & {
   readonly id?: string; // TODO make this required
   readonly label: string | JSX.Element;

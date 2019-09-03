@@ -1,6 +1,6 @@
 import React from "react";
 import { Field, FieldRenderProps } from "react-final-form";
-import { FormValueType, Multiple, ParsedFormData, Required } from "./common";
+import { ExtractFormValue, Multiple, ParsedFormData, Required } from "./common";
 import {
   ExtraSelectProps,
   SelectRenderComponent,
@@ -20,7 +20,7 @@ export const Select = <
   const { name, id, label, options, multiple, required, placeholder } = props;
 
   const render = (
-    renderProps: FieldRenderProps<FormValueType<FD[Name]>, HTMLElement>,
+    renderProps: FieldRenderProps<ExtractFormValue<FD[Name]>, HTMLElement>,
   ) =>
     SelectRenderComponent({
       label,

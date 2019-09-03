@@ -53,16 +53,16 @@ it("renders without crashing", async () => {
   // gives us some type-safety benefits when rendering these form elements (below).
   const { Form, Input, Select } = elementsForCodec(codec);
 
-  type ParsedFormData = t.TypeOf<typeof codec>;
+  type FormData = t.TypeOf<typeof codec>;
 
-  const onSubmit = (_: ParsedFormData): SubmissionResponse<ParsedFormData> => {
+  const onSubmit = (_: FormData): SubmissionResponse<FormData> => {
     return {
       [FORM_ERROR]: "global form error",
       customers: [{ firstName: "asdf" }],
     };
   };
 
-  const initialValues: Partial<ParsedFormData> = {
+  const initialValues: Partial<FormData> = {
     foo: 42,
     baz: "first-option",
     qux: ["second-option"],

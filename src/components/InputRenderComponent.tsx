@@ -1,7 +1,7 @@
 import React, { InputHTMLAttributes } from "react";
 import { FieldRenderProps } from "react-final-form";
 import { Overwrite } from "type-zoo";
-import { FieldMetaState, FormData, FormValueType } from "./common";
+import { ExtractFormValue, FieldMetaState, FormData } from "./common";
 import { FormGroup } from "./FormGroup";
 
 // https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#Form_%3Cinput%3E_types
@@ -53,8 +53,8 @@ export type InputRenderProps<
   FD extends FormData,
   Name extends keyof FD & string
 > = Overwrite<
-  FieldRenderProps<FormValueType<FD[Name]>, HTMLInputElement>,
-  FieldMetaState<FormValueType<FD[Name]>>
+  FieldRenderProps<ExtractFormValue<FD[Name]>, HTMLInputElement>,
+  FieldMetaState<ExtractFormValue<FD[Name]>>
 > &
   ExtraInputProps;
 
