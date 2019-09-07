@@ -24,11 +24,6 @@ type PropsFromFinalFormConfig<FD extends FormData> = Pick<
   | "debug"
 >;
 
-type FormHtmlProps = Pick<
-  FormHTMLAttributes<HTMLFormElement>,
-  "id" | "action" | "noValidate"
->;
-
 type FocusInvalidElementProps = {
   readonly formGroupSelector?: Selector;
   readonly invalidElementSelector?: Selector;
@@ -40,8 +35,7 @@ export type FormProps<
   O extends FormData
 > = FocusInvalidElementProps &
   PropsWithChildren<{}> &
-  PropsFromFinalFormConfig<O> &
-  FormHtmlProps & {
+  PropsFromFinalFormConfig<O> & {
     readonly onSubmit: (values: A, form: FormApi<O>) => SubmissionResponse<O>;
     readonly codec: Type<A, O>;
     // Initial values are always optional, even if non-optional in A
@@ -51,6 +45,11 @@ export type FormProps<
     // this function will be used as a fallback to get the message to
     // display to the user.
     readonly defaultErrorMessage?: (e: ValidationError) => string;
+    // We pass along arbitrary form props.
+    readonly formProps?: OmitStrict<
+      Readonly<FormHTMLAttributes<HTMLFormElement>>,
+      "onSubmit"
+    >;
   };
 
 export const Form = <A extends ParsedFormData, O extends FormData>(
@@ -111,7 +110,15 @@ export const Form = <A extends ParsedFormData, O extends FormData>(
   };
 
   const render = (renderProps: RenderProps) => {
-    const { action, noValidate } = props;
+    const { action, noValidate } = {
+      // Persuade iOS to do the right thing.
+      // See https://stackoverflow.com/a/26287843/2476884
+      action: ".",
+      // Better accessibility if we do our own inline validation.
+      // See e.g. https://developer.paciellogroup.com/blog/2019/02/required-attribute-requirements/
+      noValidate: true,
+      ...props.formProps,
+    };
 
     const handleSubmit = (event?: React.SyntheticEvent<HTMLFormElement>) => {
       // tslint:disable-next-line: no-if-statement
@@ -132,16 +139,13 @@ export const Form = <A extends ParsedFormData, O extends FormData>(
 
     return (
       <form
-        id={props.id}
+        {...props.formProps}
         ref={formRef}
         onSubmit={handleSubmit}
-        // Persuade iOS to do the right thing.
-        // See https://stackoverflow.com/a/26287843/2476884
-        action={action !== undefined ? action : "."}
-        // Better accessibility if we do our own inline validation.
-        // See e.g. https://developer.paciellogroup.com/blog/2019/02/required-attribute-requirements/
-        noValidate={noValidate !== undefined ? noValidate : true}
+        action={action}
+        noValidate={noValidate}
       >
+        {/* TODO allow overriding of form error render component */}
         {formError && (
           <div className="alert alert-danger" role="alert">
             {formError}
