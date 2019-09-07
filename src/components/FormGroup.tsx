@@ -13,9 +13,10 @@ type FormGroupProps<
 > & {
   readonly id?: string; // TODO make this required
   readonly label: string | JSX.Element;
+  readonly className?: string;
   readonly children: (props: {
     readonly isInvalid: boolean;
-    readonly className: string;
+    readonly className?: string;
     readonly describedby?: string;
   }) => React.ReactNode;
 };
@@ -34,7 +35,8 @@ export const FormGroup = <
     (props.meta.touched && props.meta.invalid) || false;
   const isValid = (props.meta.touched && props.meta.valid) || false;
 
-  const className = ["form-control"]
+  const className = (props.className !== undefined ? [props.className] : [])
+    .concat(["form-control"])
     .concat(isInvalid ? ["is-invalid"] : [])
     .concat(isValid ? ["is-valid"] : [])
     .join(" ");
