@@ -44,6 +44,7 @@ export const FormGroup = <
 
   return (
     <div className="form-group">
+      {/* TODO arbitrary label props */}
       <label htmlFor={props.id}>{props.label}</label>
       {props.children({ isInvalid, className, describedby })}
       {isInvalid && (

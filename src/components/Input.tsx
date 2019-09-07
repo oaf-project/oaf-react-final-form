@@ -20,7 +20,7 @@ export const Input = <
 
   const render = (
     renderProps: FieldRenderProps<ExtractFormValue<FD[Name]>, HTMLElement>,
-  ) => InputRenderComponent({ label, ...renderProps });
+  ) => InputRenderComponent({ label, ...rest, ...renderProps });
 
   return <Field name={name} id={id || name} {...rest} render={render} />;
 };

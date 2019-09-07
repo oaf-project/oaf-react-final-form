@@ -63,6 +63,9 @@ export const InputRenderComponent = <
 >(
   props: InputRenderProps<FD, Name>,
 ) => {
+  // We don't want to render these into the dom so discard them.
+  const { label, input, meta, ...inputProps } = props;
+
   return (
     <FormGroup {...props}>
       {({ isInvalid, className, describedby }) => (
@@ -70,20 +73,12 @@ export const InputRenderComponent = <
           value={props.input.value}
           onBlur={props.input.onBlur}
           onChange={props.input.onChange}
-          id={props.id}
           name={props.input.name}
-          className={className}
-          placeholder={props.placeholder}
-          min={props.min}
-          minLength={props.minLength}
-          max={props.max}
-          maxLength={props.maxLength}
-          step={props.step}
           type={props.input.type}
           aria-invalid={isInvalid}
-          required={props.required}
-          aria-required={props.required}
+          className={className}
           aria-describedby={describedby}
+          {...inputProps}
         />
       )}
     </FormGroup>
