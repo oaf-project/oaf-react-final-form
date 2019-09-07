@@ -35,20 +35,17 @@ export const FormGroup = <
     (props.meta.touched && props.meta.invalid) || false;
   const isValid = (props.meta.touched && props.meta.valid) || false;
 
-  const className = (props.className !== undefined ? [props.className] : [])
-    .concat(["form-control"])
+  const className = [props.className || "form-control"]
     .concat(isInvalid ? ["is-invalid"] : [])
     .concat(isValid ? ["is-valid"] : [])
     .join(" ");
 
   const describedby = isInvalid ? feedbackId : undefined;
 
-  const { children, ...rest } = props;
-
   return (
     <div className="form-group">
       <label htmlFor={props.id}>{props.label}</label>
-      {children({ ...rest, isInvalid, className, describedby })}
+      {props.children({ isInvalid, className, describedby })}
       {isInvalid && (
         <div id={feedbackId} className="invalid-feedback">
           {/* TODO i18n */}
