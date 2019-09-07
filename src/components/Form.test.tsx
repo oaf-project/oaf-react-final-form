@@ -96,7 +96,7 @@ it("renders without crashing", async () => {
         ...arrayMutators,
       }}
     >
-      <Input label="foo" name="foo" type="number" />
+      <Input label="foo" name="foo" type="number" min={42} />
       <Input label="bar" name="bar" type="text" required={true} />
       <Select label="baz" name="baz" options={selectOptions} />
       <Select label="qux" name="qux" multiple={true} options={selectOptions} />
@@ -125,7 +125,7 @@ it("renders without crashing", async () => {
   );
 
   expect(div.innerHTML).toBe(
-    '<form action="." novalidate=""><div class="form-group"><label for="foo">foo</label><input id="foo" name="foo" class="form-control" type="number" aria-invalid="false" value="42"></div><div class="form-group"><label for="bar">bar</label><input id="bar" name="bar" class="form-control" type="text" aria-invalid="false" required="" aria-required="true" value=""></div><div class="form-group"><label for="baz">baz</label><select id="baz" name="baz" class="form-control" aria-invalid="false"><option value=""></option><option value="first-option">first option</option><optgroup label="an opt group"><option value="second-option">second option</option></optgroup></select></div><div class="form-group"><label for="qux">qux</label><select multiple="" id="qux" name="qux" class="form-control" aria-invalid="false"><option value=""></option><option value="first-option">first option</option><optgroup label="an opt group"><option value="second-option">second option</option></optgroup></select></div><div class="form-group"><label for="customers-0-firstName">First Name</label><input id="customers-0-firstName" name="customers[0].firstName" class="form-control" type="text" aria-invalid="false" value="Jane"></div><div class="form-group"><label for="customers-0-lastName">Last Name</label><input id="customers-0-lastName" name="customers[0].lastName" class="form-control" type="text" aria-invalid="false" value="Doe"></div></form>',
+    '<form action="." novalidate=""><div class="form-group"><label for="foo">foo</label><input id="foo" name="foo" class="form-control" min="42" type="number" aria-invalid="false" value="42"></div><div class="form-group"><label for="bar">bar</label><input id="bar" name="bar" class="form-control" type="text" aria-invalid="false" required="" aria-required="true" value=""></div><div class="form-group"><label for="baz">baz</label><select name="baz" class="form-control" aria-invalid="false" id="baz"><option value=""></option><option value="first-option">first option</option><optgroup label="an opt group"><option value="second-option">second option</option></optgroup></select></div><div class="form-group"><label for="qux">qux</label><select multiple="" name="qux" class="form-control" aria-invalid="false" id="qux"><option value=""></option><option value="first-option">first option</option><optgroup label="an opt group"><option value="second-option">second option</option></optgroup></select></div><div class="form-group"><label for="customers-0-firstName">First Name</label><input id="customers-0-firstName" name="customers[0].firstName" class="form-control" type="text" aria-invalid="false" value="Jane"></div><div class="form-group"><label for="customers-0-lastName">Last Name</label><input id="customers-0-lastName" name="customers[0].lastName" class="form-control" type="text" aria-invalid="false" value="Doe"></div></form>',
   );
   expect(await axe(div)).toHaveNoViolations();
 

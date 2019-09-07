@@ -13,22 +13,11 @@ type FormGroupProps<
 > & {
   readonly id?: string; // TODO make this required
   readonly label: string | JSX.Element;
-};
-
-type ChildrenProps = {
-  readonly isInvalid: boolean;
-  readonly className: string;
-  readonly describedby?: string;
-};
-
-type FormGroupChildrenProps<
-  FD extends FormData,
-  Name extends keyof FD,
-  Elem extends HTMLElement
-> = FormGroupProps<FD, Name, Elem> & {
-  readonly children: (
-    props: FormGroupProps<FD, Name, Elem> & ChildrenProps,
-  ) => React.ReactNode;
+  readonly children: (props: {
+    readonly isInvalid: boolean;
+    readonly className: string;
+    readonly describedby?: string;
+  }) => React.ReactNode;
 };
 
 export const FormGroup = <
@@ -36,7 +25,7 @@ export const FormGroup = <
   Name extends keyof FD,
   Elem extends HTMLElement
 >(
-  props: FormGroupChildrenProps<FD, Name, Elem>,
+  props: FormGroupProps<FD, Name, Elem>,
 ) => {
   const feedbackId = `${props.id}-feedback`;
   // 'To stop form controls from announcing as invalid by default, one can add aria-invalid="false" to any necessary element.'

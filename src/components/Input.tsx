@@ -16,16 +16,13 @@ export const Input = <
 >(
   props: InputProps<FD, Name>,
 ) => {
-  const { name, id, label, type, ...rest } = props;
+  const { name, id, label, ...rest } = props;
 
-  // TODO render min, max, etc.
   const render = (
     renderProps: FieldRenderProps<ExtractFormValue<FD[Name]>, HTMLElement>,
   ) => InputRenderComponent({ label, ...renderProps });
 
-  return (
-    <Field name={name} id={id || name} type={type} {...rest} render={render} />
-  );
+  return <Field name={name} id={id || name} {...rest} render={render} />;
 };
 
 export const inputForCodec = <FD extends ParsedFormData>() => {

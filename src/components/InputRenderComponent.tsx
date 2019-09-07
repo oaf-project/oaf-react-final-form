@@ -1,6 +1,6 @@
 import React, { InputHTMLAttributes } from "react";
 import { FieldRenderProps } from "react-final-form";
-import { Overwrite } from "type-zoo";
+import { OmitStrict, Overwrite } from "type-zoo";
 import { ExtractFormValue, FieldMetaState, FormData } from "./common";
 import { FormGroup } from "./FormGroup";
 
@@ -34,18 +34,17 @@ export type ExtraInputProps = {
 /**
  * Input props that come directly from InputHTMLAttributes.
  */
-export type HTMLInputProps = Readonly<
-  Pick<
+type HTMLInputProps = Readonly<
+  OmitStrict<
     InputHTMLAttributes<HTMLInputElement>,
     // tslint:disable-next-line: max-union-size
-    | "id"
-    | "required"
-    | "placeholder"
-    | "min"
-    | "minLength"
-    | "max"
-    | "maxLength"
-    | "step"
+    | "value"
+    | "onBlur"
+    | "onChange"
+    | "defaultValue"
+    | "name"
+    | "aria-invalid"
+    | "aria-describedby"
   >
 >;
 

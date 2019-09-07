@@ -1,6 +1,6 @@
 import React, { Key, SelectHTMLAttributes } from "react";
 import { FieldRenderProps } from "react-final-form";
-import { Overwrite } from "type-zoo";
+import { OmitStrict, Overwrite } from "type-zoo";
 import {
   ExtractFormValue,
   FieldMetaState,
@@ -56,11 +56,16 @@ export type ExtraSelectProps<
 /**
  * Select props that come directly from SelectHTMLAttributes.
  */
-export type HTMLSelectProps = Readonly<
-  Pick<
+type HTMLSelectProps = Readonly<
+  OmitStrict<
     SelectHTMLAttributes<HTMLSelectElement>,
     // tslint:disable-next-line: max-union-size
-    "id" | "required" | "multiple" | "placeholder"
+    | "value"
+    | "onBlur"
+    | "onChange"
+    | "name"
+    | "aria-invalid"
+    | "aria-describedby"
   >
 >;
 
@@ -104,6 +109,8 @@ export const SelectRenderComponent = <
 >(
   props: SelectRenderProps<FD, Name>,
 ) => {
+  // We don't want to render these into the dom so discard them.
+  const { label, options, input, meta, ...selectProps } = props;
   return (
     <FormGroup {...props}>
       {({ isInvalid, className, describedby }) => (
@@ -115,15 +122,11 @@ export const SelectRenderComponent = <
           }
           onBlur={props.input.onBlur}
           onChange={props.input.onChange}
-          id={props.id}
           name={props.input.name}
           className={className}
-          placeholder={props.placeholder}
           aria-invalid={isInvalid}
-          required={props.required}
-          aria-required={props.required}
           aria-describedby={describedby}
-          multiple={props.multiple}
+          {...selectProps}
         >
           <RenderOptions options={props.options} />
         </select>
