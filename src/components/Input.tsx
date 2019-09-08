@@ -2,9 +2,9 @@ import React from "react";
 import { Field, FieldRenderProps } from "react-final-form";
 import {
   ExtractFormValue,
+  InputTypeConstraint,
   ParsedFormData,
   Required,
-  InputTypeConstraint,
 } from "./common";
 import { ExtraInputProps, InputRenderComponent } from "./InputRenderComponent";
 
