@@ -42,7 +42,7 @@ export type InputRenderProps<
   FieldRenderProps<ExtractFormValue<FD[Name]>, HTMLInputElement>,
   FieldMetaState<ExtractFormValue<FD[Name]>>
 > &
-  ExtraInputProps;
+  ExtraInputProps & { readonly id: string };
 
 export const InputRenderComponent = <
   FD extends FormData,
@@ -62,7 +62,14 @@ export const InputRenderComponent = <
   } = props;
 
   return (
-    <FormGroup {...props}>
+    <FormGroup
+      id={props.id}
+      label={label}
+      meta={props.meta}
+      formGroupProps={formGroupProps}
+      labelProps={labelProps}
+      feedbackProps={feedbackProps}
+    >
       {({ isInvalid, className, describedby }) => (
         <input
           value={props.input.value}

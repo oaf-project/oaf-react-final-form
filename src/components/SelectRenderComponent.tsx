@@ -77,7 +77,7 @@ export type SelectRenderProps<
   FieldRenderProps<ExtractFormValue<FD[Name]>, HTMLSelectElement>,
   FieldMetaState<ExtractFormValue<FD[Name]>>
 > &
-  ExtraSelectProps<FD, Name>;
+  ExtraSelectProps<FD, Name> & { readonly id: string };
 
 export const RenderOptions = <
   FD extends FormData,
@@ -122,7 +122,14 @@ export const SelectRenderComponent = <
     ...selectProps
   } = props;
   return (
-    <FormGroup {...props}>
+    <FormGroup
+      id={props.id}
+      label={label}
+      meta={props.meta}
+      formGroupProps={formGroupProps}
+      labelProps={labelProps}
+      feedbackProps={feedbackProps}
+    >
       {({ isInvalid, className, describedby }) => (
         <select
           value={

@@ -22,12 +22,13 @@ export const Input = <
   props: InputProps<FD, Name>,
 ) => {
   const { name, id, label, ...rest } = props;
+  const idOrName = id || name;
 
   const render = (
     renderProps: FieldRenderProps<ExtractFormValue<FD[Name]>, HTMLElement>,
-  ) => InputRenderComponent({ label, ...rest, ...renderProps });
+  ) => InputRenderComponent({ ...rest, ...renderProps, id: idOrName, label });
 
-  return <Field name={name} id={id || name} {...rest} render={render} />;
+  return <Field name={name} id={idOrName} {...rest} render={render} />;
 };
 
 export const inputForCodec = <FD extends ParsedFormData>() => {

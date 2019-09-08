@@ -18,23 +18,25 @@ export const Select = <
   props: SelectProps<FD, Name>,
 ) => {
   const { name, id, label, options, multiple, ...rest } = props;
+  const idOrName = id || name;
 
   const render = (
     renderProps: FieldRenderProps<ExtractFormValue<FD[Name]>, HTMLElement>,
   ) =>
     SelectRenderComponent({
+      ...rest,
+      ...renderProps,
+      id: idOrName,
       label,
       options,
       multiple,
-      ...rest,
-      ...renderProps,
     });
 
   return (
     <Field
       type="select"
       name={name}
-      id={id || name}
+      id={idOrName}
       multiple={multiple}
       render={render}
     />

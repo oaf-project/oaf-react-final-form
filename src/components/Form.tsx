@@ -109,7 +109,8 @@ export const Form = <A extends ParsedFormData, O extends FormData>(
     readonly submitError?: string;
   };
 
-  const render = (renderProps: RenderProps) => {
+  // TODO allow overriding form render component
+  const render = (renderProps: RenderProps): JSX.Element => {
     const { action, noValidate } = {
       // Persuade iOS to do the right thing.
       // See https://stackoverflow.com/a/26287843/2476884
