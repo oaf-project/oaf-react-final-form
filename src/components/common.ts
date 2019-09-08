@@ -1,6 +1,24 @@
 import { FORM_ERROR } from "final-form";
 import { FieldMetaState } from "react-final-form";
-import { Overwrite } from "type-zoo";
+import { ExcludeStrict, Overwrite } from "type-zoo";
+
+export type NumericInputType = "number" | "range";
+
+// https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#Form_%3Cinput%3E_types
+export type InputType =
+  | NumericInputType
+  | "color"
+  | "date"
+  | "datetime-local"
+  | "email"
+  | "month"
+  | "password"
+  | "search"
+  | "tel"
+  | "text"
+  | "time"
+  | "url"
+  | "week";
 
 // tslint:disable: readonly-array
 
@@ -117,3 +135,8 @@ export type Required<Value> = undefined extends Value
 export type Multiple<Value> = any[] extends Value
   ? { readonly multiple: true }
   : { readonly multiple?: false };
+
+// TODO expand this to enforce other constraints: max, min, maxlength, etc
+export type InputTypeConstraint<Value> = number extends Value // TODO: non-optional type?
+  ? { readonly type?: NumericInputType }
+  : { readonly type?: ExcludeStrict<InputType, NumericInputType> };

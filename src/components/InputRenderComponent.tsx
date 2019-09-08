@@ -1,27 +1,13 @@
 import React, { InputHTMLAttributes } from "react";
 import { FieldRenderProps } from "react-final-form";
 import { OmitStrict, Overwrite } from "type-zoo";
-import { ExtractFormValue, FieldMetaState, FormData } from "./common";
+import {
+  ExtractFormValue,
+  FieldMetaState,
+  FormData,
+  InputType,
+} from "./common";
 import { FormGroup } from "./FormGroup";
-
-// https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#Form_%3Cinput%3E_types
-type InputType =
-  | "color"
-  | "date"
-  | "datetime-local"
-  | "email"
-  | "month"
-  // TODO: only allow number if codec type extends number?
-  | "number"
-  | "password"
-  | "range"
-  | "search"
-  | "tel"
-  // TODO: only allow text, search, etc if codec type extends string?
-  | "text"
-  | "time"
-  | "url"
-  | "week";
 
 export type ExtraInputProps = {
   /**

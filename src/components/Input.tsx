@@ -1,6 +1,11 @@
 import React from "react";
 import { Field, FieldRenderProps } from "react-final-form";
-import { ExtractFormValue, ParsedFormData, Required } from "./common";
+import {
+  ExtractFormValue,
+  ParsedFormData,
+  Required,
+  InputTypeConstraint,
+} from "./common";
 import { ExtraInputProps, InputRenderComponent } from "./InputRenderComponent";
 
 export type InputProps<
@@ -27,9 +32,12 @@ export const Input = <
 
 export const inputForCodec = <FD extends ParsedFormData>() => {
   return <Name extends keyof FD & string>(
-    props: Exclude<InputProps<FD, Name>, "required"> & Required<FD[Name]>,
+    // TODO ExcludeStrict
+    props: Exclude<InputProps<FD, Name>, "required" | "type"> &
+      Required<FD[Name]> &
+      InputTypeConstraint<FD[Name]>,
   ) => {
-    const { required, ...rest } = props;
-    return <Input<FD, Name> required={required} {...rest} />;
+    const { required, type, ...rest } = props;
+    return <Input<FD, Name> required={required} type={type} {...rest} />;
   };
 };
