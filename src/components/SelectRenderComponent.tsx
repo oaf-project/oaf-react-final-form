@@ -8,7 +8,7 @@ import {
   FormValue,
   ParsedFormData,
 } from "./common";
-import { FormGroup } from "./FormGroup";
+import { FormGroup, FormGroupChildProps } from "./FormGroup";
 
 // TODO https://github.com/Microsoft/tslint-microsoft-contrib/issues/409
 // tslint:disable: react-a11y-role-has-required-aria-props
@@ -51,7 +51,8 @@ export type ExtraSelectProps<
   // A non-optional label that we render in a <label> element to ensure accessibility.
   readonly label: string | JSX.Element;
   readonly options: SelectOptions<FD[Name]>;
-} & HTMLSelectProps;
+} & HTMLSelectProps &
+  FormGroupChildProps;
 
 /**
  * Select props that come directly from SelectHTMLAttributes.
@@ -110,7 +111,16 @@ export const SelectRenderComponent = <
   props: SelectRenderProps<FD, Name>,
 ) => {
   // We don't want to render these into the dom so discard them.
-  const { label, options, input, meta, ...selectProps } = props;
+  const {
+    label,
+    options,
+    input,
+    meta,
+    formGroupProps,
+    labelProps,
+    feedbackProps,
+    ...selectProps
+  } = props;
   return (
     <FormGroup {...props}>
       {({ isInvalid, className, describedby }) => (

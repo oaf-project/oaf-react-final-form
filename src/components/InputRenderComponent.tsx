@@ -7,7 +7,7 @@ import {
   FormData,
   InputType,
 } from "./common";
-import { FormGroup } from "./FormGroup";
+import { FormGroup, FormGroupChildProps } from "./FormGroup";
 
 export type ExtraInputProps = {
   /**
@@ -15,7 +15,8 @@ export type ExtraInputProps = {
    */
   readonly label: string | JSX.Element;
   readonly type?: InputType;
-} & HTMLInputProps;
+} & HTMLInputProps &
+  FormGroupChildProps;
 
 /**
  * Input props that come directly from InputHTMLAttributes.
@@ -50,7 +51,15 @@ export const InputRenderComponent = <
   props: InputRenderProps<FD, Name>,
 ) => {
   // We don't want to render these into the dom so discard them.
-  const { label, input, meta, ...inputProps } = props;
+  const {
+    label,
+    input,
+    meta,
+    formGroupProps,
+    labelProps,
+    feedbackProps,
+    ...inputProps
+  } = props;
 
   return (
     <FormGroup {...props}>

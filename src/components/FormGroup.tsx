@@ -1,7 +1,17 @@
-import React from "react";
+import React, { HTMLAttributes, LabelHTMLAttributes } from "react";
 import { FieldRenderProps } from "react-final-form";
-import { Overwrite } from "type-zoo";
+import { OmitStrict, Overwrite } from "type-zoo";
 import { ExtractFormValue, FieldMetaState, FormData } from "./common";
+
+export type FormGroupChildProps = {
+  readonly formGroupProps?: Readonly<HTMLAttributes<HTMLDivElement>>;
+  readonly labelProps?: Readonly<
+    OmitStrict<LabelHTMLAttributes<HTMLLabelElement>, "htmlFor">
+  >;
+  readonly feedbackProps?: Readonly<
+    OmitStrict<HTMLAttributes<HTMLDivElement>, "id">
+  >;
+};
 
 type FormGroupProps<
   FD extends FormData,
@@ -10,16 +20,17 @@ type FormGroupProps<
 > = Overwrite<
   FieldRenderProps<ExtractFormValue<FD[Name]>, Elem>,
   FieldMetaState<ExtractFormValue<FD[Name]>>
-> & {
-  readonly id?: string; // TODO make this required
-  readonly label: string | JSX.Element;
-  readonly className?: string;
-  readonly children: (props: {
-    readonly isInvalid: boolean;
+> &
+  FormGroupChildProps & {
+    readonly id?: string; // TODO make this required
+    readonly label: string | JSX.Element;
     readonly className?: string;
-    readonly describedby?: string;
-  }) => React.ReactNode;
-};
+    readonly children: (props: {
+      readonly isInvalid: boolean;
+      readonly className?: string;
+      readonly describedby?: string;
+    }) => React.ReactNode;
+  };
 
 export const FormGroup = <
   FD extends FormData,
@@ -43,12 +54,18 @@ export const FormGroup = <
   const describedby = isInvalid ? feedbackId : undefined;
 
   return (
-    <div className="form-group">
+    <div className="form-group" {...props.formGroupProps}>
       {/* TODO arbitrary label props */}
-      <label htmlFor={props.id}>{props.label}</label>
+      <label {...props.labelProps} htmlFor={props.id}>
+        {props.label}
+      </label>
       {props.children({ isInvalid, className, describedby })}
       {isInvalid && (
-        <div id={feedbackId} className="invalid-feedback">
+        <div
+          id={feedbackId}
+          className="invalid-feedback"
+          {...props.feedbackProps}
+        >
           {/* TODO i18n */}
           {props.meta.error ||
             props.meta.submitError ||
