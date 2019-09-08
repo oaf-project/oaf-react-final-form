@@ -15,34 +15,39 @@ export type ExtraInputProps = {
    */
   readonly label: string | JSX.Element;
   readonly type?: InputType;
-} & HTMLInputProps &
-  FormGroupChildProps;
+} & FormGroupChildProps;
 
 /**
  * Input props that come directly from InputHTMLAttributes.
  */
-type HTMLInputProps = Readonly<
+export type HTMLInputProps = Readonly<
   OmitStrict<
     InputHTMLAttributes<HTMLInputElement>,
     // tslint:disable-next-line: max-union-size
+    | "id"
     | "value"
     | "onBlur"
     | "onChange"
+    | "onFocus"
     | "defaultValue"
     | "name"
     | "aria-invalid"
     | "aria-describedby"
+    | "type"
   >
 >;
 
 export type InputRenderProps<
   FD extends FormData,
   Name extends keyof FD & string
-> = Overwrite<
-  FieldRenderProps<ExtractFormValue<FD[Name]>, HTMLInputElement>,
-  FieldMetaState<ExtractFormValue<FD[Name]>>
-> &
-  ExtraInputProps & { readonly id: string };
+> = ExtraInputProps & {
+  readonly renderProps: Overwrite<
+    FieldRenderProps<ExtractFormValue<FD[Name]>, HTMLInputElement>,
+    FieldMetaState<ExtractFormValue<FD[Name]>>
+  >;
+  readonly inputProps: HTMLInputProps;
+  readonly id: string;
+};
 
 export const InputRenderComponent = <
   FD extends FormData,
@@ -50,37 +55,29 @@ export const InputRenderComponent = <
 >(
   props: InputRenderProps<FD, Name>,
 ) => {
-  // We don't want to render these into the dom so discard them.
-  const {
-    label,
-    input,
-    meta,
-    formGroupProps,
-    labelProps,
-    feedbackProps,
-    ...inputProps
-  } = props;
-
   return (
     <FormGroup
       id={props.id}
-      label={label}
-      meta={props.meta}
-      formGroupProps={formGroupProps}
-      labelProps={labelProps}
-      feedbackProps={feedbackProps}
+      label={props.label}
+      inputClassName={props.inputProps.className}
+      meta={props.renderProps.meta}
+      formGroupProps={props.formGroupProps}
+      labelProps={props.labelProps}
+      feedbackProps={props.feedbackProps}
     >
       {({ isInvalid, className, describedby }) => (
         <input
-          value={props.input.value}
-          onBlur={props.input.onBlur}
-          onChange={props.input.onChange}
-          name={props.input.name}
-          type={props.input.type}
+          {...props.inputProps}
+          id={props.id}
+          value={props.renderProps.input.value}
+          onBlur={props.renderProps.input.onBlur}
+          onChange={props.renderProps.input.onChange}
+          onFocus={props.renderProps.input.onFocus}
+          name={props.renderProps.input.name}
+          type={props.renderProps.input.type}
           aria-invalid={isInvalid}
           className={className}
           aria-describedby={describedby}
-          {...inputProps}
         />
       )}
     </FormGroup>

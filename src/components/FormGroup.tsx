@@ -19,7 +19,8 @@ type FormGroupProps<
   FormGroupChildProps & {
     readonly id: string;
     readonly label: string | JSX.Element;
-    readonly className?: string;
+    // tslint:disable-next-line: prefer-optional
+    readonly inputClassName: string | undefined;
     readonly children: (props: {
       readonly isInvalid: boolean;
       readonly className?: string;
@@ -37,7 +38,7 @@ export const FormGroup = <FD extends FormData, Name extends keyof FD>(
     (props.meta.touched && props.meta.invalid) || false;
   const isValid = (props.meta.touched && props.meta.valid) || false;
 
-  const className = [props.className || "form-control"]
+  const className = [props.inputClassName || "form-control"]
     .concat(isInvalid ? ["is-invalid"] : [])
     .concat(isValid ? ["is-valid"] : [])
     .join(" ");

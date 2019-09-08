@@ -6,10 +6,23 @@ import {
   SelectRenderComponent,
 } from "./SelectRenderComponent";
 
+export type RenderSelect<
+  FD extends ParsedFormData,
+  Name extends keyof FD & string
+> = (
+  props: SelectProps<FD, Name>,
+) => (
+  renderProps: FieldRenderProps<ExtractFormValue<FD[Name]>, HTMLSelectElement>,
+) => JSX.Element;
+
 export type SelectProps<
   FD extends ParsedFormData,
   Name extends keyof FD & string
-> = ExtraSelectProps<FD, Name> & { readonly name: Name };
+> = ExtraSelectProps<FD, Name> & {
+  readonly id?: string;
+  readonly name: Name;
+  readonly render?: RenderSelect<FD, Name>;
+};
 
 export const Select = <
   FD extends ParsedFormData,
@@ -17,29 +30,40 @@ export const Select = <
 >(
   props: SelectProps<FD, Name>,
 ) => {
-  const { name, id, label, options, multiple, ...rest } = props;
+  const {
+    name,
+    id,
+    label,
+    options,
+    formGroupProps,
+    multiple,
+    labelProps,
+    feedbackProps,
+    render,
+    ...selectProps
+  } = props;
   const idOrName = id || name;
 
-  const render = (
+  const defaultRender = (
     renderProps: FieldRenderProps<ExtractFormValue<FD[Name]>, HTMLElement>,
   ) =>
     SelectRenderComponent({
-      ...rest,
-      ...renderProps,
+      formGroupProps,
+      labelProps,
+      feedbackProps,
+      selectProps,
+      renderProps,
       id: idOrName,
       label,
       options,
       multiple,
     });
 
+  const renderFunc =
+    typeof render !== "undefined" ? render(props) : defaultRender;
+
   return (
-    <Field
-      type="select"
-      name={name}
-      id={idOrName}
-      multiple={multiple}
-      render={render}
-    />
+    <Field type="select" name={name} multiple={multiple} render={renderFunc} />
   );
 };
 

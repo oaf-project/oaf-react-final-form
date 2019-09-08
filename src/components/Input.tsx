@@ -6,14 +6,30 @@ import {
   ParsedFormData,
   Required,
 } from "./common";
-import { ExtraInputProps, InputRenderComponent } from "./InputRenderComponent";
+import {
+  ExtraInputProps,
+  HTMLInputProps,
+  InputRenderComponent,
+} from "./InputRenderComponent";
+
+export type RenderInput<
+  FD extends ParsedFormData,
+  Name extends keyof FD & string
+> = (
+  props: InputProps<FD, Name>,
+) => (
+  renderProps: FieldRenderProps<ExtractFormValue<FD[Name]>, HTMLInputElement>,
+) => JSX.Element;
 
 export type InputProps<
   FD extends ParsedFormData,
   Name extends keyof FD & string
-> = ExtraInputProps & {
-  readonly name: Name;
-};
+> = HTMLInputProps &
+  ExtraInputProps & {
+    readonly id?: string;
+    readonly name: Name;
+    readonly render?: RenderInput<FD, Name>;
+  };
 
 export const Input = <
   FD extends ParsedFormData,
@@ -21,14 +37,34 @@ export const Input = <
 >(
   props: InputProps<FD, Name>,
 ) => {
-  const { name, id, label, ...rest } = props;
-  const idOrName = id || name;
+  const {
+    id,
+    name,
+    label,
+    formGroupProps,
+    labelProps,
+    feedbackProps,
+    render,
+    ...inputProps
+  } = props;
 
-  const render = (
-    renderProps: FieldRenderProps<ExtractFormValue<FD[Name]>, HTMLElement>,
-  ) => InputRenderComponent({ ...rest, ...renderProps, id: idOrName, label });
+  const defaultRender = (
+    renderProps: FieldRenderProps<ExtractFormValue<FD[Name]>, HTMLInputElement>,
+  ) =>
+    InputRenderComponent({
+      formGroupProps,
+      labelProps,
+      feedbackProps,
+      inputProps,
+      renderProps,
+      id: id || name,
+      label,
+    });
 
-  return <Field name={name} id={idOrName} {...rest} render={render} />;
+  const renderFunc =
+    typeof render !== "undefined" ? render(props) : defaultRender;
+
+  return <Field name={name} type={inputProps.type} render={renderFunc} />;
 };
 
 export const inputForCodec = <FD extends ParsedFormData>() => {

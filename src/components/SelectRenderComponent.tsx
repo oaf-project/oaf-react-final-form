@@ -50,9 +50,9 @@ export type ExtraSelectProps<
 > = {
   // A non-optional label that we render in a <label> element to ensure accessibility.
   readonly label: string | JSX.Element;
+  readonly multiple?: boolean;
   readonly options: SelectOptions<FD[Name]>;
-} & HTMLSelectProps &
-  FormGroupChildProps;
+} & FormGroupChildProps;
 
 /**
  * Select props that come directly from SelectHTMLAttributes.
@@ -61,9 +61,12 @@ type HTMLSelectProps = Readonly<
   OmitStrict<
     SelectHTMLAttributes<HTMLSelectElement>,
     // tslint:disable-next-line: max-union-size
+    | "id"
     | "value"
+    | "multiple"
     | "onBlur"
     | "onChange"
+    | "onFocus"
     | "name"
     | "aria-invalid"
     | "aria-describedby"
@@ -73,11 +76,14 @@ type HTMLSelectProps = Readonly<
 export type SelectRenderProps<
   FD extends FormData,
   Name extends keyof FD & string
-> = Overwrite<
-  FieldRenderProps<ExtractFormValue<FD[Name]>, HTMLSelectElement>,
-  FieldMetaState<ExtractFormValue<FD[Name]>>
-> &
-  ExtraSelectProps<FD, Name> & { readonly id: string };
+> = ExtraSelectProps<FD, Name> & {
+  readonly renderProps: Overwrite<
+    FieldRenderProps<ExtractFormValue<FD[Name]>, HTMLSelectElement>,
+    FieldMetaState<ExtractFormValue<FD[Name]>>
+  >;
+  readonly selectProps: HTMLSelectProps;
+  readonly id: string;
+};
 
 export const RenderOptions = <
   FD extends FormData,
@@ -110,40 +116,36 @@ export const SelectRenderComponent = <
 >(
   props: SelectRenderProps<FD, Name>,
 ) => {
-  // We don't want to render these into the dom so discard them.
-  const {
-    label,
-    options,
-    input,
-    meta,
-    formGroupProps,
-    labelProps,
-    feedbackProps,
-    ...selectProps
-  } = props;
+  const { formGroupProps, labelProps, feedbackProps, selectProps } = props;
   return (
     <FormGroup
       id={props.id}
-      label={label}
-      meta={props.meta}
+      label={props.label}
+      inputClassName={selectProps.className}
+      meta={props.renderProps.meta}
       formGroupProps={formGroupProps}
       labelProps={labelProps}
       feedbackProps={feedbackProps}
     >
       {({ isInvalid, className, describedby }) => (
         <select
+          {...selectProps}
+          id={props.id}
           value={
-            props.multiple && !Array.isArray(props.input.value)
+            props.renderProps.input.multiple &&
+            !Array.isArray(props.renderProps.input.value)
               ? []
-              : props.input.value
+              : props.renderProps.input.value
           }
-          onBlur={props.input.onBlur}
-          onChange={props.input.onChange}
-          name={props.input.name}
+          // TODO why doesn't props.renderProps.input.multiple work here?
+          multiple={props.multiple}
+          onBlur={props.renderProps.input.onBlur}
+          onChange={props.renderProps.input.onChange}
+          onFocus={props.renderProps.input.onFocus}
+          name={props.renderProps.input.name}
           className={className}
           aria-invalid={isInvalid}
           aria-describedby={describedby}
-          {...selectProps}
         >
           <RenderOptions options={props.options} />
         </select>
