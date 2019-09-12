@@ -54,32 +54,33 @@ export const InputRenderComponent = <
   Name extends keyof FD & string
 >(
   props: InputRenderProps<FD, Name>,
-) => {
-  return (
-    <FormGroup
-      id={props.id}
-      label={props.label}
-      inputClassName={props.inputProps.className}
-      meta={props.renderProps.meta}
-      formGroupProps={props.formGroupProps}
-      labelProps={props.labelProps}
-      feedbackProps={props.feedbackProps}
-    >
-      {({ isInvalid, className, describedby }) => (
-        <input
-          {...props.inputProps}
-          id={props.id}
-          value={props.renderProps.input.value}
-          onBlur={props.renderProps.input.onBlur}
-          onChange={props.renderProps.input.onChange}
-          onFocus={props.renderProps.input.onFocus}
-          name={props.renderProps.input.name}
-          type={props.renderProps.input.type}
-          aria-invalid={isInvalid}
-          className={className}
-          aria-describedby={describedby}
-        />
-      )}
-    </FormGroup>
-  );
-};
+) => (
+  <FormGroup
+    inputId={props.id}
+    label={props.label}
+    inputClassName={props.inputProps.className}
+    // TODO plumb these through
+    invalidClassName={undefined}
+    validClassName={undefined}
+    meta={props.renderProps.meta}
+    formGroupProps={props.formGroupProps}
+    labelProps={props.labelProps}
+    feedbackProps={props.feedbackProps}
+  >
+    {({ isInvalid, className, describedby }) => (
+      <input
+        {...props.inputProps}
+        id={props.id}
+        value={props.renderProps.input.value}
+        onBlur={props.renderProps.input.onBlur}
+        onChange={props.renderProps.input.onChange}
+        onFocus={props.renderProps.input.onFocus}
+        name={props.renderProps.input.name}
+        type={props.renderProps.input.type}
+        aria-invalid={isInvalid}
+        className={className}
+        aria-describedby={describedby}
+      />
+    )}
+  </FormGroup>
+);

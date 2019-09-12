@@ -52,6 +52,7 @@ export function formCodec<R extends t.Props, O extends t.Props>(
 
 export const elementsForCodec = <A extends ParsedFormData, O extends FormData>(
   codec: Type<A, O>,
+  // TODO allow some defaults to be specified here, for example render overrides, label props, invalid class name, valid class name, etc.
 ) => ({
   Form: formForCodec(codec),
   Input: inputForCodec<A>(),

@@ -11,6 +11,7 @@ import {
   HTMLInputProps,
   InputRenderComponent,
 } from "./InputRenderComponent";
+import { touchedHack } from "./touched-hack";
 
 export type RenderInput<
   FD extends ParsedFormData,
@@ -29,7 +30,17 @@ export type InputProps<
     readonly id?: string;
     readonly name: Name;
     readonly render?: RenderInput<FD, Name>;
+    readonly keepTouchedOnReinitialize?: boolean;
   };
+
+export type InputForCodecProps<
+  FD extends ParsedFormData,
+  Name extends keyof FD & string
+> =
+  // TODO ExcludeStrict
+  Exclude<InputProps<FD, Name>, "required" | "type"> &
+    Required<FD[Name]> &
+    InputTypeConstraint<FD[Name]>;
 
 export const Input = <
   FD extends ParsedFormData,
@@ -37,6 +48,8 @@ export const Input = <
 >(
   props: InputProps<FD, Name>,
 ) => {
+  const touchedState = React.useState<boolean>();
+
   const {
     id,
     name,
@@ -45,6 +58,7 @@ export const Input = <
     labelProps,
     feedbackProps,
     render,
+    keepTouchedOnReinitialize,
     ...inputProps
   } = props;
 
@@ -56,7 +70,11 @@ export const Input = <
       labelProps,
       feedbackProps,
       inputProps,
-      renderProps,
+      renderProps: touchedHack(
+        renderProps,
+        touchedState,
+        keepTouchedOnReinitialize,
+      ),
       id: id || name,
       label,
     });
@@ -69,10 +87,7 @@ export const Input = <
 
 export const inputForCodec = <FD extends ParsedFormData>() => {
   return <Name extends keyof FD & string>(
-    // TODO ExcludeStrict
-    props: Exclude<InputProps<FD, Name>, "required" | "type"> &
-      Required<FD[Name]> &
-      InputTypeConstraint<FD[Name]>,
+    props: InputForCodecProps<FD, Name>,
   ) => {
     const { required, type, ...rest } = props;
     return <Input<FD, Name> required={required} type={type} {...rest} />;

@@ -5,6 +5,7 @@ import {
   ExtraSelectProps,
   SelectRenderComponent,
 } from "./SelectRenderComponent";
+import { touchedHack } from "./touched-hack";
 
 export type RenderSelect<
   FD extends ParsedFormData,
@@ -22,7 +23,17 @@ export type SelectProps<
   readonly id?: string;
   readonly name: Name;
   readonly render?: RenderSelect<FD, Name>;
+  readonly keepTouchedOnReinitialize?: boolean;
 };
+
+export type SelectForCodecProps<
+  FD extends ParsedFormData,
+  Name extends keyof FD & string
+> =
+  // TODO ExcludeStrict
+  Exclude<SelectProps<FD, Name>, "required" | "multiple"> &
+    Required<FD[Name]> &
+    Multiple<FD[Name]>;
 
 export const Select = <
   FD extends ParsedFormData,
@@ -30,6 +41,8 @@ export const Select = <
 >(
   props: SelectProps<FD, Name>,
 ) => {
+  const touchedState = React.useState<boolean>();
+
   const {
     name,
     id,
@@ -40,9 +53,9 @@ export const Select = <
     labelProps,
     feedbackProps,
     render,
+    keepTouchedOnReinitialize,
     ...selectProps
   } = props;
-  const idOrName = id || name;
 
   const defaultRender = (
     renderProps: FieldRenderProps<ExtractFormValue<FD[Name]>, HTMLElement>,
@@ -52,8 +65,12 @@ export const Select = <
       labelProps,
       feedbackProps,
       selectProps,
-      renderProps,
-      id: idOrName,
+      renderProps: touchedHack(
+        renderProps,
+        touchedState,
+        keepTouchedOnReinitialize,
+      ),
+      id: id || name,
       label,
       options,
       multiple,
@@ -69,11 +86,11 @@ export const Select = <
 
 export const selectForCodec = <FD extends ParsedFormData>() => {
   return <Name extends keyof FD & string>(
-    props: Exclude<SelectProps<FD, Name>, "required" | "multiple"> &
-      Required<FD[Name]> &
-      Multiple<FD[Name]>,
+    props: SelectForCodecProps<FD, Name>,
   ) => {
     const { required, multiple, ...rest } = props;
-    return <Select required={required} multiple={multiple} {...rest} />;
+    return (
+      <Select<FD, Name> required={required} multiple={multiple} {...rest} />
+    );
   };
 };

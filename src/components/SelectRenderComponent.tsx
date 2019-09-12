@@ -92,64 +92,61 @@ export const RenderOptions = <
   options,
 }: {
   readonly options: SelectOptions<FD[Name]>;
-}) => {
-  return (
-    <>
-      {options.map(o =>
-        isSelectOption(o) ? (
-          <option key={o.key} value={o.value} disabled={o.disabled}>
-            {o.label}
-          </option>
-        ) : (
-          <optgroup key={o.key} label={o.label} disabled={o.disabled}>
-            <RenderOptions options={o.options} />
-          </optgroup>
-        ),
-      )}
-    </>
-  );
-};
+}) => (
+  <>
+    {options.map(o =>
+      isSelectOption(o) ? (
+        <option key={o.key} value={o.value} disabled={o.disabled}>
+          {o.label}
+        </option>
+      ) : (
+        <optgroup key={o.key} label={o.label} disabled={o.disabled}>
+          <RenderOptions options={o.options} />
+        </optgroup>
+      ),
+    )}
+  </>
+);
 
 export const SelectRenderComponent = <
   FD extends FormData,
   Name extends keyof FD & string
 >(
   props: SelectRenderProps<FD, Name>,
-) => {
-  const { formGroupProps, labelProps, feedbackProps, selectProps } = props;
-  return (
-    <FormGroup
-      id={props.id}
-      label={props.label}
-      inputClassName={selectProps.className}
-      meta={props.renderProps.meta}
-      formGroupProps={formGroupProps}
-      labelProps={labelProps}
-      feedbackProps={feedbackProps}
-    >
-      {({ isInvalid, className, describedby }) => (
-        <select
-          {...selectProps}
-          id={props.id}
-          value={
-            props.renderProps.input.multiple &&
-            !Array.isArray(props.renderProps.input.value)
-              ? []
-              : props.renderProps.input.value
-          }
-          // TODO why doesn't props.renderProps.input.multiple work here?
-          multiple={props.multiple}
-          onBlur={props.renderProps.input.onBlur}
-          onChange={props.renderProps.input.onChange}
-          onFocus={props.renderProps.input.onFocus}
-          name={props.renderProps.input.name}
-          className={className}
-          aria-invalid={isInvalid}
-          aria-describedby={describedby}
-        >
-          <RenderOptions options={props.options} />
-        </select>
-      )}
-    </FormGroup>
-  );
-};
+) => (
+  <FormGroup
+    inputId={props.id}
+    label={props.label}
+    inputClassName={props.selectProps.className}
+    // TODO plumb these through
+    invalidClassName={undefined}
+    validClassName={undefined}
+    meta={props.renderProps.meta}
+    formGroupProps={props.formGroupProps}
+    labelProps={props.labelProps}
+    feedbackProps={props.feedbackProps}
+  >
+    {({ isInvalid, className, describedby }) => (
+      <select
+        {...props.selectProps}
+        id={props.id}
+        value={
+          props.multiple && !Array.isArray(props.renderProps.input.value)
+            ? []
+            : props.renderProps.input.value
+        }
+        // TODO why doesn't props.renderProps.input.multiple work here?
+        multiple={props.multiple}
+        onBlur={props.renderProps.input.onBlur}
+        onChange={props.renderProps.input.onChange}
+        onFocus={props.renderProps.input.onFocus}
+        name={props.renderProps.input.name}
+        className={className}
+        aria-invalid={isInvalid}
+        aria-describedby={describedby}
+      >
+        <RenderOptions options={props.options} />
+      </select>
+    )}
+  </FormGroup>
+);
