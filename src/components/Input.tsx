@@ -37,10 +37,9 @@ export type InputProps<
 export type InputForCodecProps<
   FD extends ParsedFormData,
   Name extends keyof FD & string
-> =
-  OmitStrict<InputProps<FD, Name>, "required" | "type"> &
-    Required<FD[Name]> &
-    InputTypeConstraint<FD[Name]>;
+> = OmitStrict<InputProps<FD, Name>, "required" | "type"> &
+  Required<FD[Name]> &
+  InputTypeConstraint<FD[Name]>;
 
 export const Input = <
   FD extends ParsedFormData,

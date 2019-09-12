@@ -1,9 +1,14 @@
-import { Config, FormApi } from "final-form";
+import { FormApi, Mutator } from "final-form";
 import { fold } from "fp-ts/lib/Either";
 import { Errors, Type, ValidationError } from "io-ts";
 import { Selector } from "oaf-side-effects";
 import React, { FormHTMLAttributes, PropsWithChildren } from "react";
-import { Form as ReactFinalForm, FormRenderProps } from "react-final-form";
+import {
+  Form as ReactFinalForm,
+  FormProps as ReactFinalFormProps,
+  FormRenderProps,
+} from "react-final-form";
+import { DeepReadonly } from "ts-essentials";
 import { OmitStrict } from "type-zoo";
 import { toValidationErrors } from "../validation";
 import { FormData, ParsedFormData, ValidationErrors } from "./common";
@@ -14,15 +19,20 @@ export type SubmissionResponse<FD extends ParsedFormData> =
   | undefined
   | Promise<ValidationErrors<FD> | undefined>;
 
-type PropsFromFinalFormConfig<FD extends FormData> = Pick<
-  Config<FD>,
-  // tslint:disable-next-line: max-union-size
-  | "keepDirtyOnReinitialize"
-  | "destroyOnUnregister"
-  | "validateOnBlur"
-  | "mutators"
-  | "debug"
->;
+type PropsFromFinalFormConfig<FD extends FormData> = DeepReadonly<
+  Pick<
+    ReactFinalFormProps<FD>,
+    // tslint:disable-next-line: max-union-size
+    | "keepDirtyOnReinitialize"
+    | "destroyOnUnregister"
+    | "validateOnBlur"
+    | "debug"
+    | "subscription"
+  >
+> & {
+  // TODO https://github.com/final-form/final-form/pull/275
+  readonly mutators?: { readonly [key: string]: Mutator<FD> };
+};
 
 type FocusInvalidElementProps = {
   readonly formGroupSelector?: Selector;
@@ -171,6 +181,7 @@ export const Form = <A extends ParsedFormData, O extends FormData>(
       decorators={[focusDecorator.current]}
       validateOnBlur={validateOnBlur}
       mutators={props.mutators}
+      subscription={props.subscription}
     />
   );
 };

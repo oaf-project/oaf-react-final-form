@@ -30,10 +30,9 @@ export type SelectProps<
 export type SelectForCodecProps<
   FD extends ParsedFormData,
   Name extends keyof FD & string
-> =
-  OmitStrict<SelectProps<FD, Name>, "multiple"> &
-    Required<FD[Name]> &
-    Multiple<FD[Name]>;
+> = OmitStrict<SelectProps<FD, Name>, "multiple"> &
+  Required<FD[Name]> &
+  Multiple<FD[Name]>;
 
 export const Select = <
   FD extends ParsedFormData,
