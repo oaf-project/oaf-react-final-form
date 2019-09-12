@@ -1,5 +1,6 @@
 import React from "react";
 import { Field, FieldRenderProps } from "react-final-form";
+import { OmitStrict } from "type-zoo/types";
 import {
   ExtractFormValue,
   InputTypeConstraint,
@@ -37,8 +38,7 @@ export type InputForCodecProps<
   FD extends ParsedFormData,
   Name extends keyof FD & string
 > =
-  // TODO ExcludeStrict
-  Exclude<InputProps<FD, Name>, "required" | "type"> &
+  OmitStrict<InputProps<FD, Name>, "required" | "type"> &
     Required<FD[Name]> &
     InputTypeConstraint<FD[Name]>;
 

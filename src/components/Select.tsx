@@ -1,5 +1,6 @@
 import React from "react";
 import { Field, FieldRenderProps } from "react-final-form";
+import { OmitStrict } from "type-zoo/types";
 import { ExtractFormValue, Multiple, ParsedFormData, Required } from "./common";
 import {
   ExtraSelectProps,
@@ -30,8 +31,7 @@ export type SelectForCodecProps<
   FD extends ParsedFormData,
   Name extends keyof FD & string
 > =
-  // TODO ExcludeStrict
-  Exclude<SelectProps<FD, Name>, "required" | "multiple"> &
+  OmitStrict<SelectProps<FD, Name>, "multiple"> &
     Required<FD[Name]> &
     Multiple<FD[Name]>;
 
