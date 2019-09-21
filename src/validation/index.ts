@@ -11,13 +11,15 @@ type FinalFormValidationError =
   | string
   | FinalFormValidationArray
   | FinalFormValidationRecord;
+// eslint-disable-next-line functional/prefer-type-literal, @typescript-eslint/no-empty-interface
 interface FinalFormValidationRecord
   extends Readonly<Record<string, FinalFormValidationError>> {}
+// eslint-disable-next-line functional/prefer-type-literal, @typescript-eslint/no-empty-interface
 interface FinalFormValidationArray
   extends ReadonlyArray<FinalFormValidationError> {}
 
 // TODO: make this smarter
-const isArray = (c: ContextEntry) => {
+const isArray = (c: ContextEntry): boolean => {
   const tag = ((c as unknown) as { readonly type: { readonly _tag?: string } })
     .type._tag;
   return (
@@ -27,20 +29,20 @@ const isArray = (c: ContextEntry) => {
   );
 };
 
-// tslint:disable: no-if-statement
 const renderError = (
   errorMessage: string,
   c: ContextEntry,
   cs: ReadonlyArray<ContextEntry>,
-  isArrayEntry: boolean = false,
+  isArrayEntry = false,
 ): FinalFormValidationError => {
   const [nextC, ...nextCs] = cs;
 
-  const nextResult = (nextIsArrayEntry: boolean) =>
+  const nextResult = (nextIsArrayEntry: boolean): FinalFormValidationError =>
     cs.length > 0
       ? renderError(errorMessage, nextC, nextCs, nextIsArrayEntry)
       : errorMessage; // This is a leaf, so render the error message string.
 
+  /* eslint-disable functional/no-conditional-statement */
   if (isArray(c)) {
     if (nextC === undefined) {
       return { [c.key]: "Expected next context entry to exist." };
@@ -53,8 +55,8 @@ const renderError = (
   } else {
     return isArrayEntry ? nextResult(false) : { [c.key]: nextResult(false) };
   }
+  /* eslint-enable functional/no-conditional-statement */
 };
-// tslint:enable: no-if-statement
 
 const isObject = (item: unknown): item is FinalFormValidationRecord =>
   item && typeof item === "object" && !Array.isArray(item);
@@ -69,6 +71,7 @@ const mergeDeepObjects = <
   Object.keys(b).reduce(
     (acc, key) => ({
       ...acc,
+      // eslint-disable-next-line @typescript-eslint/no-use-before-define
       [key]: mergeDeep(a[key], b[key]),
     }),
     a,
@@ -84,6 +87,7 @@ const mergeDeepArrays = <
   const aExtended: FinalFormValidationArray =
     a.length >= b.length ? a : [...a, ...new Array(b.length - a.length)];
 
+  // eslint-disable-next-line @typescript-eslint/no-use-before-define
   return aExtended.map((value, index) => mergeDeep(value, b[index]));
 };
 

@@ -10,9 +10,6 @@ import {
 } from "./common";
 import { FormGroup, FormGroupChildProps } from "./FormGroup";
 
-// TODO https://github.com/Microsoft/tslint-microsoft-contrib/issues/409
-// tslint:disable: react-a11y-role-has-required-aria-props
-
 export type SelectOption<A extends FormValue> = {
   // Union with empty string to allow default empty value as first select option.
   readonly value: A | "";
@@ -60,7 +57,6 @@ export type ExtraSelectProps<
 type HTMLSelectProps = Readonly<
   OmitStrict<
     SelectHTMLAttributes<HTMLSelectElement>,
-    // tslint:disable-next-line: max-union-size
     | "id"
     | "value"
     | "multiple"
@@ -92,7 +88,7 @@ export const RenderOptions = <
   options,
 }: {
   readonly options: SelectOptions<FD[Name]>;
-}) => (
+}): JSX.Element => (
   <>
     {options.map(o =>
       isSelectOption(o) ? (
@@ -113,7 +109,7 @@ export const SelectRenderComponent = <
   Name extends keyof FD & string
 >(
   props: SelectRenderProps<FD, Name>,
-) => (
+): JSX.Element => (
   <FormGroup
     inputId={props.id}
     label={props.label}

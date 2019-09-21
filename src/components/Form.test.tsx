@@ -13,12 +13,9 @@ import {
 } from ".";
 import { NumberFromString, withMessage } from "../validation";
 
-// tslint:disable: no-expression-statement no-duplicate-string
+/* eslint-disable sonarjs/no-duplicate-string, no-restricted-globals, @typescript-eslint/no-unused-vars, functional/functional-parameters, functional/no-expression-statement */
 
 expect.extend(toHaveNoViolations);
-
-// TODO https://github.com/Microsoft/tslint-microsoft-contrib/issues/409
-// tslint:disable: react-a11y-role-has-required-aria-props
 
 it("renders without crashing", async () => {
   // First, we define the form codec using io-ts.
@@ -93,11 +90,8 @@ it("renders without crashing", async () => {
       initialValues={initialValues}
       // https://github.com/final-form/react-final-form-arrays#usage
       mutators={{
-        // potentially other mutators could be merged here
         // TODO https://github.com/final-form/final-form-arrays/pull/40
-        ...((arrayMutators as unknown) as {
-          readonly [key: string]: Mutator<RawFormData>;
-        }),
+        ...((arrayMutators as unknown) as Record<string, Mutator<RawFormData>>),
       }}
     >
       <Input

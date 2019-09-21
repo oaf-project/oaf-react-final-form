@@ -19,11 +19,9 @@ type FormGroupProps<
   FormGroupChildProps & {
     readonly inputId: string;
     readonly label: string | JSX.Element;
-    // tslint:disable: prefer-optional
     readonly inputClassName: string | undefined;
     readonly invalidClassName: string | undefined;
     readonly validClassName: string | undefined;
-    // tslint:enable: prefer-optional
     readonly children: (props: {
       readonly isInvalid: boolean;
       readonly className?: string;
@@ -33,7 +31,7 @@ type FormGroupProps<
 
 export const FormGroup = <FD extends FormData, Name extends keyof FD>(
   props: FormGroupProps<FD, Name>,
-) => {
+): JSX.Element => {
   const feedbackId = `${props.inputId}-feedback`;
   // 'To stop form controls from announcing as invalid by default, one can add aria-invalid="false" to any necessary element.'
   // See https://developer.paciellogroup.com/blog/2019/02/required-attribute-requirements/

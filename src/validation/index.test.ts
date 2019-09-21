@@ -3,7 +3,7 @@ import * as t from "io-ts";
 import { toValidationErrors } from ".";
 import { formCodec } from "..";
 
-// tslint:disable: no-expression-statement no-duplicate-string no-if-statement no-throw
+/* eslint-disable functional/no-throw-statement, sonarjs/no-duplicate-string, functional/functional-parameters, functional/no-expression-statement, functional/no-conditional-statement */
 
 it("validates flat (non-nested) form data", async () => {
   const codec = formCodec({

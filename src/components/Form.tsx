@@ -1,3 +1,4 @@
+/* eslint-disable functional/functional-parameters */
 import { FormApi, Mutator } from "final-form";
 import { fold } from "fp-ts/lib/Either";
 import { Errors, Type, ValidationError } from "io-ts";
@@ -7,6 +8,7 @@ import {
   Form as ReactFinalForm,
   FormProps as ReactFinalFormProps,
   FormRenderProps,
+  AnyObject,
 } from "react-final-form";
 import { DeepReadonly } from "ts-essentials";
 import { OmitStrict } from "type-zoo";
@@ -22,7 +24,6 @@ export type SubmissionResponse<FD extends ParsedFormData> =
 type PropsFromFinalFormConfig<FD extends FormData> = DeepReadonly<
   Pick<
     ReactFinalFormProps<FD>,
-    // tslint:disable-next-line: max-union-size
     | "keepDirtyOnReinitialize"
     | "destroyOnUnregister"
     | "validateOnBlur"
@@ -64,7 +65,7 @@ export type FormProps<
 
 export const Form = <A extends ParsedFormData, O extends FormData>(
   props: FormProps<A, O>,
-) => {
+): JSX.Element => {
   const formRef = React.useRef<HTMLFormElement | null>(null);
 
   // Stick this in a ref to avoid "Warning: Form decorators should not change
@@ -131,8 +132,10 @@ export const Form = <A extends ParsedFormData, O extends FormData>(
       ...props.formProps,
     };
 
-    const handleSubmit = (event?: React.SyntheticEvent<HTMLFormElement>) => {
-      // tslint:disable-next-line: no-if-statement
+    const handleSubmit = (
+      event?: React.SyntheticEvent<HTMLFormElement>,
+    ): Promise<AnyObject | undefined> | undefined => {
+      // eslint-disable-next-line functional/no-conditional-statement
       if (validateOnBlur) {
         // Reset the same validate function as we set initially
         // for the side effect that it will re-run validation.
@@ -140,7 +143,7 @@ export const Form = <A extends ParsedFormData, O extends FormData>(
         // doesn't give us one last validation before submitting when
         // validateOnBlur is true.
         // See https://github.com/final-form/final-form/issues/213
-        // tslint:disable-next-line: no-expression-statement
+        // eslint-disable-next-line functional/no-expression-statement
         renderProps.form.setConfig("validate", validate);
       }
       return renderProps.handleSubmit(event);
@@ -191,6 +194,7 @@ export const Form = <A extends ParsedFormData, O extends FormData>(
 export const formForCodec = <A extends ParsedFormData, O extends FormData>(
   codec: Type<A, O>,
 ) => {
+  // eslint-disable-next-line react/display-name
   return (props: OmitStrict<FormProps<A, O>, "codec">) => {
     return <Form codec={codec} {...props} />;
   };

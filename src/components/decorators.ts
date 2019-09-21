@@ -1,7 +1,7 @@
 import { Decorator, FormState } from "final-form";
 import { focusInvalidForm, Selector } from "oaf-side-effects";
 
-// tslint:disable: no-expression-statement no-empty no-if-statement
+/* eslint-disable functional/functional-parameters, functional/no-expression-statement */
 
 const isInvalid = (state: FormState<unknown>): boolean =>
   state.hasValidationErrors || state.hasSubmitErrors;
@@ -35,7 +35,7 @@ export const focusInvalidFormDecorator = (
   return form => {
     const originalSubmit = form.submit;
 
-    // tslint:disable-next-line: no-object-mutation
+    // eslint-disable-next-line functional/immutable-data
     form.submit = () => {
       const formElement = getFormElement();
 
@@ -43,6 +43,7 @@ export const focusInvalidFormDecorator = (
 
       Promise.resolve(result).then(
         () => {
+          // eslint-disable-next-line functional/no-conditional-statement
           if (formElement === null) {
             return;
           }
@@ -59,6 +60,7 @@ export const focusInvalidFormDecorator = (
                 .map(id => `#${id}`)
                 .join(", ");
 
+            // eslint-disable-next-line functional/no-conditional-statement
             if (invalid) {
               // TODO: remove this setTimeout?
               setTimeout(() => {
@@ -78,7 +80,7 @@ export const focusInvalidFormDecorator = (
       return result;
     };
 
-    // tslint:disable-next-line: no-object-mutation
+    // eslint-disable-next-line functional/immutable-data
     return () => (form.submit = originalSubmit);
   };
 };

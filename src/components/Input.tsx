@@ -46,7 +46,7 @@ export const Input = <
   Name extends keyof FD & string
 >(
   props: InputProps<FD, Name>,
-) => {
+): JSX.Element => {
   const touchedState = React.useState<boolean>();
 
   const {
@@ -63,7 +63,7 @@ export const Input = <
 
   const defaultRender = (
     renderProps: FieldRenderProps<ExtractFormValue<FD[Name]>, HTMLInputElement>,
-  ) =>
+  ): JSX.Element =>
     InputRenderComponent({
       formGroupProps,
       labelProps,
@@ -84,7 +84,9 @@ export const Input = <
   return <Field name={name} type={inputProps.type} render={renderFunc} />;
 };
 
+// eslint-disable-next-line functional/functional-parameters
 export const inputForCodec = <FD extends ParsedFormData>() => {
+  // eslint-disable-next-line react/display-name
   return <Name extends keyof FD & string>(
     props: InputForCodecProps<FD, Name>,
   ) => {

@@ -11,7 +11,7 @@ export * from "./InputRenderComponent";
 export * from "./Select";
 export * from "./SelectRenderComponent";
 
-// tslint:disable: readonly-array
+/* eslint-disable functional/prefer-readonly-type */
 
 export function formCodec<R extends t.Props, O extends t.Props>(fields: {
   readonly required: R;

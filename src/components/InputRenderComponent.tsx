@@ -23,7 +23,6 @@ export type ExtraInputProps = {
 export type HTMLInputProps = Readonly<
   OmitStrict<
     InputHTMLAttributes<HTMLInputElement>,
-    // tslint:disable-next-line: max-union-size
     | "id"
     | "value"
     | "onBlur"
@@ -54,7 +53,7 @@ export const InputRenderComponent = <
   Name extends keyof FD & string
 >(
   props: InputRenderProps<FD, Name>,
-) => (
+): JSX.Element => (
   <FormGroup
     inputId={props.id}
     label={props.label}

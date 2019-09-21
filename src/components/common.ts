@@ -20,7 +20,7 @@ export type InputType =
   | "url"
   | "week";
 
-// tslint:disable: readonly-array
+/* eslint-disable functional/prefer-readonly-type */
 
 type FormDataValues<A, B> =
   | undefined
@@ -90,7 +90,7 @@ type MapToErrorType<A> = {
   : A extends ReadonlyArray<unknown>
   ? "array"
   : "string"];
-// tslint:enable: readonly-array
+/* eslint-enable functional/prefer-readonly-type */
 
 /**
  * A strongly typed version of the ValidationErrors type from final-form.
@@ -131,7 +131,7 @@ export type Required<Value> = undefined extends Value
   ? { readonly required?: false }
   : { readonly required: true };
 
-// tslint:disable-next-line: readonly-array no-any
+// eslint-disable-next-line functional/prefer-readonly-type, @typescript-eslint/no-explicit-any
 export type Multiple<Value> = any[] extends Value
   ? { readonly multiple: true }
   : { readonly multiple?: false };

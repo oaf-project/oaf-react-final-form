@@ -39,7 +39,7 @@ export const Select = <
   Name extends keyof FD & string
 >(
   props: SelectProps<FD, Name>,
-) => {
+): JSX.Element => {
   const touchedState = React.useState<boolean>();
 
   const {
@@ -58,7 +58,7 @@ export const Select = <
 
   const defaultRender = (
     renderProps: FieldRenderProps<ExtractFormValue<FD[Name]>, HTMLElement>,
-  ) =>
+  ): JSX.Element =>
     SelectRenderComponent({
       formGroupProps,
       labelProps,
@@ -83,7 +83,9 @@ export const Select = <
   );
 };
 
+// eslint-disable-next-line functional/functional-parameters
 export const selectForCodec = <FD extends ParsedFormData>() => {
+  // eslint-disable-next-line react/display-name
   return <Name extends keyof FD & string>(
     props: SelectForCodecProps<FD, Name>,
   ) => {
