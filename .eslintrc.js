@@ -32,6 +32,12 @@ module.exports = {
     "prettier",
   ],
   rules: {
+    // Additional rules that are not part of `eslint:recommended`.
+    // See https://eslint.org/docs/rules/
+    "no-eval": "error",
+    "no-implied-eval": "error",
+    "no-await-in-loop": "error",
+    "no-new-wrappers": "error",
     "react-hooks/rules-of-hooks": "error",
     "react-hooks/exhaustive-deps": "error",
     "react/prop-types": 0,
