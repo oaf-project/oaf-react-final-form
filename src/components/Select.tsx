@@ -5,6 +5,7 @@ import { ExtractFormValue, Multiple, ParsedFormData, Required } from "./common";
 import {
   ExtraSelectProps,
   SelectRenderComponent,
+  SelectOptions,
 } from "./SelectRenderComponent";
 import { touchedHack } from "./touched-hack";
 
@@ -71,7 +72,7 @@ export const Select = <
       ),
       id: id || name,
       label,
-      options,
+      options: options as SelectOptions<string>, // TODO remove this cast
       multiple,
     });
 

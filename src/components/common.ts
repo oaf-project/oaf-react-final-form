@@ -1,5 +1,5 @@
 import { FORM_ERROR } from "final-form";
-import { FieldMetaState } from "react-final-form";
+import { FieldMetaState as RawFieldMetaState } from "react-final-form";
 import { ExcludeStrict, Overwrite } from "type-zoo";
 
 export type NumericInputType = "number" | "range";
@@ -61,7 +61,7 @@ export type ParsedFormData<
   I extends string = string,
   J extends string = string
 > = {
-  readonly [key in I]: FormDataValues<ParsedFormValue, FormData<J>>;
+  readonly [key in I]: FormDataValues<ParsedFormValue, FormData<J>>; // TODO: ParsedFormData<J> ?
 };
 
 export type ExtractFormValue<A> = Extract<
@@ -119,7 +119,7 @@ export type ValidationErrors<FD extends ParsedFormData> = {
  */
 export type FieldMetaState<FV> = {
   readonly meta: Overwrite<
-    FieldMetaState<FV>,
+    RawFieldMetaState<FV>,
     {
       readonly error?: string;
       readonly submitError?: string;

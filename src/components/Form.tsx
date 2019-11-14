@@ -183,8 +183,7 @@ export const Form = <A extends ParsedFormData, O extends FormData>(
       // See e.g. https://webaim.org/techniques/formvalidation/
       decorators={[focusDecorator.current]}
       validateOnBlur={validateOnBlur}
-      // TODO https://github.com/final-form/final-form/pull/275
-      mutators={(props.mutators as unknown) as ReactFinalFormProps["mutators"]}
+      mutators={props.mutators}
       subscription={props.subscription}
     />
   );
