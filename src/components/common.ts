@@ -61,7 +61,7 @@ export type ParsedFormData<
   I extends string = string,
   J extends string = string
 > = {
-  readonly [key in I]: FormDataValues<ParsedFormValue, FormData<J>>; // TODO: ParsedFormData<J> ?
+  readonly [key in I]: FormDataValues<ParsedFormValue, ParsedFormData<J>>;
 };
 
 export type ExtractFormValue<A> = Extract<
@@ -108,9 +108,9 @@ type MapToErrorType<A> = {
  * @see https://github.com/final-form/final-form#form_error-string
  * @see https://github.com/final-form/final-form#onsubmit-values-object-form-formapi-callback-errors-object--void--object--promiseobject--void
  */
-export type ValidationErrors<FD extends ParsedFormData> = {
+export type ValidationErrors<PFD extends ParsedFormData> = {
   readonly [FORM_ERROR]?: string;
-} & MapToErrorType<FD>;
+} & MapToErrorType<PFD>;
 
 /**
  * Replace any with string for improved type-safety.

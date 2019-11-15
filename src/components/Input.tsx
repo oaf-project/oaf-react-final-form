@@ -3,6 +3,7 @@ import { Field, FieldRenderProps } from "react-final-form";
 import { OmitStrict } from "type-zoo/types";
 import {
   ExtractFormValue,
+  FormData,
   InputTypeConstraint,
   ParsedFormData,
   Required,
@@ -15,37 +16,41 @@ import {
 import { touchedHack } from "./touched-hack";
 
 export type RenderInput<
-  FD extends ParsedFormData,
-  Name extends keyof FD & string
+  PFD extends ParsedFormData,
+  FD extends FormData,
+  Name extends keyof PFD & keyof FD & string
 > = (
-  props: InputProps<FD, Name>,
+  props: InputProps<PFD, FD, Name>,
 ) => (
   renderProps: FieldRenderProps<ExtractFormValue<FD[Name]>, HTMLInputElement>,
 ) => JSX.Element;
 
 export type InputProps<
-  FD extends ParsedFormData,
-  Name extends keyof FD & string
+  PFD extends ParsedFormData,
+  FD extends FormData,
+  Name extends keyof PFD & keyof FD & string
 > = HTMLInputProps &
   ExtraInputProps & {
     readonly id?: string;
     readonly name: Name;
-    readonly render?: RenderInput<FD, Name>;
+    readonly render?: RenderInput<PFD, FD, Name>;
     readonly keepTouchedOnReinitialize?: boolean;
   };
 
 export type InputForCodecProps<
-  FD extends ParsedFormData,
-  Name extends keyof FD & string
-> = OmitStrict<InputProps<FD, Name>, "required" | "type"> &
-  Required<FD[Name]> &
-  InputTypeConstraint<FD[Name]>;
+  PFD extends ParsedFormData,
+  FD extends FormData,
+  Name extends keyof PFD & keyof FD & string
+> = OmitStrict<InputProps<PFD, FD, Name>, "required" | "type"> &
+  Required<PFD[Name]> &
+  InputTypeConstraint<PFD[Name]>;
 
 export const Input = <
-  FD extends ParsedFormData,
-  Name extends keyof FD & string
+  PFD extends ParsedFormData,
+  FD extends FormData,
+  Name extends keyof PFD & keyof FD & string
 >(
-  props: InputProps<FD, Name>,
+  props: InputProps<PFD, FD, Name>,
 ): JSX.Element => {
   const touchedState = React.useState<boolean>();
 
@@ -85,12 +90,15 @@ export const Input = <
 };
 
 // eslint-disable-next-line functional/functional-parameters
-export const inputForCodec = <FD extends ParsedFormData>() => {
+export const inputForCodec = <
+  PFD extends ParsedFormData,
+  FD extends FormData
+>() => {
   // eslint-disable-next-line react/display-name
-  return <Name extends keyof FD & string>(
-    props: InputForCodecProps<FD, Name>,
+  return <Name extends keyof PFD & keyof FD & string>(
+    props: InputForCodecProps<PFD, FD, Name>,
   ) => {
     const { required, type, ...rest } = props;
-    return <Input<FD, Name> required={required} type={type} {...rest} />;
+    return <Input<PFD, FD, Name> required={required} type={type} {...rest} />;
   };
 };

@@ -6,7 +6,6 @@ import {
   FieldMetaState,
   FormData,
   FormValue,
-  ParsedFormData,
 } from "./common";
 import { FormGroup, FormGroupChildProps } from "./FormGroup";
 
@@ -41,10 +40,7 @@ export type SelectOptions<A extends unknown> = ReadonlyArray<
   SelectOptionOrGroup<ExtractFormValue<A>>
 >;
 
-export type ExtraSelectProps<
-  FD extends ParsedFormData,
-  Name extends keyof FD
-> = {
+export type ExtraSelectProps<FD extends FormData, Name extends keyof FD> = {
   // A non-optional label that we render in a <label> element to ensure accessibility.
   readonly label: string | JSX.Element;
   readonly multiple?: boolean;

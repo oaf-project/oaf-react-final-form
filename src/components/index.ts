@@ -55,8 +55,8 @@ export const elementsForCodec = <A extends ParsedFormData, O extends FormData>(
   // TODO allow some defaults to be specified here, for example render overrides, label props, invalid class name, valid class name, etc.
 ) => ({
   Form: formForCodec(codec),
-  Input: inputForCodec<A>(),
-  Select: selectForCodec<A>(),
+  Input: inputForCodec<A, O>(),
+  Select: selectForCodec<A, O>(),
   // TODO: checkbox, radio, text area
   // TODO: file inputs
 });

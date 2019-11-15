@@ -1,45 +1,54 @@
 import React from "react";
 import { Field, FieldRenderProps } from "react-final-form";
 import { OmitStrict } from "type-zoo/types";
-import { ExtractFormValue, Multiple, ParsedFormData, Required } from "./common";
+import {
+  ExtractFormValue,
+  FormData,
+  Multiple,
+  ParsedFormData,
+  Required,
+} from "./common";
 import {
   ExtraSelectProps,
   SelectRenderComponent,
-  SelectOptions,
 } from "./SelectRenderComponent";
 import { touchedHack } from "./touched-hack";
 
 export type RenderSelect<
-  FD extends ParsedFormData,
-  Name extends keyof FD & string
+  PFD extends ParsedFormData,
+  FD extends FormData,
+  Name extends keyof PFD & keyof FD & string
 > = (
-  props: SelectProps<FD, Name>,
+  props: SelectProps<PFD, FD, Name>,
 ) => (
   renderProps: FieldRenderProps<ExtractFormValue<FD[Name]>, HTMLSelectElement>,
 ) => JSX.Element;
 
 export type SelectProps<
-  FD extends ParsedFormData,
-  Name extends keyof FD & string
+  PFD extends ParsedFormData,
+  FD extends FormData,
+  Name extends keyof PFD & keyof FD & string
 > = ExtraSelectProps<FD, Name> & {
   readonly id?: string;
   readonly name: Name;
-  readonly render?: RenderSelect<FD, Name>;
+  readonly render?: RenderSelect<PFD, FD, Name>;
   readonly keepTouchedOnReinitialize?: boolean;
 };
 
 export type SelectForCodecProps<
-  FD extends ParsedFormData,
-  Name extends keyof FD & string
-> = OmitStrict<SelectProps<FD, Name>, "multiple"> &
-  Required<FD[Name]> &
-  Multiple<FD[Name]>;
+  PFD extends ParsedFormData,
+  FD extends FormData,
+  Name extends keyof PFD & keyof FD & string
+> = OmitStrict<SelectProps<PFD, FD, Name>, "multiple"> &
+  Required<PFD[Name]> &
+  Multiple<PFD[Name]>;
 
 export const Select = <
-  FD extends ParsedFormData,
-  Name extends keyof FD & string
+  PFD extends ParsedFormData,
+  FD extends FormData,
+  Name extends keyof PFD & keyof FD & string
 >(
-  props: SelectProps<FD, Name>,
+  props: SelectProps<PFD, FD, Name>,
 ): JSX.Element => {
   const touchedState = React.useState<boolean>();
 
@@ -72,7 +81,7 @@ export const Select = <
       ),
       id: id || name,
       label,
-      options: options as SelectOptions<string>, // TODO remove this cast
+      options,
       multiple,
     });
 
@@ -85,14 +94,21 @@ export const Select = <
 };
 
 // eslint-disable-next-line functional/functional-parameters
-export const selectForCodec = <FD extends ParsedFormData>() => {
+export const selectForCodec = <
+  PFD extends ParsedFormData,
+  FD extends FormData
+>() => {
   // eslint-disable-next-line react/display-name
-  return <Name extends keyof FD & string>(
-    props: SelectForCodecProps<FD, Name>,
+  return <Name extends keyof PFD & keyof FD & string>(
+    props: SelectForCodecProps<PFD, FD, Name>,
   ) => {
     const { required, multiple, ...rest } = props;
     return (
-      <Select<FD, Name> required={required} multiple={multiple} {...rest} />
+      <Select<PFD, FD, Name>
+        required={required}
+        multiple={multiple}
+        {...rest}
+      />
     );
   };
 };
