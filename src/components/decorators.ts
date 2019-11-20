@@ -26,12 +26,12 @@ const isInvalid = (state: FormState<unknown>): boolean =>
  *                          so that both the input and its label are visible.
  * @param smoothScroll true for smooth scrolling, false otherwise
  */
-export const focusInvalidFormDecorator = (
+export const focusInvalidFormDecorator = <FormValues>(
   getFormElement: () => Element | null,
   formGroupSelector: Selector,
   invalidElementSelector: Selector | undefined,
   smoothScroll: boolean | undefined = undefined,
-): Decorator => {
+): Decorator<FormValues> => {
   return form => {
     const originalSubmit = form.submit;
 

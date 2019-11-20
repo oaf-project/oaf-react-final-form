@@ -1,4 +1,4 @@
-import { FORM_ERROR, Mutator } from "final-form";
+import { FORM_ERROR } from "final-form";
 import arrayMutators from "final-form-arrays";
 import * as t from "io-ts";
 import { axe, toHaveNoViolations } from "jest-axe";
@@ -51,7 +51,6 @@ it("renders without crashing", async () => {
   const { Form, Input, Select } = elementsForCodec(codec);
 
   type FormData = t.TypeOf<typeof codec>;
-  type RawFormData = t.OutputOf<typeof codec>;
 
   const onSubmit = (_: FormData): SubmissionResponse<FormData> => {
     return {
@@ -90,8 +89,7 @@ it("renders without crashing", async () => {
       initialValues={initialValues}
       // https://github.com/final-form/react-final-form-arrays#usage
       mutators={{
-        // TODO https://github.com/final-form/final-form-arrays/pull/40
-        ...((arrayMutators as unknown) as Record<string, Mutator<RawFormData>>),
+        ...arrayMutators,
       }}
     >
       <Input

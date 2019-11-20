@@ -71,7 +71,7 @@ export const Form = <A extends ParsedFormData, O extends FormData>(
   // Stick this in a ref to avoid "Warning: Form decorators should not change
   // from one render to the next as new values will be ignored"
   const focusDecorator = React.useRef(
-    focusInvalidFormDecorator(
+    focusInvalidFormDecorator<O>(
       () => formRef.current,
       props.formGroupSelector || ".form-group",
       props.invalidElementSelector || "[aria-invalid=true], [role=alert]",
