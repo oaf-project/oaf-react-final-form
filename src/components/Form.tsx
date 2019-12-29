@@ -61,6 +61,9 @@ export type FormProps<
       Readonly<FormHTMLAttributes<HTMLFormElement>>,
       "onSubmit"
     >;
+    readonly children?:
+      | ((props: FormRenderProps<A>) => React.ReactNode)
+      | React.ReactNode;
   };
 
 export const Form = <A extends ParsedFormData, O extends FormData>(
