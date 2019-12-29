@@ -74,6 +74,7 @@ export const focusInvalidFormDecorator = <FormValues>(
             }
           }, 0);
         },
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
         () => {},
       );
 
