@@ -62,9 +62,22 @@ export type FormProps<
       "onSubmit"
     >;
     readonly children?:
-      | ((props: FormRenderProps<A>) => React.ReactNode)
+      | ((props: RenderProps<A>) => React.ReactNode)
       | React.ReactNode;
   };
+
+/**
+ * Replace any with string for improved type-safety.
+ * io-ts error messages are strings, so we can get away
+ * with this here.
+ */
+export type RenderProps<O> = OmitStrict<
+  FormRenderProps<O>,
+  "error" | "submitError"
+> & {
+  readonly error?: string;
+  readonly submitError?: string;
+};
 
 export const Form = <A extends ParsedFormData, O extends FormData>(
   props: FormProps<A, O>,
@@ -113,18 +126,8 @@ export const Form = <A extends ParsedFormData, O extends FormData>(
     )(props.codec.decode(rawFormData));
   };
 
-  /**
-   * Replace any with string for improved type-safety.
-   * io-ts error messages are strings, so we can get away
-   * with this here.
-   */
-  type RenderProps = OmitStrict<FormRenderProps<O>, "error" | "submitError"> & {
-    readonly error?: string;
-    readonly submitError?: string;
-  };
-
   // TODO allow overriding form render component
-  const render = (renderProps: RenderProps): JSX.Element => {
+  const render = (renderProps: RenderProps<O>): JSX.Element => {
     const { action, noValidate } = {
       // Persuade iOS to do the right thing.
       // See https://stackoverflow.com/a/26287843/2476884
@@ -168,7 +171,11 @@ export const Form = <A extends ParsedFormData, O extends FormData>(
             {formError}
           </div>
         )}
-        {props.children}
+        {typeof props.children === "function"
+          ? // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+            // @ts-ignore
+            props.children(renderProps)
+          : props.children}
       </form>
     );
   };
@@ -188,8 +195,6 @@ export const Form = <A extends ParsedFormData, O extends FormData>(
       validateOnBlur={validateOnBlur}
       mutators={props.mutators}
       subscription={props.subscription}
-      // eslint-disable-next-line react/no-children-prop
-      children={props.children}
     />
   );
 };

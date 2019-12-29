@@ -92,40 +92,49 @@ it("renders without crashing", async () => {
         ...arrayMutators,
       }}
     >
-      <Input
-        label="foo"
-        labelProps={{ className: "some-label-class" }}
-        formGroupProps={{ className: "some-form-group-class" }}
-        feedbackProps={{ className: "some-feedback-class" }}
-        name="foo"
-        type="number"
-        min={42}
-        className="some-input-class"
-        placeholder="Enter a number less than 42"
-      />
-      <Input label="bar" name="bar" type="text" required={true} />
-      <Select label="baz" name="baz" options={selectOptions} />
-      <Select label="qux" name="qux" multiple={true} options={selectOptions} />
-      <FieldArray name="customers">
-        {({ fields }) =>
-          fields.map((name, index) => (
-            <React.Fragment key={name}>
-              <RawInput
-                label="First Name"
-                id={`customers-${index}-firstName`}
-                name={`${name}.firstName`}
-                type="text"
-              />
-              <RawInput
-                label="Last Name"
-                id={`customers-${index}-lastName`}
-                name={`${name}.lastName`}
-                type="text"
-              />
-            </React.Fragment>
-          ))
-        }
-      </FieldArray>
+      {() => (
+        <>
+          <Input
+            label="foo"
+            labelProps={{ className: "some-label-class" }}
+            formGroupProps={{ className: "some-form-group-class" }}
+            feedbackProps={{ className: "some-feedback-class" }}
+            name="foo"
+            type="number"
+            min={42}
+            className="some-input-class"
+            placeholder="Enter a number less than 42"
+          />
+          <Input label="bar" name="bar" type="text" required={true} />
+          <Select label="baz" name="baz" options={selectOptions} />
+          <Select
+            label="qux"
+            name="qux"
+            multiple={true}
+            options={selectOptions}
+          />
+          <FieldArray name="customers">
+            {({ fields }) =>
+              fields.map((name, index) => (
+                <React.Fragment key={name}>
+                  <RawInput
+                    label="First Name"
+                    id={`customers-${index}-firstName`}
+                    name={`${name}.firstName`}
+                    type="text"
+                  />
+                  <RawInput
+                    label="Last Name"
+                    id={`customers-${index}-lastName`}
+                    name={`${name}.lastName`}
+                    type="text"
+                  />
+                </React.Fragment>
+              ))
+            }
+          </FieldArray>
+        </>
+      )}
     </Form>,
     div,
   );
