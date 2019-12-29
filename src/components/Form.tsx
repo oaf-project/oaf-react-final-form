@@ -188,6 +188,8 @@ export const Form = <A extends ParsedFormData, O extends FormData>(
       validateOnBlur={validateOnBlur}
       mutators={props.mutators}
       subscription={props.subscription}
+      // eslint-disable-next-line react/no-children-prop
+      children={props.children}
     />
   );
 };
