@@ -68,6 +68,9 @@ export const Input = <
     ...inputProps
   } = props;
 
+  const isCheckboxOrRadio =
+    inputProps.type === "checkbox" || inputProps.type === "radio";
+
   const defaultRender = (
     renderProps: FieldRenderProps<ExtractFormValue<FD[Name]>, HTMLInputElement>,
   ): JSX.Element =>
@@ -84,9 +87,7 @@ export const Input = <
       id:
         id ||
         // include value to ensure unique IDs for checkbox and radio inputs
-        (inputProps.type === "checkbox" || inputProps.type === "radio"
-          ? `${name}-${value}`
-          : name),
+        (isCheckboxOrRadio ? `${name}-${value}` : name),
       label,
     });
 
@@ -96,7 +97,7 @@ export const Input = <
   return (
     <Field
       name={name}
-      value={value}
+      value={isCheckboxOrRadio ? value : undefined}
       type={inputProps.type}
       render={renderFunc}
     />

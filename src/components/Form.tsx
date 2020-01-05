@@ -204,7 +204,7 @@ export const formForCodec = <A extends ParsedFormData, O extends FormData>(
   codec: Type<A, O>,
 ) => {
   // eslint-disable-next-line react/display-name
-  return (props: OmitStrict<FormProps<A, O>, "codec">) => {
-    return <Form codec={codec} {...props} />;
-  };
+  return (props: OmitStrict<FormProps<A, O>, "codec">): JSX.Element => (
+    <Form codec={codec} {...props} />
+  );
 };
