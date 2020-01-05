@@ -70,27 +70,13 @@ export const FormGroup = <FD extends FormData, Name extends keyof FD>(
     </label>
   );
 
-  const FormGroupWrapper: React.FunctionComponent = ({ children }) => (
-    <div className="form-group" {...props.formGroupProps}>
-      {isCheckboxOrRadio ? (
-        <div
-          className={props.inputDisabled ? "form-check disabled" : "form-check"}
-        >
-          {children}
-        </div>
-      ) : (
-        <>{children}</>
-      )}
-    </div>
-  );
-
-  return (
-    <FormGroupWrapper>
+  const contents = (
+    <>
       {isCheckboxOrRadio ? null : label}
       {props.children({ isInvalid, className, describedby })}
       {isCheckboxOrRadio ? label : null}
 
-      {isInvalid && (
+      {isInvalid ? (
         <div
           className="invalid-feedback"
           {...props.feedbackProps}
@@ -101,7 +87,21 @@ export const FormGroup = <FD extends FormData, Name extends keyof FD>(
             props.meta.submitError ||
             "This field is invalid."}
         </div>
+      ) : null}
+    </>
+  );
+
+  return (
+    <div className="form-group" {...props.formGroupProps}>
+      {isCheckboxOrRadio ? (
+        <div
+          className={props.inputDisabled ? "form-check disabled" : "form-check"}
+        >
+          {contents}
+        </div>
+      ) : (
+        <>{contents}</>
       )}
-    </FormGroupWrapper>
+    </div>
   );
 };
