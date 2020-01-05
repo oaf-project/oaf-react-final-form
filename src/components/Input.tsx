@@ -35,7 +35,7 @@ export type InputProps<
     readonly name: Name;
     readonly render?: RenderInput<PFD, FD, Name>;
     readonly keepTouchedOnReinitialize?: boolean;
-    readonly value?: ExtractFormValue<FD[Name]>;
+    readonly value?: ExtractFormValue<FD[Name]>; // TODO force this undefined for non-checkbox, non-radio inputs (they should use `initialValues`)
   };
 
 export type InputForCodecProps<

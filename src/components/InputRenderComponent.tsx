@@ -73,6 +73,7 @@ export const InputRenderComponent = <
         {...props.inputProps}
         id={props.id}
         value={props.renderProps.input.value}
+        checked={props.renderProps.input.checked}
         onBlur={props.renderProps.input.onBlur}
         onChange={props.renderProps.input.onChange}
         onFocus={props.renderProps.input.onFocus}
