@@ -35,7 +35,7 @@ export type InputProps<
     readonly name: Name;
     readonly render?: RenderInput<PFD, FD, Name>;
     readonly keepTouchedOnReinitialize?: boolean;
-    readonly value?: ExtractFormValue<FD[Name]>; // TODO force this undefined for non-checkbox, non-radio inputs (they should use `initialValues`)
+    readonly value?: ExtractFormValue<FD[Name]>;
   };
 
 export type InputForCodecProps<
@@ -97,7 +97,7 @@ export const Input = <
   return (
     <Field
       name={name}
-      value={isCheckboxOrRadio ? value : undefined}
+      value={value}
       type={inputProps.type}
       render={renderFunc}
     />
@@ -109,10 +109,10 @@ export const inputForCodec = <
   PFD extends ParsedFormData,
   FD extends FormData
 >() => {
-  // eslint-disable-next-line react/display-name, @typescript-eslint/explicit-function-return-type
+  // eslint-disable-next-line react/display-name
   return <Name extends keyof PFD & keyof FD & string>(
     props: InputForCodecProps<PFD, FD, Name>,
-  ) => {
+  ): JSX.Element => {
     const { required, type, ...rest } = props;
     return <Input<PFD, FD, Name> required={required} type={type} {...rest} />;
   };

@@ -9,14 +9,13 @@ export { NumberFromString } from "io-ts-types/lib/NumberFromString";
 type FinalFormValidationError =
   | undefined
   | string
-  | FinalFormValidationArray
-  | FinalFormValidationRecord;
-// eslint-disable-next-line functional/prefer-type-literal, @typescript-eslint/no-empty-interface
-interface FinalFormValidationRecord
-  extends Readonly<Record<string, FinalFormValidationError>> {}
-// eslint-disable-next-line functional/prefer-type-literal, @typescript-eslint/no-empty-interface
-interface FinalFormValidationArray
-  extends ReadonlyArray<FinalFormValidationError> {}
+  | readonly FinalFormValidationError[]
+  | { readonly [k: string]: FinalFormValidationError };
+
+type FinalFormValidationArray = readonly FinalFormValidationError[];
+type FinalFormValidationRecord = {
+  readonly [k: string]: FinalFormValidationError;
+};
 
 // TODO: make this smarter
 const isArray = (c: ContextEntry): boolean => {
@@ -67,7 +66,7 @@ const mergeDeepObjects = <
 >(
   a: A,
   b: B,
-) =>
+): A & B =>
   Object.keys(b).reduce(
     (acc, key) => ({
       ...acc,
