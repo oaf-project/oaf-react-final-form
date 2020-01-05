@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>&quot;components/common&quot; | oaf-react-final-form</title>
+	<title>&quot;components/common&quot; | oaf-react-final-form - v0.45.0</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -22,7 +22,7 @@
 						<li class="state loading">Preparing search index...</li>
 						<li class="state failure">The search index is not available</li>
 					</ul>
-					<a href="../index.html" class="title">oaf-react-final-form</a>
+					<a href="../index.html" class="title">oaf-react-final-form - v0.45.0</a>
 				</div>
 				<div class="table-cell" id="tsd-widgets">
 					<div id="tsd-filter">
@@ -75,7 +75,10 @@
 								<li class="tsd-kind-type-alias tsd-parent-kind-external-module tsd-has-type-parameter"><a href="_components_common_.html#fieldmetastate" class="tsd-kind-icon">Field<wbr>Meta<wbr>State</a></li>
 								<li class="tsd-kind-type-alias tsd-parent-kind-external-module tsd-has-type-parameter"><a href="_components_common_.html#formdata" class="tsd-kind-icon">Form<wbr>Data</a></li>
 								<li class="tsd-kind-type-alias tsd-parent-kind-external-module"><a href="_components_common_.html#formvalue" class="tsd-kind-icon">Form<wbr>Value</a></li>
+								<li class="tsd-kind-type-alias tsd-parent-kind-external-module"><a href="_components_common_.html#inputtype" class="tsd-kind-icon">Input<wbr>Type</a></li>
+								<li class="tsd-kind-type-alias tsd-parent-kind-external-module tsd-has-type-parameter"><a href="_components_common_.html#inputtypeconstraint" class="tsd-kind-icon">Input<wbr>Type<wbr>Constraint</a></li>
 								<li class="tsd-kind-type-alias tsd-parent-kind-external-module tsd-has-type-parameter"><a href="_components_common_.html#multiple" class="tsd-kind-icon">Multiple</a></li>
+								<li class="tsd-kind-type-alias tsd-parent-kind-external-module"><a href="_components_common_.html#numericinputtype" class="tsd-kind-icon">Numeric<wbr>Input<wbr>Type</a></li>
 								<li class="tsd-kind-type-alias tsd-parent-kind-external-module tsd-has-type-parameter"><a href="_components_common_.html#parsedformdata" class="tsd-kind-icon">Parsed<wbr>Form<wbr>Data</a></li>
 								<li class="tsd-kind-type-alias tsd-parent-kind-external-module"><a href="_components_common_.html#parsedformvalue" class="tsd-kind-icon">Parsed<wbr>Form<wbr>Value</a></li>
 								<li class="tsd-kind-type-alias tsd-parent-kind-external-module tsd-has-type-parameter"><a href="_components_common_.html#required" class="tsd-kind-icon">Required</a></li>
@@ -90,10 +93,10 @@
 				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-external-module tsd-has-type-parameter">
 					<a name="extractformvalue" class="tsd-anchor"></a>
 					<h3>Extract<wbr>Form<wbr>Value</h3>
-					<div class="tsd-signature tsd-kind-icon">Extract<wbr>Form<wbr>Value&lt;A&gt;<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Extract</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">NonNullable&lt;A&gt; extends readonly (infer X)[] ? X : NonNullable&lt;A&gt; extends (infer Y)[] ? Y : A</span><span class="tsd-signature-symbol">, </span><a href="_components_common_.html#formvalue" class="tsd-signature-type">FormValue</a><span class="tsd-signature-symbol">&gt;</span></div>
+					<div class="tsd-signature tsd-kind-icon">Extract<wbr>Form<wbr>Value&lt;A&gt;<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Extract</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">NonNullable&lt;A&gt; extends ReadonlyArray&lt;infer X&gt; ? X : NonNullable&lt;A&gt; extends Array&lt;infer Y&gt; ? Y : A</span><span class="tsd-signature-symbol">, </span><a href="_components_common_.html#formvalue" class="tsd-signature-type">FormValue</a><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/oaf-project/oaf-react-final-form/blob/91e37a6/src/components/common.ts#L49">components/common.ts:49</a></li>
+							<li>Defined in <a href="https://github.com/oaf-project/oaf-react-final-form/blob/7eee076/src/components/common.ts#L69">components/common.ts:69</a></li>
 						</ul>
 					</aside>
 					<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -109,7 +112,7 @@
 					<div class="tsd-signature tsd-kind-icon">Field<wbr>Meta<wbr>State&lt;FV&gt;<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/oaf-project/oaf-react-final-form/blob/91e37a6/src/components/common.ts#L102">components/common.ts:102</a></li>
+							<li>Defined in <a href="https://github.com/oaf-project/oaf-react-final-form/blob/7eee076/src/components/common.ts#L122">components/common.ts:122</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -137,7 +140,7 @@
 					<div class="tsd-signature tsd-kind-icon">Form<wbr>Data&lt;I, J&gt;<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/oaf-project/oaf-react-final-form/blob/91e37a6/src/components/common.ts#L26">components/common.ts:26</a></li>
+							<li>Defined in <a href="https://github.com/oaf-project/oaf-react-final-form/blob/7eee076/src/components/common.ts#L46">components/common.ts:46</a></li>
 						</ul>
 					</aside>
 					<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -161,7 +164,7 @@
 					<div class="tsd-signature tsd-kind-icon">Form<wbr>Value<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/oaf-project/oaf-react-final-form/blob/91e37a6/src/components/common.ts#L24">components/common.ts:24</a></li>
+							<li>Defined in <a href="https://github.com/oaf-project/oaf-react-final-form/blob/7eee076/src/components/common.ts#L44">components/common.ts:44</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -174,13 +177,23 @@
 						to get at via final-form so we omit the corresponding types here.</p>
 					</div>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-external-module tsd-has-type-parameter">
-					<a name="multiple" class="tsd-anchor"></a>
-					<h3>Multiple</h3>
-					<div class="tsd-signature tsd-kind-icon">Multiple&lt;Value&gt;<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Multiple&lt;Value&gt;</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-external-module">
+					<a name="inputtype" class="tsd-anchor"></a>
+					<h3>Input<wbr>Type</h3>
+					<div class="tsd-signature tsd-kind-icon">Input<wbr>Type<span class="tsd-signature-symbol">:</span> <a href="_components_common_.html#numericinputtype" class="tsd-signature-type">NumericInputType</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"checkbox"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"color"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"date"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"datetime-local"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"email"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"month"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"password"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"radio"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"search"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"tel"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"text"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"time"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"url"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"week"</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/oaf-project/oaf-react-final-form/blob/91e37a6/src/components/common.ts#L117">components/common.ts:117</a></li>
+							<li>Defined in <a href="https://github.com/oaf-project/oaf-react-final-form/blob/7eee076/src/components/common.ts#L8">components/common.ts:8</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-external-module tsd-has-type-parameter">
+					<a name="inputtypeconstraint" class="tsd-anchor"></a>
+					<h3>Input<wbr>Type<wbr>Constraint</h3>
+					<div class="tsd-signature tsd-kind-icon">Input<wbr>Type<wbr>Constraint&lt;Value&gt;<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Value extends number ? object : object</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/oaf-project/oaf-react-final-form/blob/7eee076/src/components/common.ts#L142">components/common.ts:142</a></li>
 						</ul>
 					</aside>
 					<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -191,12 +204,38 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-external-module tsd-has-type-parameter">
+					<a name="multiple" class="tsd-anchor"></a>
+					<h3>Multiple</h3>
+					<div class="tsd-signature tsd-kind-icon">Multiple&lt;Value&gt;<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any[] extends Value ? object : object</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/oaf-project/oaf-react-final-form/blob/7eee076/src/components/common.ts#L137">components/common.ts:137</a></li>
+						</ul>
+					</aside>
+					<h4 class="tsd-type-parameters-title">Type parameters</h4>
+					<ul class="tsd-type-parameters">
+						<li>
+							<h4>Value</h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-external-module">
+					<a name="numericinputtype" class="tsd-anchor"></a>
+					<h3>Numeric<wbr>Input<wbr>Type</h3>
+					<div class="tsd-signature tsd-kind-icon">Numeric<wbr>Input<wbr>Type<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">"number"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"range"</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/oaf-project/oaf-react-final-form/blob/7eee076/src/components/common.ts#L5">components/common.ts:5</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-external-module tsd-has-type-parameter">
 					<a name="parsedformdata" class="tsd-anchor"></a>
 					<h3>Parsed<wbr>Form<wbr>Data</h3>
 					<div class="tsd-signature tsd-kind-icon">Parsed<wbr>Form<wbr>Data&lt;I, J&gt;<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/oaf-project/oaf-react-final-form/blob/91e37a6/src/components/common.ts#L42">components/common.ts:42</a></li>
+							<li>Defined in <a href="https://github.com/oaf-project/oaf-react-final-form/blob/7eee076/src/components/common.ts#L62">components/common.ts:62</a></li>
 						</ul>
 					</aside>
 					<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -220,7 +259,7 @@
 					<div class="tsd-signature tsd-kind-icon">Parsed<wbr>Form<wbr>Value<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">symbol</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/oaf-project/oaf-react-final-form/blob/91e37a6/src/components/common.ts#L34">components/common.ts:34</a></li>
+							<li>Defined in <a href="https://github.com/oaf-project/oaf-react-final-form/blob/7eee076/src/components/common.ts#L54">components/common.ts:54</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -233,10 +272,10 @@
 				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-external-module tsd-has-type-parameter">
 					<a name="required" class="tsd-anchor"></a>
 					<h3>Required</h3>
-					<div class="tsd-signature tsd-kind-icon">Required&lt;Value&gt;<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Required&lt;Value&gt;</span></div>
+					<div class="tsd-signature tsd-kind-icon">Required&lt;Value&gt;<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined extends Value ? object : object</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/oaf-project/oaf-react-final-form/blob/91e37a6/src/components/common.ts#L112">components/common.ts:112</a></li>
+							<li>Defined in <a href="https://github.com/oaf-project/oaf-react-final-form/blob/7eee076/src/components/common.ts#L132">components/common.ts:132</a></li>
 						</ul>
 					</aside>
 					<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -249,10 +288,10 @@
 				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-external-module tsd-has-type-parameter">
 					<a name="validationerrors" class="tsd-anchor"></a>
 					<h3>Validation<wbr>Errors</h3>
-					<div class="tsd-signature tsd-kind-icon">Validation<wbr>Errors&lt;FD&gt;<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span><span class="tsd-signature-symbol"> &amp; </span><span class="tsd-signature-type">MapToErrorType</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">FD</span><span class="tsd-signature-symbol">&gt;</span></div>
+					<div class="tsd-signature tsd-kind-icon">Validation<wbr>Errors&lt;PFD&gt;<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span><span class="tsd-signature-symbol"> &amp; </span><span class="tsd-signature-type">MapToErrorType</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">PFD</span><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/oaf-project/oaf-react-final-form/blob/91e37a6/src/components/common.ts#L93">components/common.ts:93</a></li>
+							<li>Defined in <a href="https://github.com/oaf-project/oaf-react-final-form/blob/7eee076/src/components/common.ts#L113">components/common.ts:113</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -278,7 +317,7 @@
 					<h4 class="tsd-type-parameters-title">Type parameters</h4>
 					<ul class="tsd-type-parameters">
 						<li>
-							<h4>FD<span class="tsd-signature-symbol">: </span><a href="_components_common_.html#parsedformdata" class="tsd-signature-type">ParsedFormData</a></h4>
+							<h4>PFD<span class="tsd-signature-symbol">: </span><a href="_components_common_.html#parsedformdata" class="tsd-signature-type">ParsedFormData</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -291,43 +330,43 @@
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="_components_form_.html">"components/<wbr>Form"</a>
+						<a href="_components_form_.html">&quot;components/<wbr>Form&quot;</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="_components_form_test_.html">"components/<wbr>Form.test"</a>
+						<a href="_components_formgroup_.html">&quot;components/<wbr>Form<wbr>Group&quot;</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="_components_formgroup_.html">"components/<wbr>Form<wbr>Group"</a>
+						<a href="_components_input_.html">&quot;components/<wbr>Input&quot;</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="_components_input_.html">"components/<wbr>Input"</a>
+						<a href="_components_inputrendercomponent_.html">&quot;components/<wbr>Input<wbr>Render<wbr>Component&quot;</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="_components_inputrendercomponent_.html">"components/<wbr>Input<wbr>Render<wbr>Component"</a>
+						<a href="_components_select_.html">&quot;components/<wbr>Select&quot;</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="_components_select_.html">"components/<wbr>Select"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="_components_selectrendercomponent_.html">"components/<wbr>Select<wbr>Render<wbr>Component"</a>
+						<a href="_components_selectrendercomponent_.html">&quot;components/<wbr>Select<wbr>Render<wbr>Component&quot;</a>
 					</li>
 					<li class="current tsd-kind-external-module">
-						<a href="_components_common_.html">"components/common"</a>
+						<a href="_components_common_.html">&quot;components/common&quot;</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="_components_decorators_.html">"components/decorators"</a>
+						<a href="_components_decorators_.html">&quot;components/decorators&quot;</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="_components_index_.html">"components/index"</a>
+						<a href="_components_index_.html">&quot;components/index&quot;</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="_index_.html">"index"</a>
+						<a href="_components_touched_hack_.html">&quot;components/touched-<wbr>hack&quot;</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="_validation_index_.html">"validation/index"</a>
+						<a href="_index_.html">&quot;index&quot;</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="_validation_index_test_.html">"validation/index.test"</a>
+						<a href="_validation_index_.html">&quot;validation/index&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="_validation_index_test_.html">&quot;validation/index.test&quot;</a>
 					</li>
 				</ul>
 			</nav>
@@ -345,8 +384,17 @@
 					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module">
 						<a href="_components_common_.html#formvalue" class="tsd-kind-icon">Form<wbr>Value</a>
 					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module">
+						<a href="_components_common_.html#inputtype" class="tsd-kind-icon">Input<wbr>Type</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module tsd-has-type-parameter">
+						<a href="_components_common_.html#inputtypeconstraint" class="tsd-kind-icon">Input<wbr>Type<wbr>Constraint</a>
+					</li>
 					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module tsd-has-type-parameter">
 						<a href="_components_common_.html#multiple" class="tsd-kind-icon">Multiple</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module">
+						<a href="_components_common_.html#numericinputtype" class="tsd-kind-icon">Numeric<wbr>Input<wbr>Type</a>
 					</li>
 					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module tsd-has-type-parameter">
 						<a href="_components_common_.html#parsedformdata" class="tsd-kind-icon">Parsed<wbr>Form<wbr>Data</a>

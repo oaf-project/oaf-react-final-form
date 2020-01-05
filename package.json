@@ -41,7 +41,7 @@
     "build": "tsc",
     "lint": "eslint src --ext .ts,.tsx",
     "type-coverage": "type-coverage --strict --detail",
-    "documentation": "typedoc --excludeNotExported --excludePrivate --out docs src && cp docs_config.yml ./docs/_config.yml",
+    "documentation": "typedoc --excludeNotExported --excludePrivate --exclude \"**/*+(.test).tsx\" --out docs src && cp docs_config.yml ./docs/_config.yml",
     "test": "jest",
     "release": "yarn build && yarn lint && yarn type-coverage && yarn publish"
   },
