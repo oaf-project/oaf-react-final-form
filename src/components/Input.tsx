@@ -35,6 +35,7 @@ export type InputProps<
     readonly name: Name;
     readonly render?: RenderInput<PFD, FD, Name>;
     readonly keepTouchedOnReinitialize?: boolean;
+    readonly value?: ExtractFormValue<FD[Name]>;
   };
 
 export type InputForCodecProps<
@@ -57,6 +58,7 @@ export const Input = <
   const {
     id,
     name,
+    value,
     label,
     formGroupProps,
     labelProps,
@@ -79,14 +81,26 @@ export const Input = <
         touchedState,
         keepTouchedOnReinitialize,
       ),
-      id: id || name,
+      id:
+        id ||
+        // include value to ensure unique IDs for checkbox and radio inputs
+        (inputProps.type === "checkbox" || inputProps.type === "radio"
+          ? `${name}-${value}`
+          : name),
       label,
     });
 
   const renderFunc =
     typeof render !== "undefined" ? render(props) : defaultRender;
 
-  return <Field name={name} type={inputProps.type} render={renderFunc} />;
+  return (
+    <Field
+      name={name}
+      value={value}
+      type={inputProps.type}
+      render={renderFunc}
+    />
+  );
 };
 
 // eslint-disable-next-line functional/functional-parameters
@@ -94,7 +108,7 @@ export const inputForCodec = <
   PFD extends ParsedFormData,
   FD extends FormData
 >() => {
-  // eslint-disable-next-line react/display-name
+  // eslint-disable-next-line react/display-name, @typescript-eslint/explicit-function-return-type
   return <Name extends keyof PFD & keyof FD & string>(
     props: InputForCodecProps<PFD, FD, Name>,
   ) => {

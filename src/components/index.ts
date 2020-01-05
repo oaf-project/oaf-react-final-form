@@ -50,6 +50,7 @@ export function formCodec<R extends t.Props, O extends t.Props>(
     : t.readonly(t.partial(optional as O));
 }
 
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export const elementsForCodec = <A extends ParsedFormData, O extends FormData>(
   codec: Type<A, O>,
   // TODO allow some defaults to be specified here, for example render overrides, label props, invalid class name, valid class name, etc.
@@ -58,5 +59,6 @@ export const elementsForCodec = <A extends ParsedFormData, O extends FormData>(
   Input: inputForCodec<A, O>(),
   Select: selectForCodec<A, O>(),
   // TODO: checkbox, radio, text area
+  // TODO: button, reset ?
   // TODO: file inputs
 });

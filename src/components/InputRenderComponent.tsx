@@ -56,6 +56,8 @@ export const InputRenderComponent = <
 ): JSX.Element => (
   <FormGroup
     inputId={props.id}
+    inputType={props.renderProps.input.type}
+    inputDisabled={props.inputProps.disabled}
     label={props.label}
     inputClassName={props.inputProps.className}
     // TODO plumb these through
