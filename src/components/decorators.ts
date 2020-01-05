@@ -36,7 +36,7 @@ export const focusInvalidFormDecorator = <FormValues>(
     const originalSubmit = form.submit;
 
     // eslint-disable-next-line functional/immutable-data
-    form.submit = () => {
+    form.submit = (): Promise<FormValues | undefined> | undefined => {
       const formElement = getFormElement();
 
       const result = originalSubmit.call(form);

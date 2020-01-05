@@ -5,7 +5,7 @@ import {
   FieldMetaState,
   FormData,
   InputType,
-} from "./common";
+} from "../common";
 
 export type FormGroupChildProps = {
   readonly formGroupProps?: Readonly<HTMLAttributes<HTMLDivElement>>;

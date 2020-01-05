@@ -6,7 +6,7 @@ import {
   FieldMetaState,
   FormData,
   InputType,
-} from "./common";
+} from "../common";
 import { FormGroup, FormGroupChildProps } from "./FormGroup";
 
 export type ExtraInputProps = {

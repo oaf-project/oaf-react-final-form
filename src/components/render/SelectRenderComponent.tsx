@@ -6,7 +6,7 @@ import {
   FieldMetaState,
   FormData,
   FormValue,
-} from "./common";
+} from "../common";
 import { FormGroup, FormGroupChildProps } from "./FormGroup";
 
 export type SelectOption<A extends FormValue> = {

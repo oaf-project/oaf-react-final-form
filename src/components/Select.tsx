@@ -11,7 +11,7 @@ import {
 import {
   ExtraSelectProps,
   SelectRenderComponent,
-} from "./SelectRenderComponent";
+} from "./render/SelectRenderComponent";
 import { touchedHack } from "./touched-hack";
 
 export type RenderSelect<
@@ -101,7 +101,7 @@ export const selectForCodec = <
   // eslint-disable-next-line react/display-name
   return <Name extends keyof PFD & keyof FD & string>(
     props: SelectForCodecProps<PFD, FD, Name>,
-  ) => {
+  ): JSX.Element => {
     const { required, multiple, ...rest } = props;
     return (
       <Select<PFD, FD, Name>

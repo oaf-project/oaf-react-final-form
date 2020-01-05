@@ -12,7 +12,7 @@ import {
   ExtraInputProps,
   HTMLInputProps,
   InputRenderComponent,
-} from "./InputRenderComponent";
+} from "./render/InputRenderComponent";
 import { touchedHack } from "./touched-hack";
 
 export type RenderInput<

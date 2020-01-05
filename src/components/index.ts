@@ -7,9 +7,9 @@ import { selectForCodec } from "./Select";
 
 export * from "./Form";
 export * from "./Input";
-export * from "./InputRenderComponent";
+export * from "./render/InputRenderComponent";
 export * from "./Select";
-export * from "./SelectRenderComponent";
+export * from "./render/SelectRenderComponent";
 
 /* eslint-disable functional/prefer-readonly-type */
 
@@ -58,7 +58,7 @@ export const elementsForCodec = <A extends ParsedFormData, O extends FormData>(
   Form: formForCodec(codec),
   Input: inputForCodec<A, O>(),
   Select: selectForCodec<A, O>(),
-  // TODO: checkbox, radio, text area
+  // TODO: text area
   // TODO: button, reset ?
-  // TODO: file inputs
+  // TODO: file inputs ?
 });
