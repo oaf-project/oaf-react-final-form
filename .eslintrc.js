@@ -41,6 +41,7 @@ module.exports = {
     "react-hooks/rules-of-hooks": "error",
     "react-hooks/exhaustive-deps": "error",
     "react/prop-types": 0,
+    "no-array-subscript": "error",
     "@typescript-eslint/ban-types": [
       "error",
       {

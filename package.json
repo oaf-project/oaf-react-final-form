@@ -39,7 +39,7 @@
   },
   "scripts": {
     "build": "tsc",
-    "lint": "eslint src --ext .ts,.tsx",
+    "lint": "eslint src --ext .ts,.tsx --rulesdir node_modules/total-functions/dist",
     "type-coverage": "type-coverage --strict --detail",
     "documentation": "typedoc --excludeNotExported --excludePrivate --exclude \"**/*+(.test).tsx\" --out docs src && cp docs_config.yml ./docs/_config.yml",
     "test": "jest",
@@ -54,6 +54,7 @@
     "io-ts-types": "^0.5.3",
     "monocle-ts": "^2.0.1",
     "oaf-side-effects": "^2.0.1",
+    "total-functions": "^0.1.0",
     "type-zoo": "^3.4.1"
   },
   "prettier": {

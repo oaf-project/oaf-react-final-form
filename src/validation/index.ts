@@ -1,6 +1,7 @@
 import { ContextEntry } from "io-ts";
 import { Errors, ValidationError } from "io-ts/lib";
 import { FormData, ValidationErrors } from "../components/common";
+import { getOrUndefined } from "total-functions";
 
 // We re-export some types from io-ts-types just for the convenience of users.
 export { withMessage } from "io-ts-types/lib/withMessage";
@@ -71,7 +72,7 @@ const mergeDeepObjects = <
     (acc, key) => ({
       ...acc,
       // eslint-disable-next-line @typescript-eslint/no-use-before-define
-      [key]: mergeDeep(a[key], b[key]),
+      [key]: mergeDeep(getOrUndefined(a, key), getOrUndefined(b, key)),
     }),
     a,
   ) as A & B;
@@ -86,8 +87,10 @@ const mergeDeepArrays = <
   const aExtended: FinalFormValidationArray =
     a.length >= b.length ? a : [...a, ...new Array(b.length - a.length)];
 
-  // eslint-disable-next-line @typescript-eslint/no-use-before-define
-  return aExtended.map((value, index) => mergeDeep(value, b[index]));
+  return aExtended.map((value, index) =>
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
+    mergeDeep(value, getOrUndefined(b, index)),
+  );
 };
 
 const mergeDeep = <
