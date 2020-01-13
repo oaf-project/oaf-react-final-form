@@ -1,5 +1,5 @@
 import { FORM_ERROR } from "final-form";
-import arrayMutators from "final-form-arrays";
+import arrayMutators from "final-form-arrays"; // type-coverage:ignore-line
 import * as t from "io-ts";
 import { axe, toHaveNoViolations } from "jest-axe";
 import React from "react";
@@ -89,7 +89,7 @@ it("renders without crashing", async () => {
       initialValues={initialValues}
       // https://github.com/final-form/react-final-form-arrays#usage
       mutators={{
-        ...arrayMutators,
+        ...arrayMutators, // type-coverage:ignore-line
       }}
     >
       {(): JSX.Element => (
