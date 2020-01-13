@@ -8,11 +8,14 @@
 An opinionated form library.
 * TypeScript + React Final Form
 * Strict type safety
-* Accessible by default
-  * https://github.com/final-form/final-form/issues/250
-  * https://developer.paciellogroup.com/blog/2019/02/required-attribute-requirements/
-  * https://webaim.org/techniques/formvalidation/
 * Validation built with [io-ts](https://github.com/gcanti/io-ts)
+* Accessible by default
+  * `validateOnBlur` defaults to true. See https://github.com/final-form/final-form/issues/250
+    * As a consequence, we include work-arounds for https://github.com/final-form/final-form/issues/213 and https://github.com/final-form/react-final-form/issues/458
+    * See also https://developer.paciellogroup.com/blog/2019/02/required-attribute-requirements/ for motivation
+  * By default we render accessible form labels and validation feedback (with `aria-invalid` and `aria-labelledby`)
+  * After a failed form submission, we move focus to the first invalid form element (using https://github.com/oaf-project/oaf-side-effects)
+  * https://webaim.org/techniques/formvalidation/
 
 ## Installation
 
