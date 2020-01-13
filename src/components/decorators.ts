@@ -21,18 +21,20 @@ const isInvalid = (state: FormState<unknown>): boolean =>
  * from https://developer.mozilla.org/en-US/docs/Web/API/Element/closest#Polyfill
  *
  * @param getFormElement a function that returns the form element to focus
- * @param formGroupSelector a CSS selector passed to the `closest()` method of an invalid form input that identifies the element
- *                          that contains both the form input and its label. This form group element will be scrolled into view
- *                          so that both the input and its label are visible.
+ * @param invalidElementSelector the CSS selector that is used to identify invalid elements within a form, e.g. `[aria-invalid="true"]`.
+ * @param elementWrapperSelector the CSS selector that matches the "wrapper" element--the closest ancestor of the form input--that contains
+ *                               both the form input and its label.
+ *                               This wrapper element will be scrolled into view so that both the invalid input and its label are visible.
  * @param smoothScroll true for smooth scrolling, false otherwise
  */
 export const focusInvalidFormDecorator = <FormValues>(
   getFormElement: () => Element | null,
-  formGroupSelector: Selector,
   invalidElementSelector: Selector | undefined,
+  elementWrapperSelector: Selector | undefined,
   smoothScroll: boolean | undefined = undefined,
 ): Decorator<FormValues> => {
-  return form => {
+  // eslint-disable-next-line functional/no-return-void
+  return (form): (() => void) => {
     const originalSubmit = form.submit;
 
     // eslint-disable-next-line functional/immutable-data
@@ -67,7 +69,7 @@ export const focusInvalidFormDecorator = <FormValues>(
                 focusInvalidForm(
                   formElement,
                   selector,
-                  formGroupSelector,
+                  elementWrapperSelector,
                   smoothScroll,
                 );
               }, 0);
@@ -81,7 +83,10 @@ export const focusInvalidFormDecorator = <FormValues>(
       return result;
     };
 
-    // eslint-disable-next-line functional/immutable-data
-    return () => (form.submit = originalSubmit);
+    // eslint-disable-next-line functional/no-return-void
+    return (): void => {
+      // eslint-disable-next-line functional/immutable-data
+      form.submit = originalSubmit;
+    };
   };
 };

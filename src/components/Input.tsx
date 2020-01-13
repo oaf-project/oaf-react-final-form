@@ -7,44 +7,28 @@ import {
   InputTypeConstraint,
   ParsedFormData,
   Required,
+  isInputInvalid,
+  isInputValid,
 } from "./common";
 import {
   ExtraInputProps,
   HTMLInputProps,
-  InputRenderComponent,
+  InputRenderProps,
 } from "./render/InputRenderComponent";
-import { touchedHack } from "./touched-hack";
-
-export type RenderInput<
-  PFD extends ParsedFormData,
-  FD extends FormData,
-  Name extends keyof PFD & keyof FD & string
-> = (
-  props: InputProps<PFD, FD, Name>,
-) => (
-  renderProps: FieldRenderProps<ExtractFormValue<FD[Name]>, HTMLInputElement>,
-) => JSX.Element;
+import { touchedHack, TouchedHackProps } from "./touched-hack";
 
 export type InputProps<
   PFD extends ParsedFormData,
   FD extends FormData,
   Name extends keyof PFD & keyof FD & string
 > = HTMLInputProps &
-  ExtraInputProps & {
+  ExtraInputProps &
+  TouchedHackProps & {
     readonly id?: string;
     readonly name: Name;
-    readonly render?: RenderInput<PFD, FD, Name>;
-    readonly keepTouchedOnReinitialize?: boolean;
+    readonly render: (renderProps: InputRenderProps<FD, Name>) => JSX.Element;
     readonly value?: ExtractFormValue<FD[Name]>;
   };
-
-export type InputForCodecProps<
-  PFD extends ParsedFormData,
-  FD extends FormData,
-  Name extends keyof PFD & keyof FD & string
-> = OmitStrict<InputProps<PFD, FD, Name>, "required" | "type"> &
-  Required<PFD[Name]> &
-  InputTypeConstraint<PFD[Name]>;
 
 export const Input = <
   PFD extends ParsedFormData,
@@ -60,24 +44,15 @@ export const Input = <
     name,
     value,
     label,
-    formGroupProps,
-    labelProps,
-    feedbackProps,
     render,
     keepTouchedOnReinitialize,
     ...inputProps
   } = props;
 
-  const isCheckboxOrRadio =
-    inputProps.type === "checkbox" || inputProps.type === "radio";
-
-  const defaultRender = (
+  const renderFunc = (
     renderProps: FieldRenderProps<ExtractFormValue<FD[Name]>, HTMLInputElement>,
-  ): JSX.Element =>
-    InputRenderComponent({
-      formGroupProps,
-      labelProps,
-      feedbackProps,
+  ): JSX.Element => {
+    const propsForRender: InputRenderProps<FD, Name> = {
       inputProps,
       renderProps: touchedHack(
         renderProps,
@@ -87,33 +62,55 @@ export const Input = <
       id:
         id ||
         // include value to ensure unique IDs for checkbox and radio inputs
-        (isCheckboxOrRadio ? `${name}-${value}` : name),
+        (props.type === "checkbox" || props.type === "radio"
+          ? `${name}-${value}`
+          : name),
       label,
-    });
+      isInvalid: isInputInvalid(renderProps),
+      isValid: isInputValid(renderProps),
+    };
 
-  const renderFunc =
-    typeof render !== "undefined" ? render(props) : defaultRender;
+    return render(propsForRender);
+  };
 
   return (
-    <Field
-      name={name}
-      value={value}
-      type={inputProps.type}
-      render={renderFunc}
-    />
+    <Field name={name} value={value} type={props.type} render={renderFunc} />
   );
 };
 
-// eslint-disable-next-line functional/functional-parameters
-export const inputForCodec = <
+export type DefaultInputForCodecProps<
   PFD extends ParsedFormData,
   FD extends FormData
->() => {
+> = Pick<
+  InputProps<PFD, FD, keyof PFD & keyof FD & string>,
+  "render" | "keepTouchedOnReinitialize"
+>;
+
+export type InputForCodecProps<
+  PFD extends ParsedFormData,
+  FD extends FormData,
+  Name extends keyof PFD & keyof FD & string
+> = OmitStrict<InputProps<PFD, FD, Name>, "render" | "required" | "type"> &
+  Partial<Pick<InputProps<PFD, FD, Name>, "render">> &
+  Required<PFD[Name]> &
+  InputTypeConstraint<PFD[Name]>;
+
+// eslint-disable-next-line functional/functional-parameters
+export const inputForCodec = <PFD extends ParsedFormData, FD extends FormData>(
+  defaultProps: DefaultInputForCodecProps<PFD, FD>,
+) => {
   // eslint-disable-next-line react/display-name
   return <Name extends keyof PFD & keyof FD & string>(
     props: InputForCodecProps<PFD, FD, Name>,
   ): JSX.Element => {
     const { required, type, ...rest } = props;
-    return <Input<PFD, FD, Name> required={required} type={type} {...rest} />;
+    return (
+      <Input<PFD, FD, Name>
+        {...defaultProps}
+        required={required}
+        type={type}
+        {...rest}
+      />
+    );
   };
 };

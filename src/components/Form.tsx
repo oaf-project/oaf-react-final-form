@@ -1,5 +1,5 @@
 /* eslint-disable functional/functional-parameters */
-import { FormApi, Mutator } from "final-form";
+import { FormApi } from "final-form";
 import { fold } from "fp-ts/lib/Either";
 import { Errors, Type, ValidationError } from "io-ts";
 import { Selector } from "oaf-side-effects";
@@ -7,7 +7,6 @@ import React, { FormHTMLAttributes, PropsWithChildren } from "react";
 import {
   Form as ReactFinalForm,
   FormProps as ReactFinalFormProps,
-  FormRenderProps,
   AnyObject,
 } from "react-final-form";
 import { DeepReadonly } from "ts-essentials";
@@ -15,6 +14,7 @@ import { OmitStrict } from "type-zoo";
 import { toValidationErrors } from "../validation";
 import { FormData, ParsedFormData, ValidationErrors } from "./common";
 import { focusInvalidFormDecorator } from "./decorators";
+import { FormRenderProps } from "./render/Form";
 
 export type SubmissionResponse<FD extends ParsedFormData> =
   | ValidationErrors<FD>
@@ -29,15 +29,13 @@ type PropsFromFinalFormConfig<FD extends FormData> = DeepReadonly<
     | "validateOnBlur"
     | "debug"
     | "subscription"
+    | "mutators"
   >
-> & {
-  // TODO https://github.com/final-form/final-form/pull/275
-  readonly mutators?: { readonly [key: string]: Mutator<FD> };
-};
+>;
 
 type FocusInvalidElementProps = {
-  readonly formGroupSelector?: Selector;
   readonly invalidElementSelector?: Selector;
+  readonly elementWrapperSelector?: Selector;
   readonly smoothScroll?: boolean;
 };
 
@@ -57,40 +55,35 @@ export type FormProps<
     // display to the user.
     readonly defaultErrorMessage?: (e: ValidationError) => string;
     // We pass along arbitrary form props.
+    // TODO: should these be included on the FormProps type itself (as opposed to hidden inside `formProps` here) to match the way Input and Select work?
     readonly formProps?: OmitStrict<
       Readonly<FormHTMLAttributes<HTMLFormElement>>,
       "onSubmit"
     >;
     readonly children?:
-      | ((props: RenderProps<A>) => React.ReactNode)
+      | ((props: FormRenderProps<O>) => React.ReactNode)
       | React.ReactNode;
+    /**
+     * Renders global errors (i.e. those errors that aren't associated with a specific form field) at the top of a form.
+     */
+    readonly renderFormError: (props: FormRenderProps<O>) => JSX.Element;
   };
-
-/**
- * Replace any with string for improved type-safety.
- * io-ts error messages are strings, so we can get away
- * with this here.
- */
-export type RenderProps<O> = OmitStrict<
-  FormRenderProps<O>,
-  "error" | "submitError"
-> & {
-  readonly error?: string;
-  readonly submitError?: string;
-};
 
 export const Form = <A extends ParsedFormData, O extends FormData>(
   props: FormProps<A, O>,
 ): JSX.Element => {
   const formRef = React.useRef<HTMLFormElement | null>(null);
 
+  // Focus the first invalid element after failed form submission.
+  // See e.g. https://webaim.org/techniques/formvalidation/
   // Stick this in a ref to avoid "Warning: Form decorators should not change
   // from one render to the next as new values will be ignored"
   const focusDecorator = React.useRef(
     focusInvalidFormDecorator<O>(
       () => formRef.current,
-      props.formGroupSelector || ".form-group",
-      props.invalidElementSelector || "[aria-invalid=true], [role=alert]",
+      props.invalidElementSelector || "[aria-invalid=true]",
+      props.elementWrapperSelector,
+      // TODO https://github.com/oaf-project/oaf-side-effects/issues/18
       props.smoothScroll,
     ),
   );
@@ -102,7 +95,7 @@ export const Form = <A extends ParsedFormData, O extends FormData>(
         props.codec.encode(props.initialValues as A);
 
   const errorMessage =
-    props.defaultErrorMessage || (() => "This field is invalid.");
+    props.defaultErrorMessage || ((): string => "This field is invalid.");
 
   // Better accessibility if we wait until blur to validate.
   // See e.g. https://developer.paciellogroup.com/blog/2019/02/required-attribute-requirements/
@@ -111,11 +104,11 @@ export const Form = <A extends ParsedFormData, O extends FormData>(
 
   const onSubmit = (
     rawFormData: O,
-    form: FormApi<O>,
+    formApi: FormApi<O>,
   ): SubmissionResponse<O> => {
     return fold(
       (e: Errors) => toValidationErrors<O>(e, errorMessage),
-      (a: A) => props.onSubmit(a, form),
+      (a: A) => props.onSubmit(a, formApi),
     )(props.codec.decode(rawFormData));
   };
 
@@ -127,17 +120,7 @@ export const Form = <A extends ParsedFormData, O extends FormData>(
   };
 
   // TODO allow overriding form render component
-  const render = (renderProps: RenderProps<O>): JSX.Element => {
-    const { action, noValidate } = {
-      // Persuade iOS to do the right thing.
-      // See https://stackoverflow.com/a/26287843/2476884
-      action: ".",
-      // Better accessibility if we do our own inline validation.
-      // See e.g. https://developer.paciellogroup.com/blog/2019/02/required-attribute-requirements/
-      noValidate: true,
-      ...props.formProps,
-    };
-
+  const render = (renderProps: FormRenderProps<O>): JSX.Element => {
     const handleSubmit = (
       event?: React.SyntheticEvent<HTMLFormElement>,
     ): Promise<AnyObject | undefined> | undefined => {
@@ -155,22 +138,21 @@ export const Form = <A extends ParsedFormData, O extends FormData>(
       return renderProps.handleSubmit(event);
     };
 
-    const formError = renderProps.error || renderProps.submitError;
-
     return (
       <form
         {...props.formProps}
         ref={formRef}
         onSubmit={handleSubmit}
-        action={action}
-        noValidate={noValidate}
+        // Persuade iOS to do the right thing.
+        // See https://stackoverflow.com/a/26287843/2476884
+        action={props.formProps?.action ?? "."}
+        // Better accessibility if we do our own inline validation.
+        // See e.g. https://developer.paciellogroup.com/blog/2019/02/required-attribute-requirements/
+        noValidate={props.formProps?.noValidate ?? true}
       >
-        {/* TODO allow overriding of form error render component */}
-        {formError && (
-          <div className="alert alert-danger" role="alert">
-            {formError}
-          </div>
-        )}
+        {props.renderFormError(renderProps)}
+
+        {/* TODO: clean this up */}
         {typeof props.children === "function"
           ? // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
             // @ts-ignore
@@ -189,8 +171,6 @@ export const Form = <A extends ParsedFormData, O extends FormData>(
       keepDirtyOnReinitialize={props.keepDirtyOnReinitialize}
       destroyOnUnregister={props.destroyOnUnregister}
       debug={props.debug}
-      // Focus the first invalid element after failed form submission.
-      // See e.g. https://webaim.org/techniques/formvalidation/
       decorators={[focusDecorator.current]}
       validateOnBlur={validateOnBlur}
       mutators={props.mutators}
@@ -199,12 +179,28 @@ export const Form = <A extends ParsedFormData, O extends FormData>(
   );
 };
 
+export type DefaultFormForCodecProps<
+  A extends ParsedFormData,
+  O extends FormData
+> = Pick<
+  FormProps<A, O>,
+  "defaultErrorMessage" | "formProps" | "renderFormError"
+> &
+  FocusInvalidElementProps;
+
+export type FormForCodecProps<
+  A extends ParsedFormData,
+  O extends FormData
+> = OmitStrict<FormProps<A, O>, "renderFormError" | "codec"> &
+  Partial<Pick<FormProps<A, O>, "renderFormError">>;
+
 // TODO relate A to O so they are constrained to be structurally the same.
 export const formForCodec = <A extends ParsedFormData, O extends FormData>(
   codec: Type<A, O>,
+  defaultProps: DefaultFormForCodecProps<A, O>,
 ) => {
   // eslint-disable-next-line react/display-name
-  return (props: OmitStrict<FormProps<A, O>, "codec">): JSX.Element => (
-    <Form codec={codec} {...props} />
+  return (props: FormForCodecProps<A, O>): JSX.Element => (
+    <Form {...defaultProps} {...props} codec={codec} />
   );
 };

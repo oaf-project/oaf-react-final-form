@@ -7,10 +7,15 @@ import {
   FormData,
   FormValue,
 } from "../common";
-import { FormGroup, FormGroupChildProps } from "./FormGroup";
+import {
+  FormElement,
+  RenderLabelProps,
+  RenderInvalidFeedbackProps,
+} from "./FormElement";
 
 export type SelectOption<A extends FormValue> = {
   // Union with empty string to allow default empty value as first select option.
+  // TODO should we constrain `SelectOptions` below so that only the first element can be empty string?
   readonly value: A | "";
   readonly label: string;
   readonly disabled?: boolean;
@@ -45,12 +50,12 @@ export type ExtraSelectProps<FD extends FormData, Name extends keyof FD> = {
   readonly label: string | JSX.Element;
   readonly multiple?: boolean;
   readonly options: SelectOptions<FD[Name]>;
-} & FormGroupChildProps;
+};
 
 /**
  * Select props that come directly from SelectHTMLAttributes.
  */
-type HTMLSelectProps = Readonly<
+export type HTMLSelectProps = Readonly<
   OmitStrict<
     SelectHTMLAttributes<HTMLSelectElement>,
     | "id"
@@ -75,6 +80,8 @@ export type SelectRenderProps<
   >;
   readonly selectProps: HTMLSelectProps;
   readonly id: string;
+  readonly isInvalid: boolean;
+  readonly isValid: boolean;
 };
 
 export const RenderOptions = <
@@ -100,25 +107,36 @@ export const RenderOptions = <
   </>
 );
 
+export type SelectRenderComponentConfig = {
+  readonly renderLabel: (props: RenderLabelProps) => JSX.Element;
+  readonly renderInvalidFeedback: (
+    props: RenderInvalidFeedbackProps,
+  ) => JSX.Element;
+};
+
 export const SelectRenderComponent = <
   FD extends FormData,
   Name extends keyof FD & string
 >(
-  props: SelectRenderProps<FD, Name>,
-): JSX.Element => (
-  <FormGroup
+  config: SelectRenderComponentConfig,
+) => (props: SelectRenderProps<FD, Name>): JSX.Element => (
+  <FormElement
     inputId={props.id}
+    inputType={undefined}
     label={props.label}
+    renderLabel={config.renderLabel}
+    renderInvalidFeedback={config.renderInvalidFeedback}
     inputClassName={props.selectProps.className}
-    // TODO plumb these through
+    // TODO plumb these through config, then move selectProps to the same place, then update inputClassName
     invalidClassName={undefined}
     validClassName={undefined}
+    labelProps={undefined}
+    feedbackProps={undefined}
     meta={props.renderProps.meta}
-    formGroupProps={props.formGroupProps}
-    labelProps={props.labelProps}
-    feedbackProps={props.feedbackProps}
+    isInvalid={props.isInvalid}
+    isValid={props.isValid}
   >
-    {({ isInvalid, className, describedby }) => (
+    {({ className, describedby }): JSX.Element => (
       <select
         {...props.selectProps}
         id={props.id}
@@ -134,11 +152,13 @@ export const SelectRenderComponent = <
         onFocus={props.renderProps.input.onFocus}
         name={props.renderProps.input.name}
         className={className}
-        aria-invalid={isInvalid}
+        // 'To stop form controls from announcing as invalid by default, one can add aria-invalid="false" to any necessary element.'
+        // See https://developer.paciellogroup.com/blog/2019/02/required-attribute-requirements/
+        aria-invalid={props.isInvalid}
         aria-describedby={describedby}
       >
         <RenderOptions options={props.options} />
       </select>
     )}
-  </FormGroup>
+  </FormElement>
 );

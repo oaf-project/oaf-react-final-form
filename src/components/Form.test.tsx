@@ -5,12 +5,7 @@ import { axe, toHaveNoViolations } from "jest-axe";
 import React from "react";
 import ReactDOM from "react-dom";
 import { FieldArray } from "react-final-form-arrays";
-import {
-  elementsForCodec,
-  formCodec,
-  Input as RawInput,
-  SubmissionResponse,
-} from ".";
+import { elementsForCodec, formCodec, SubmissionResponse } from ".";
 import { NumberFromString, withMessage } from "../validation";
 
 /* eslint-disable sonarjs/no-duplicate-string, no-restricted-globals, @typescript-eslint/no-unused-vars, functional/functional-parameters, functional/no-expression-statement */
@@ -22,7 +17,7 @@ it("renders without crashing", async () => {
   // See https://github.com/gcanti/io-ts#the-idea
   //
   // `formCodec` is just a convenience function over the top of
-  // `intersection`, `type` and `partial` from io-ts.
+  // `intersection`, `type`, `partial` and `readonly` from io-ts.
   // See https://github.com/gcanti/io-ts#mixing-required-and-optional-props
   //
   // `withMessage` comes from io-ts-types. We use it to add custom validation messages.
@@ -101,9 +96,6 @@ it("renders without crashing", async () => {
         <>
           <Input
             label="foo"
-            labelProps={{ className: "some-label-class" }}
-            formGroupProps={{ className: "some-form-group-class" }}
-            feedbackProps={{ className: "some-feedback-class" }}
             name="foo"
             type="number"
             min={42}
@@ -111,7 +103,12 @@ it("renders without crashing", async () => {
             placeholder="Enter a number less than 42"
           />
           <Input label="bar" name="bar" type="text" required={true} />
-          <Select label="baz" name="baz" options={selectOptions} />
+          <Select
+            className="some-select-class"
+            label="baz"
+            name="baz"
+            options={selectOptions}
+          />
           <Select
             label="qux"
             name="qux"
@@ -138,13 +135,13 @@ it("renders without crashing", async () => {
             {({ fields }): readonly JSX.Element[] =>
               fields.map((name, index) => (
                 <React.Fragment key={name}>
-                  <RawInput
+                  <Input<any>
                     label="First Name"
                     id={`customers-${index}-firstName`}
                     name={`${name}.firstName`}
                     type="text"
                   />
-                  <RawInput
+                  <Input<any>
                     label="Last Name"
                     id={`customers-${index}-lastName`}
                     name={`${name}.lastName`}
@@ -161,7 +158,7 @@ it("renders without crashing", async () => {
   );
 
   expect(div.innerHTML).toBe(
-    '<form action="." novalidate=""><div class="some-form-group-class"><label class="some-label-class" for="foo">foo</label><input type="number" min="42" class="some-input-class" placeholder="Enter a number less than 42" id="foo" name="foo" aria-invalid="false" value="42"></div><div class="form-group"><label for="bar">bar</label><input required="" type="text" id="bar" name="bar" aria-invalid="false" class="form-control" value=""></div><div class="form-group"><label for="baz">baz</label><select id="baz" name="baz" class="form-control" aria-invalid="false"><option value=""></option><option value="first-option">first option</option><optgroup label="an opt group"><option value="second-option">second option</option></optgroup></select></div><div class="form-group"><label for="qux">qux</label><select multiple="" id="qux" name="qux" class="form-control" aria-invalid="false"><option value=""></option><option value="first-option">first option</option><optgroup label="an opt group"><option value="second-option">second option</option></optgroup></select></div><fieldset><legend>Radio Button Example</legend><div class="form-group"><div class="form-check"><input type="radio" id="radioOption-radio-option-one" name="radioOption" aria-invalid="false" class="form-check-input" value="radio-option-one" checked=""><label class="form-check-label" for="radioOption-radio-option-one">radio-option-one</label></div></div><div class="form-group"><div class="form-check disabled"><input type="radio" disabled="" id="radioOption-radio-option-two" name="radioOption" aria-invalid="false" class="form-check-input" value="radio-option-two"><label class="form-check-label" for="radioOption-radio-option-two">radio-option-two</label></div></div></fieldset><div class="form-group"><label for="customers-0-firstName">First Name</label><input type="text" id="customers-0-firstName" name="customers[0].firstName" aria-invalid="false" class="form-control" value="Jane"></div><div class="form-group"><label for="customers-0-lastName">Last Name</label><input type="text" id="customers-0-lastName" name="customers[0].lastName" aria-invalid="false" class="form-control" value="Doe"></div></form>',
+    '<form action="." novalidate=""><label for="foo">foo</label><input type="number" min="42" class="some-input-class" placeholder="Enter a number less than 42" id="foo" name="foo" aria-invalid="false" value="42"><label for="bar">bar</label><input required="" type="text" id="bar" name="bar" aria-invalid="false" class="form-control" value=""><label for="baz">baz</label><select class="some-select-class" id="baz" name="baz" aria-invalid="false"><option value=""></option><option value="first-option">first option</option><optgroup label="an opt group"><option value="second-option">second option</option></optgroup></select><label for="qux">qux</label><select multiple="" id="qux" name="qux" class="form-control" aria-invalid="false"><option value=""></option><option value="first-option">first option</option><optgroup label="an opt group"><option value="second-option">second option</option></optgroup></select><fieldset><legend>Radio Button Example</legend><input type="radio" id="radioOption-radio-option-one" name="radioOption" aria-invalid="false" class="form-check-input" value="radio-option-one" checked=""><label class="form-check-label" for="radioOption-radio-option-one">radio-option-one</label><input type="radio" disabled="" id="radioOption-radio-option-two" name="radioOption" aria-invalid="false" class="form-check-input" value="radio-option-two"><label class="form-check-label" for="radioOption-radio-option-two">radio-option-two</label></fieldset><label for="customers-0-firstName">First Name</label><input type="text" id="customers-0-firstName" name="customers[0].firstName" aria-invalid="false" class="form-control" value="Jane"><label for="customers-0-lastName">Last Name</label><input type="text" id="customers-0-lastName" name="customers[0].lastName" aria-invalid="false" class="form-control" value="Doe"></form>',
   );
   expect(await axe(div)).toHaveNoViolations();
 

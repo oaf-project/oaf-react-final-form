@@ -7,15 +7,18 @@ import {
   FormData,
   InputType,
 } from "../common";
-import { FormGroup, FormGroupChildProps } from "./FormGroup";
+import {
+  FormElement,
+  RenderLabelProps,
+  RenderInvalidFeedbackProps,
+} from "./FormElement";
 
 export type ExtraInputProps = {
   /**
    * A non-optional label that we render in a <label> element to ensure accessibility.
    */
   readonly label: string | JSX.Element;
-  readonly type?: InputType;
-} & FormGroupChildProps;
+};
 
 /**
  * Input props that come directly from InputHTMLAttributes.
@@ -33,7 +36,9 @@ export type HTMLInputProps = Readonly<
     | "aria-invalid"
     | "aria-describedby"
     | "type"
-  >
+  > & {
+    readonly type?: InputType;
+  }
 >;
 
 export type InputRenderProps<
@@ -46,29 +51,40 @@ export type InputRenderProps<
   >;
   readonly inputProps: HTMLInputProps;
   readonly id: string;
+  readonly isInvalid: boolean;
+  readonly isValid: boolean;
+};
+
+export type InputRenderComponentConfig = {
+  readonly renderLabel: (props: RenderLabelProps) => JSX.Element;
+  readonly renderInvalidFeedback: (
+    props: RenderInvalidFeedbackProps,
+  ) => JSX.Element;
 };
 
 export const InputRenderComponent = <
   FD extends FormData,
   Name extends keyof FD & string
 >(
-  props: InputRenderProps<FD, Name>,
-): JSX.Element => (
-  <FormGroup
+  config: InputRenderComponentConfig,
+) => (props: InputRenderProps<FD, Name>): JSX.Element => (
+  <FormElement
     inputId={props.id}
     inputType={props.renderProps.input.type}
-    inputDisabled={props.inputProps.disabled}
     label={props.label}
+    renderLabel={config.renderLabel}
+    renderInvalidFeedback={config.renderInvalidFeedback}
     inputClassName={props.inputProps.className}
-    // TODO plumb these through
+    // TODO plumb these through config, then move inputProps to the same place, then update inputClassName
     invalidClassName={undefined}
     validClassName={undefined}
+    labelProps={undefined}
+    feedbackProps={undefined}
     meta={props.renderProps.meta}
-    formGroupProps={props.formGroupProps}
-    labelProps={props.labelProps}
-    feedbackProps={props.feedbackProps}
+    isInvalid={props.isInvalid}
+    isValid={props.isValid}
   >
-    {({ isInvalid, className, describedby }) => (
+    {({ className, describedby }): JSX.Element => (
       <input
         {...props.inputProps}
         id={props.id}
@@ -79,10 +95,12 @@ export const InputRenderComponent = <
         onFocus={props.renderProps.input.onFocus}
         name={props.renderProps.input.name}
         type={props.renderProps.input.type}
-        aria-invalid={isInvalid}
+        // 'To stop form controls from announcing as invalid by default, one can add aria-invalid="false" to any necessary element.'
+        // See https://developer.paciellogroup.com/blog/2019/02/required-attribute-requirements/
+        aria-invalid={props.isInvalid}
         className={className}
         aria-describedby={describedby}
       />
     )}
-  </FormGroup>
+  </FormElement>
 );

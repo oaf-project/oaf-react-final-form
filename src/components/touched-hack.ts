@@ -1,5 +1,9 @@
 import { FieldRenderProps } from "react-final-form";
 
+export type TouchedHackProps = {
+  readonly keepTouchedOnReinitialize?: boolean;
+};
+
 /**
  * @see https://github.com/final-form/react-final-form/issues/458
  */
