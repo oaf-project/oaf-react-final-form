@@ -8,10 +8,10 @@ module.exports = {
   "collectCoverage": true,
   "coverageThreshold": {
     "global": {
-      "branches": 75,
-      "functions": 77.42,
-      "lines": 85.48,
-      "statements": 85.42
+      "branches": 90.58,
+      "functions": 93.55,
+      "lines": 96.76,
+      "statements": 96.34
     }
   }
 }

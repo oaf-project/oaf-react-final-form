@@ -50,7 +50,7 @@ type FormElementProps<
     readonly validClassName: string | undefined;
     readonly children: (props: {
       readonly className?: string;
-      readonly describedby?: string;
+      readonly invalidFeedbackId?: string;
     }) => React.ReactNode;
     readonly isInvalid: boolean;
     readonly isValid: boolean;
@@ -90,7 +90,9 @@ export const FormElement = <FD extends FormData, Name extends keyof FD>(
   const isCheckboxOrRadio =
     props.inputType === "checkbox" || props.inputType === "radio";
 
-  const feedbackId = `${props.inputId}-feedback`;
+  const invalidFeedbackId = props.isInvalid
+    ? `${props.inputId}-feedback`
+    : undefined;
 
   // TODO: remove bootstrap-specific class names
   const className = [
@@ -101,8 +103,6 @@ export const FormElement = <FD extends FormData, Name extends keyof FD>(
     .concat(props.isValid ? [props.validClassName || "is-valid"] : [])
     .join(" ");
 
-  const describedby = props.isInvalid ? feedbackId : undefined;
-
   const label = props.renderLabel({
     labelProps: props.labelProps,
     inputId: props.inputId,
@@ -110,17 +110,21 @@ export const FormElement = <FD extends FormData, Name extends keyof FD>(
     inputType: props.inputType,
   });
 
-  const invalidFeedback = props.renderInvalidFeedback({
-    feedbackProps: props.feedbackProps,
-    id: feedbackId,
-    error: props.meta.error || props.meta.submitError,
-  });
+  const invalidFeedback =
+    invalidFeedbackId !== undefined
+      ? props.renderInvalidFeedback({
+          feedbackProps: props.feedbackProps,
+          id: invalidFeedbackId,
+          error: props.meta.error || props.meta.submitError,
+        })
+      : null;
 
   return (
     <>
       {isCheckboxOrRadio ? null : label}
-      {props.children({ className, describedby })}
+      {props.children({ className, invalidFeedbackId })}
       {isCheckboxOrRadio ? label : null}
+      {/* TODO support the case where we only want to render a single invalidFeedback for an entire radio/checkbox group */}
       {props.isInvalid ? invalidFeedback : null}
     </>
   );

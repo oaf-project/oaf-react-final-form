@@ -46,7 +46,9 @@ export type SelectOptions<A extends unknown> = ReadonlyArray<
 >;
 
 export type ExtraSelectProps<FD extends FormData, Name extends keyof FD> = {
-  // A non-optional label that we render in a <label> element to ensure accessibility.
+  /**
+   * A non-optional label that we render in a <label> element to ensure accessibility.
+   */
   readonly label: string | JSX.Element;
   readonly multiple?: boolean;
   readonly options: SelectOptions<FD[Name]>;
@@ -136,7 +138,7 @@ export const SelectRenderComponent = <
     isInvalid={props.isInvalid}
     isValid={props.isValid}
   >
-    {({ className, describedby }): JSX.Element => (
+    {({ className, invalidFeedbackId }): JSX.Element => (
       <select
         {...props.selectProps}
         id={props.id}
@@ -155,7 +157,8 @@ export const SelectRenderComponent = <
         // 'To stop form controls from announcing as invalid by default, one can add aria-invalid="false" to any necessary element.'
         // See https://developer.paciellogroup.com/blog/2019/02/required-attribute-requirements/
         aria-invalid={props.isInvalid}
-        aria-describedby={describedby}
+        // See https://www.w3.org/WAI/WCAG21/Techniques/aria/ARIA1#example-2-using-aria-describedby-to-associate-instructions-with-form-fields
+        aria-describedby={invalidFeedbackId}
       >
         <RenderOptions options={props.options} />
       </select>

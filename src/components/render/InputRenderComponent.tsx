@@ -84,7 +84,9 @@ export const InputRenderComponent = <
     isInvalid={props.isInvalid}
     isValid={props.isValid}
   >
-    {({ className, describedby }): JSX.Element => (
+    {({ className, invalidFeedbackId }): JSX.Element => (
+      // TODO extract RenderInput component (and RenderSelect?)
+      // Then className becomes easier to deal with in the bootstrap case where it changes for checkbox/radio labels
       <input
         {...props.inputProps}
         id={props.id}
@@ -99,7 +101,8 @@ export const InputRenderComponent = <
         // See https://developer.paciellogroup.com/blog/2019/02/required-attribute-requirements/
         aria-invalid={props.isInvalid}
         className={className}
-        aria-describedby={describedby}
+        // See https://www.w3.org/WAI/WCAG21/Techniques/aria/ARIA1#example-2-using-aria-describedby-to-associate-instructions-with-form-fields
+        aria-describedby={invalidFeedbackId}
       />
     )}
   </FormElement>

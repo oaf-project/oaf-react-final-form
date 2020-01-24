@@ -17,6 +17,7 @@ export type FormRenderProps<FormValues> = OmitStrict<
 
 /**
  * Renders global errors (i.e. those that aren't associated with a specific form field) at the top of a form.
+ * @see https://final-form.org/docs/final-form/api#form_error
  */
 export const FormError = <FormValues,>(
   renderProps: FormRenderProps<FormValues>,

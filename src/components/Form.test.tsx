@@ -12,6 +12,168 @@ import { NumberFromString, withMessage } from "../validation";
 
 expect.extend(toHaveNoViolations);
 
+it("renders a simple example", async () => {
+  // First, we define the form codec using io-ts.
+  // See https://github.com/gcanti/io-ts#the-idea
+  //
+  // `formCodec` is just a convenience function over the top of
+  // `intersection`, `type`, `partial` and `readonly` from io-ts.
+  // See https://github.com/gcanti/io-ts#mixing-required-and-optional-props
+  const codec = formCodec({
+    optional: {
+      foo: t.string,
+    },
+  });
+
+  // We derive React components for our form elements from the form codec. This
+  // gives us some type-safety benefits when rendering these form elements (below).
+  const { Form, Input } = elementsForCodec(codec);
+
+  type FormData = t.TypeOf<typeof codec>;
+
+  const onSubmit = (formData: FormData): SubmissionResponse<FormData> => {
+    // Here we are guaranteed that `formData` has been parsed by our form codec.
+    // Do something with the submitted form data.
+    console.log(formData.foo);
+    // We can return submission errors here if necessary.
+    return undefined;
+  };
+
+  const form = (
+    <Form onSubmit={onSubmit}>
+      {/*
+        The `name` attr must be one of the values from the form codec.
+        The `type` and `required` attrs must be compatible with the corresponding property from the form codec.
+      */}
+      <Input label="foo" name="foo" type="text" />
+    </Form>
+  );
+
+  const div = document.createElement("div");
+  ReactDOM.render(form, div);
+
+  expect(await axe(div)).toHaveNoViolations();
+
+  expect(div.innerHTML).toBe(
+    '<form action="." novalidate=""><label for="foo">foo</label><input type="text" id="foo" name="foo" aria-invalid="false" class="form-control" value=""></form>',
+  );
+
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  div.querySelector("form")!.submit();
+
+  // HACK: give react a chance to render.
+  await new Promise(resolve => setTimeout(() => resolve()));
+  await new Promise(resolve => setTimeout(() => resolve()));
+
+  expect(await axe(div)).toHaveNoViolations();
+
+  expect(div.innerHTML).toBe(
+    '<form action="." novalidate=""><label for="foo">foo</label><input type="text" id="foo" name="foo" aria-invalid="false" class="form-control" value=""></form>',
+  );
+
+  ReactDOM.unmountComponentAtNode(div);
+});
+
+it("renders field-specific submission errors", async () => {
+  const codec = formCodec({
+    optional: {
+      foo: t.string,
+    },
+  });
+
+  // We derive React components for our form elements from the form codec. This
+  // gives us some type-safety benefits when rendering these form elements (below).
+  const { Form, Input } = elementsForCodec(codec);
+
+  type FormData = t.TypeOf<typeof codec>;
+
+  const onSubmit = (): SubmissionResponse<FormData> => {
+    return {
+      foo: "Foo is invalid",
+    }
+  };
+
+  const form = (
+    <Form onSubmit={onSubmit}>
+      <Input label="foo" name="foo" type="text" />
+    </Form>
+  );
+
+  const div = document.createElement("div");
+  ReactDOM.render(form, div);
+
+  expect(await axe(div)).toHaveNoViolations();
+
+  expect(div.innerHTML).toBe(
+    '<form action="." novalidate=""><label for="foo">foo</label><input type="text" id="foo" name="foo" aria-invalid="false" class="form-control" value=""></form>',
+  );
+
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  div.querySelector("form")!.submit();
+
+  // HACK: give react a chance to render.
+  await new Promise(resolve => setTimeout(() => resolve()));
+  await new Promise(resolve => setTimeout(() => resolve()));
+
+  expect(await axe(div)).toHaveNoViolations();
+
+  expect(div.innerHTML).toBe(
+    '<form action="." novalidate=""><label for="foo">foo</label><input type="text" id="foo" name="foo" aria-invalid="true" class="form-control is-invalid" value="" aria-describedby="foo-feedback" tabindex="-1"><div class="invalid-feedback" id="foo-feedback">Foo is invalid</div></form>',
+  );
+
+  ReactDOM.unmountComponentAtNode(div);
+});
+
+it("renders global submission errors", async () => {
+  const codec = formCodec({
+    optional: {
+      foo: t.string,
+    },
+  });
+
+  // We derive React components for our form elements from the form codec. This
+  // gives us some type-safety benefits when rendering these form elements (below).
+  const { Form, Input } = elementsForCodec(codec);
+
+  type FormData = t.TypeOf<typeof codec>;
+
+  const onSubmit = (): SubmissionResponse<FormData> => {
+    return {
+      [FORM_ERROR]: "Form submission failed",
+    };
+  };
+
+  const form = (
+    <Form onSubmit={onSubmit}>
+      <Input label="foo" name="foo" type="text" />
+    </Form>
+  );
+
+  const div = document.createElement("div");
+  ReactDOM.render(form, div);
+
+  expect(await axe(div)).toHaveNoViolations();
+
+  expect(div.innerHTML).toBe(
+    '<form action="." novalidate=""><label for="foo">foo</label><input type="text" id="foo" name="foo" aria-invalid="false" class="form-control" value=""></form>',
+  );
+
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  div.querySelector("form")!.submit();
+
+  // HACK: give react a chance to render.
+  await new Promise(resolve => setTimeout(() => resolve()));
+  await new Promise(resolve => setTimeout(() => resolve()));
+
+  expect(await axe(div)).toHaveNoViolations();
+
+  expect(div.innerHTML).toBe(
+    '<form action="." novalidate=""><div class="alert alert-danger" role="alert">Form submission failed</div><label for="foo">foo</label><input type="text" id="foo" name="foo" aria-invalid="false" class="form-control is-valid" value=""></form>',
+  );
+
+  ReactDOM.unmountComponentAtNode(div);
+});
+
 it("renders without crashing", async () => {
   // First, we define the form codec using io-ts.
   // See https://github.com/gcanti/io-ts#the-idea
@@ -60,6 +222,8 @@ it("renders without crashing", async () => {
 
   const initialValues: Partial<FormData> = {
     foo: 42,
+    // TODO
+    // bar: "bar",
     baz: "first-option",
     qux: ["second-option"],
     customers: [{ firstName: "Jane", lastName: "Doe" }],
@@ -160,6 +324,20 @@ it("renders without crashing", async () => {
   expect(div.innerHTML).toBe(
     '<form action="." novalidate=""><label for="foo">foo</label><input type="number" min="42" class="some-input-class" placeholder="Enter a number less than 42" id="foo" name="foo" aria-invalid="false" value="42"><label for="bar">bar</label><input required="" type="text" id="bar" name="bar" aria-invalid="false" class="form-control" value=""><label for="baz">baz</label><select class="some-select-class" id="baz" name="baz" aria-invalid="false"><option value=""></option><option value="first-option">first option</option><optgroup label="an opt group"><option value="second-option">second option</option></optgroup></select><label for="qux">qux</label><select multiple="" id="qux" name="qux" class="form-control" aria-invalid="false"><option value=""></option><option value="first-option">first option</option><optgroup label="an opt group"><option value="second-option">second option</option></optgroup></select><fieldset><legend>Radio Button Example</legend><input type="radio" id="radioOption-radio-option-one" name="radioOption" aria-invalid="false" class="form-check-input" value="radio-option-one" checked=""><label class="form-check-label" for="radioOption-radio-option-one">radio-option-one</label><input type="radio" disabled="" id="radioOption-radio-option-two" name="radioOption" aria-invalid="false" class="form-check-input" value="radio-option-two"><label class="form-check-label" for="radioOption-radio-option-two">radio-option-two</label></fieldset><label for="customers-0-firstName">First Name</label><input type="text" id="customers-0-firstName" name="customers[0].firstName" aria-invalid="false" class="form-control" value="Jane"><label for="customers-0-lastName">Last Name</label><input type="text" id="customers-0-lastName" name="customers[0].lastName" aria-invalid="false" class="form-control" value="Doe"></form>',
   );
+  expect(await axe(div)).toHaveNoViolations();
+
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  div.querySelector("form")!.submit();
+
+  // HACK: give react a chance to render.
+  await new Promise(resolve => setTimeout(() => resolve()));
+  await new Promise(resolve => setTimeout(() => resolve()));
+
+  // TODO: this should reflect invalid `bar` input.
+  expect(div.innerHTML).toBe(
+    '<form action="." novalidate=""><label for="foo">foo</label><input type="number" min="42" class="some-input-class is-valid" placeholder="Enter a number less than 42" id="foo" name="foo" aria-invalid="false" value="42"><label for="bar">bar</label><input required="" type="text" id="bar" name="bar" aria-invalid="false" class="form-control is-valid" value=""><label for="baz">baz</label><select class="some-select-class is-valid" id="baz" name="baz" aria-invalid="false"><option value=""></option><option value="first-option">first option</option><optgroup label="an opt group"><option value="second-option">second option</option></optgroup></select><label for="qux">qux</label><select multiple="" id="qux" name="qux" class="form-control is-valid" aria-invalid="false"><option value=""></option><option value="first-option">first option</option><optgroup label="an opt group"><option value="second-option">second option</option></optgroup></select><fieldset><legend>Radio Button Example</legend><input type="radio" id="radioOption-radio-option-one" name="radioOption" aria-invalid="false" class="form-check-input is-valid" value="radio-option-one" checked=""><label class="form-check-label" for="radioOption-radio-option-one">radio-option-one</label><input type="radio" disabled="" id="radioOption-radio-option-two" name="radioOption" aria-invalid="false" class="form-check-input is-valid" value="radio-option-two"><label class="form-check-label" for="radioOption-radio-option-two">radio-option-two</label></fieldset><label for="customers-0-firstName">First Name</label><input type="text" id="customers-0-firstName" name="customers[0].firstName" aria-invalid="false" class="form-control is-valid" value="Jane"><label for="customers-0-lastName">Last Name</label><input type="text" id="customers-0-lastName" name="customers[0].lastName" aria-invalid="false" class="form-control is-valid" value="Doe"></form>',
+  );
+
   expect(await axe(div)).toHaveNoViolations();
 
   ReactDOM.unmountComponentAtNode(div);
