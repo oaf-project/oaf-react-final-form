@@ -90,7 +90,7 @@ it("renders field-specific submission errors", async () => {
   const onSubmit = (): SubmissionResponse<FormData> => {
     return {
       foo: "Foo is invalid",
-    }
+    };
   };
 
   const form = (
