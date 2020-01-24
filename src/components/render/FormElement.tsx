@@ -7,9 +7,9 @@ import {
   InputType,
 } from "../common";
 
-export type LabelProps = Readonly<
-  OmitStrict<LabelHTMLAttributes<HTMLLabelElement>, "htmlFor">
->;
+export type LabelProps =
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  Omit<LabelHTMLAttributes<HTMLLabelElement>, "htmlFor">;
 
 export type RenderLabelProps = {
   readonly labelProps?: LabelProps;

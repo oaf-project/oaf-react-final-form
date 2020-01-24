@@ -1,12 +1,7 @@
 import React, { InputHTMLAttributes } from "react";
 import { FieldRenderProps } from "react-final-form";
-import { OmitStrict, Overwrite } from "type-zoo";
-import {
-  ExtractFormValue,
-  FieldMetaState,
-  FormData,
-  InputType,
-} from "../common";
+import { OmitStrict } from "type-zoo";
+import { ExtractFormValue, FormData, InputType } from "../common";
 import {
   FormElement,
   RenderLabelProps,
@@ -45,9 +40,10 @@ export type InputRenderProps<
   FD extends FormData,
   Name extends keyof FD & string
 > = ExtraInputProps & {
-  readonly renderProps: Overwrite<
-    FieldRenderProps<ExtractFormValue<FD[Name]>, HTMLInputElement>,
-    FieldMetaState<ExtractFormValue<FD[Name]>>
+  // TODO go back to common FieldMetaState with safe error and submitError props once type coverage is sorted
+  readonly renderProps: FieldRenderProps<
+    ExtractFormValue<FD[Name]>,
+    HTMLInputElement
   >;
   readonly inputProps: HTMLInputProps;
   readonly id: string;

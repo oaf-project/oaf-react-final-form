@@ -1,19 +1,14 @@
 import React, { Key, SelectHTMLAttributes } from "react";
 import { FieldRenderProps } from "react-final-form";
-import { OmitStrict, Overwrite } from "type-zoo";
-import {
-  ExtractFormValue,
-  FieldMetaState,
-  FormData,
-  FormValue,
-} from "../common";
+import { OmitStrict } from "type-zoo";
+import { ExtractFormValue, FormData } from "../common";
 import {
   FormElement,
   RenderLabelProps,
   RenderInvalidFeedbackProps,
 } from "./FormElement";
 
-export type SelectOption<A extends FormValue> = {
+export type SelectOption<A extends string> = {
   // Union with empty string to allow default empty value as first select option.
   // TODO should we constrain `SelectOptions` below so that only the first element can be empty string?
   readonly value: A | "";
@@ -23,7 +18,7 @@ export type SelectOption<A extends FormValue> = {
   readonly key?: Key;
 };
 
-export type SelectOptionGroup<A extends FormValue> = {
+export type SelectOptionGroup<A extends string> = {
   readonly label?: string;
   readonly disabled?: boolean;
   readonly options: ReadonlyArray<SelectOption<A>>;
@@ -31,11 +26,11 @@ export type SelectOptionGroup<A extends FormValue> = {
   readonly key?: Key;
 };
 
-type SelectOptionOrGroup<A extends FormValue> =
+type SelectOptionOrGroup<A extends string> =
   | SelectOptionGroup<A>
   | SelectOption<A>;
 
-const isSelectOption = <A extends FormValue>(
+const isSelectOption = <A extends string>(
   o: SelectOptionOrGroup<A>,
 ): o is SelectOption<A> =>
   (o as SelectOption<A>).label !== undefined &&
@@ -76,9 +71,10 @@ export type SelectRenderProps<
   FD extends FormData,
   Name extends keyof FD & string
 > = ExtraSelectProps<FD, Name> & {
-  readonly renderProps: Overwrite<
-    FieldRenderProps<ExtractFormValue<FD[Name]>, HTMLSelectElement>,
-    FieldMetaState<ExtractFormValue<FD[Name]>>
+  // TODO go back to common FieldMetaState with safe error and submitError props once type coverage is sorted
+  readonly renderProps: FieldRenderProps<
+    ExtractFormValue<FD[Name]>,
+    HTMLSelectElement
   >;
   readonly selectProps: HTMLSelectProps;
   readonly id: string;

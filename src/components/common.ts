@@ -44,7 +44,7 @@ type FormDataValues<A, B> =
 export type FormValue = string;
 
 export type FormData<I extends string = string, J extends string = string> = {
-  readonly [key in I]: FormDataValues<FormValue, FormData<J>>;
+  readonly [key in I]: FormDataValues<string, FormData<J>>;
 };
 
 /**
@@ -72,7 +72,7 @@ export type ExtractFormValue<A> = Extract<
     : NonNullable<A> extends Array<infer Y>
     ? Y
     : A,
-  FormValue
+  string
 >;
 
 // TODO: include ARRAY_ERROR in the below
