@@ -142,7 +142,9 @@ export type Required<Value> = undefined extends Value
   : { readonly required: true };
 
 // eslint-disable-next-line functional/prefer-readonly-type, @typescript-eslint/no-explicit-any
-export type Multiple<Value> = any[] extends Value
+export type Multiple<Value> = Value extends Array<unknown>
+  ? { readonly multiple: true }
+  : Value extends ReadonlyArray<unknown>
   ? { readonly multiple: true }
   : { readonly multiple?: false };
 
