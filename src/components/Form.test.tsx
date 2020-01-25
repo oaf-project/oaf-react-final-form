@@ -12,6 +12,12 @@ import { withMessage, NumberFromString } from "../validation";
 
 expect.extend(toHaveNoViolations);
 
+beforeEach(() => {
+  // Clear previous test's DOM.
+  // eslint-disable-next-line functional/immutable-data
+  window.document.body.innerHTML = "";
+});
+
 it("renders a simple example", async () => {
   // First, we define the form codec using io-ts.
   // See https://github.com/gcanti/io-ts#the-idea
@@ -120,6 +126,9 @@ it("renders field-specific submission errors", async () => {
     '<form action="." novalidate=""><label for="foo">foo</label><input type="text" id="foo" name="foo" aria-invalid="true" class="form-control is-invalid" value="" aria-describedby="foo-feedback" tabindex="-1"><div class="invalid-feedback" id="foo-feedback">Foo is invalid</div></form>',
   );
 
+  // Expect the invalid input to have received keyboard focus.
+  expect(document.activeElement).toBe(document.querySelector("#foo"));
+
   ReactDOM.unmountComponentAtNode(div);
 });
 
@@ -170,9 +179,12 @@ it("renders global submission errors", async () => {
     '<form action="." novalidate=""><div class="alert alert-danger" role="alert">Form submission failed</div><label for="foo">foo</label><input type="text" id="foo" name="foo" aria-invalid="false" class="form-control is-valid" value=""></form>',
   );
 
+  // TODO Expect the global error to have received keyboard focus.
+
   ReactDOM.unmountComponentAtNode(div);
 });
 
+// eslint-disable-next-line jest/no-test-prefixes, jest/no-disabled-tests
 it("renders default validation error", async () => {
   const codec = formCodec({
     required: {
@@ -202,9 +214,15 @@ it("renders default validation error", async () => {
   await new Promise(resolve => setTimeout(() => resolve()));
   await new Promise(resolve => setTimeout(() => resolve()));
 
+  // Hack: give focus a chance to update.
+  await new Promise(resolve => setTimeout(() => resolve()));
+
   expect(div.innerHTML).toBe(
-    '<form action="." novalidate=""><label for="foo">foo</label><input required="" type="text" id="foo" name="foo" aria-invalid="true" class="form-control is-invalid" value="" aria-describedby="foo-feedback"><div class="invalid-feedback" id="foo-feedback">This field is invalid.</div></form>',
+    '<form action="." novalidate=""><label for="foo">foo</label><input required="" type="text" id="foo" name="foo" aria-invalid="true" class="form-control is-invalid" value="" aria-describedby="foo-feedback" tabindex="-1"><div class="invalid-feedback" id="foo-feedback">This field is invalid.</div></form>',
   );
+
+  // Expect the invalid input to have received keyboard focus.
+  expect(document.activeElement).toBe(document.querySelector("#foo"));
 
   expect(await axe(div)).toHaveNoViolations();
 
@@ -245,6 +263,9 @@ it("renders custom validation error", async () => {
   );
 
   expect(await axe(div)).toHaveNoViolations();
+
+  // Expect the invalid input to have received keyboard focus.
+  expect(document.activeElement).toBe(document.querySelector("#foo"));
 
   ReactDOM.unmountComponentAtNode(div);
 });
