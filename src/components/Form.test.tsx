@@ -482,7 +482,6 @@ it("renders validation error when codec contains mix of required and optional fi
   await new Promise(resolve => setTimeout(() => resolve()));
   await new Promise(resolve => setTimeout(() => resolve()));
 
-  // TODO: this should reflect invalid `bar` input.
   expect(div.innerHTML).toBe(
     '<form action="." novalidate=""><label for="bar">bar</label><input required="" type="text" id="bar" name="bar" aria-invalid="true" class="form-control is-invalid" value="" aria-describedby="bar-feedback"><div class="invalid-feedback" id="bar-feedback">This field is invalid.</div></form>',
   );
