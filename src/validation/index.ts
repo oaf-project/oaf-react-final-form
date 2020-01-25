@@ -19,7 +19,8 @@ type FinalFormValidationRecord = {
 };
 
 type TypeWithTag = {
-  readonly _tag?: string; readonly type?: TypeWithTag;
+  readonly _tag?: string;
+  readonly type?: TypeWithTag;
 };
 
 // TODO: make this smarter
