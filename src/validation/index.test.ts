@@ -192,7 +192,7 @@ it("combines sibling errors in same array", async () => {
   });
 });
 
-it("handles combination of required and optional fields", async () => {
+it("handles combination of optional and required fields", async () => {
   const codec = formCodec({
     required: {
       foo: t.string,
@@ -220,5 +220,84 @@ it("handles combination of required and optional fields", async () => {
 
   expect(validationErrors).toEqual({
     foo: "This field is invalid.",
+  });
+});
+
+it("handles combination of required and optional fields", async () => {
+  const codec = t.intersection([
+    t.type({ foo: t.string }),
+    t.partial({ bar: t.string }),
+  ]);
+
+  const formData = {
+    foo: undefined,
+    bar: undefined,
+  };
+
+  const result = codec.decode(formData);
+
+  if (isRight(result)) {
+    throw new Error("Expected result to be a left");
+  }
+
+  const validationErrors = toValidationErrors(
+    result.left,
+    () => "This field is invalid.",
+  );
+
+  expect(validationErrors).toEqual({
+    foo: "This field is invalid.",
+  });
+});
+
+it("handles integer field name", async () => {
+  const codec = formCodec({
+    required: {
+      0: t.string,
+    },
+    optional: {
+      1: t.string,
+    },
+  });
+
+  const result = codec.decode({});
+
+  if (isRight(result)) {
+    throw new Error("Expected result to be a left");
+  }
+
+  const validationErrors = toValidationErrors(
+    result.left,
+    () => "This field is invalid.",
+  );
+
+  expect(validationErrors).toEqual({
+    0: "This field is invalid.",
+  });
+});
+
+it("handles integer string field name", async () => {
+  const codec = formCodec({
+    required: {
+      "0": t.string,
+    },
+    optional: {
+      "1": t.string,
+    },
+  });
+
+  const result = codec.decode({});
+
+  if (isRight(result)) {
+    throw new Error("Expected result to be a left");
+  }
+
+  const validationErrors = toValidationErrors(
+    result.left,
+    () => "This field is invalid.",
+  );
+
+  expect(validationErrors).toEqual({
+    "0": "This field is invalid.",
   });
 });

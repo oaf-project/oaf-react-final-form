@@ -18,10 +18,13 @@ type FinalFormValidationRecord = {
   readonly [k: string]: FinalFormValidationError;
 };
 
+type TypeWithTag = {
+  readonly _tag?: string; readonly type?: TypeWithTag;
+};
+
 // TODO: make this smarter
 const isArray = (c: ContextEntry): boolean => {
-  const tag = ((c as unknown) as { readonly type: { readonly _tag?: string } })
-    .type._tag;
+  const tag = ((c as unknown) as TypeWithTag).type?._tag;
   return (
     Array.isArray(c.actual) ||
     (tag !== undefined &&
@@ -34,6 +37,7 @@ const renderError = (
   c: ContextEntry,
   cs: ReadonlyArray<ContextEntry>,
   isArrayEntry = false,
+  isIntersection = false,
 ): FinalFormValidationError => {
   const [nextC, ...nextCs] = cs;
 
@@ -53,7 +57,9 @@ const renderError = (
     }
     return { [c.key]: [...new Array(index), nextResult(true)] };
   } else {
-    return isArrayEntry ? nextResult(false) : { [c.key]: nextResult(false) };
+    return isArrayEntry || isIntersection
+      ? nextResult(false)
+      : { [c.key]: nextResult(false) };
   }
   /* eslint-enable functional/no-conditional-statement */
 };
@@ -114,11 +120,26 @@ export const toValidationErrors = <FD extends FormData>(
   defaultMessage: (e: ValidationError) => string,
 ): ValidationErrors<FD> =>
   ioTsErrors.reduce((accumulator, error) => {
-    const [c, ...cs] = error.context.slice(1);
+    const [context0, c, ...cs] = error.context;
+
+    const isArrayEntry = false;
+
+    // Shenanigans to work around the fact that io-ts puts separate entries in the error array when an intersection type is used,
+    // which will always be the case if a form codec has a required and an optional component.
+    const context0AsTypeWithTag = (context0 as unknown) as TypeWithTag;
+    const isIntersection =
+      context0AsTypeWithTag?.type?._tag === "IntersectionType" || // This might be "ReadonlyType", so we also have to check the descendant
+      context0AsTypeWithTag?.type?.type?._tag === "IntersectionType";
 
     const errorMessage = error.message || defaultMessage(error);
 
-    const nextError = renderError(errorMessage, c, cs);
+    const nextError = renderError(
+      errorMessage,
+      c,
+      cs,
+      isArrayEntry,
+      isIntersection,
+    );
     // TODO remove this gnarly cast
     return mergeDeep(accumulator, nextError) as ValidationErrors<FD>;
   }, {});
