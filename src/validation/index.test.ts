@@ -191,3 +191,34 @@ it("combines sibling errors in same array", async () => {
     foo: [{ bar: "This field is invalid." }, { bar: "This field is invalid." }],
   });
 });
+
+it("handles combination of required and optional fields", async () => {
+  const codec = formCodec({
+    required: {
+      foo: t.string,
+    },
+    optional: {
+      bar: t.string,
+    },
+  });
+
+  const formData = {
+    foo: undefined,
+    bar: undefined,
+  };
+
+  const result = codec.decode(formData);
+
+  if (isRight(result)) {
+    throw new Error("Expected result to be a left");
+  }
+
+  const validationErrors = toValidationErrors(
+    result.left,
+    () => "This field is invalid.",
+  );
+
+  expect(validationErrors).toEqual({
+    foo: "This field is invalid.",
+  });
+});
