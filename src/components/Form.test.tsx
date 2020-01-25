@@ -173,13 +173,17 @@ it("renders global submission errors", async () => {
   await new Promise(resolve => setTimeout(() => resolve()));
   await new Promise(resolve => setTimeout(() => resolve()));
 
+  // Hack: give focus a chance to update.
+  await new Promise(resolve => setTimeout(() => resolve()));
+
   expect(await axe(div)).toHaveNoViolations();
 
   expect(div.innerHTML).toBe(
-    '<form action="." novalidate=""><div class="alert alert-danger" role="alert">Form submission failed</div><label for="foo">foo</label><input type="text" id="foo" name="foo" aria-invalid="false" class="form-control is-valid" value=""></form>',
+    '<form action="." novalidate=""><div class="alert alert-danger" role="alert" tabindex="-1">Form submission failed</div><label for="foo">foo</label><input type="text" id="foo" name="foo" aria-invalid="false" class="form-control is-valid" value=""></form>',
   );
 
-  // TODO Expect the global error to have received keyboard focus.
+  // Expect the global error to have received keyboard focus.
+  expect(document.activeElement).toBe(document.querySelector("[role=alert]"));
 
   ReactDOM.unmountComponentAtNode(div);
 });

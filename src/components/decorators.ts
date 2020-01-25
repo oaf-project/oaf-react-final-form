@@ -31,6 +31,7 @@ export const focusInvalidFormDecorator = <FormValues>(
   getFormElement: () => Element | null,
   invalidElementSelector: Selector | undefined,
   elementWrapperSelector: Selector | undefined,
+  globalFormErrorSelector: Selector | undefined,
   smoothScroll: boolean | undefined = undefined,
 ): Decorator<FormValues> => {
   // eslint-disable-next-line functional/no-return-void
@@ -70,6 +71,7 @@ export const focusInvalidFormDecorator = <FormValues>(
                   formElement,
                   selector,
                   elementWrapperSelector,
+                  globalFormErrorSelector,
                   smoothScroll,
                 );
               }, 0);

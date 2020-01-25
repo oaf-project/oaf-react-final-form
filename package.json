@@ -49,11 +49,11 @@
     "react-final-form": "^6.3.3"
   },
   "dependencies": {
-    "fp-ts": "^2.4.1",
+    "fp-ts": "^2.4.2",
     "io-ts": "^2.0.6",
     "io-ts-types": "^0.5.5",
     "monocle-ts": "^2.0.1",
-    "oaf-side-effects": "^2.1.0",
+    "oaf-side-effects": "^3.0.0",
     "total-functions": "^0.1.0",
     "type-zoo": "^3.4.1"
   },

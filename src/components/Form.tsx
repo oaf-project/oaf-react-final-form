@@ -36,6 +36,7 @@ type PropsFromFinalFormConfig<FD extends FormData> = DeepReadonly<
 type FocusInvalidElementProps = {
   readonly invalidElementSelector?: Selector;
   readonly elementWrapperSelector?: Selector;
+  readonly globalFormErrorSelector?: Selector;
   readonly smoothScroll?: boolean;
 };
 
@@ -83,7 +84,7 @@ export const Form = <A extends ParsedFormData, O extends FormData>(
       () => formRef.current,
       props.invalidElementSelector || "[aria-invalid=true]",
       props.elementWrapperSelector,
-      // TODO https://github.com/oaf-project/oaf-side-effects/issues/18
+      props.globalFormErrorSelector || "[role=alert]",
       props.smoothScroll,
     ),
   );
