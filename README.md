@@ -43,11 +43,11 @@ npm install oaf-react-final-form
 
   // We derive React components for our form elements from the form codec. This
   // gives us some type-safety benefits when rendering these form elements (below).
-  const { Form, Input } = elementsForCodec(codec);
+  const { Form, Input, Select } = elementsForCodec(codec);
 
   type FormData = t.TypeOf<typeof codec>;
 
-  const onSubmit = (_: FormData): SubmissionResponse<FormData> => {
+  const onSubmit = (formData: FormData): SubmissionResponse<FormData> => {
     // Here we are guaranteed that `formData` has been parsed by our form codec.
     // We can return submission errors here if necessary.
     return undefined;
