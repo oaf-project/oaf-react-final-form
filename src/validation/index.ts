@@ -47,8 +47,8 @@ const renderError = (
   errorMessage: string,
   c: ContextEntry,
   cs: ReadonlyArray<ContextEntry>,
-  isArrayEntry = false,
-  isIntersection = false,
+  isArrayEntry: boolean,
+  isIntersection: boolean,
 ): FinalFormValidationError => {
   const [nextC, ...nextCs] = cs;
 
