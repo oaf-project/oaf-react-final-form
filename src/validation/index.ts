@@ -24,12 +24,22 @@ type TypeWithTag = {
 };
 
 // TODO: make this smarter
-const isArray = (c: ContextEntry): boolean => {
+const isArrayType = (c: ContextEntry): boolean => {
   const tag = ((c as unknown) as TypeWithTag).type?._tag;
   return (
     Array.isArray(c.actual) ||
     (tag !== undefined &&
       ["AnyArrayType", "ArrayType", "ReadonlyArrayType"].includes(tag))
+  );
+};
+
+// Shenanigans to work around the fact that io-ts puts separate entries in the error array when an intersection type is used,
+// which will always be the case if a form codec has a required and an optional component.
+const isIntersectionType = (c: ContextEntry): boolean => {
+  const typeWithTag = (c as unknown) as TypeWithTag;
+  return (
+    typeWithTag?.type?._tag === "IntersectionType" || // This might be "ReadonlyType", so we also have to check the descendant
+    typeWithTag?.type?.type?._tag === "IntersectionType"
   );
 };
 
@@ -44,11 +54,17 @@ const renderError = (
 
   const nextResult = (nextIsArrayEntry: boolean): FinalFormValidationError =>
     cs.length > 0
-      ? renderError(errorMessage, nextC, nextCs, nextIsArrayEntry)
+      ? renderError(
+          errorMessage,
+          nextC,
+          nextCs,
+          nextIsArrayEntry,
+          isIntersectionType(c),
+        )
       : errorMessage; // This is a leaf, so render the error message string.
 
   /* eslint-disable functional/no-conditional-statement */
-  if (isArray(c)) {
+  if (isArrayType(c)) {
     if (nextC === undefined) {
       return { [c.key]: "Expected next context entry to exist." };
     }
@@ -125,13 +141,6 @@ export const toValidationErrors = <FD extends FormData>(
 
     const isArrayEntry = false;
 
-    // Shenanigans to work around the fact that io-ts puts separate entries in the error array when an intersection type is used,
-    // which will always be the case if a form codec has a required and an optional component.
-    const context0AsTypeWithTag = (context0 as unknown) as TypeWithTag;
-    const isIntersection =
-      context0AsTypeWithTag?.type?._tag === "IntersectionType" || // This might be "ReadonlyType", so we also have to check the descendant
-      context0AsTypeWithTag?.type?.type?._tag === "IntersectionType";
-
     const errorMessage = error.message || defaultMessage(error);
 
     const nextError = renderError(
@@ -139,7 +148,7 @@ export const toValidationErrors = <FD extends FormData>(
       c,
       cs,
       isArrayEntry,
-      isIntersection,
+      isIntersectionType(context0),
     );
     // TODO remove this gnarly cast
     return mergeDeep(accumulator, nextError) as ValidationErrors<FD>;

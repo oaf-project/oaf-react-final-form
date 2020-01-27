@@ -5,299 +5,189 @@ import { formCodec } from "..";
 
 /* eslint-disable functional/no-throw-statement, sonarjs/no-duplicate-string, functional/functional-parameters, functional/no-expression-statement, functional/no-conditional-statement */
 
-it("validates flat (non-nested) form data", async () => {
-  const codec = formCodec({
-    required: { foo: t.string },
-  });
-
-  const formData = {
-    foo: undefined, // required string
-  };
-
-  const result = codec.decode(formData);
-
-  if (isRight(result)) {
-    throw new Error("Expected result to be a left");
-  }
-
-  const validationErrors = toValidationErrors(
-    result.left,
-    () => "This field is invalid.",
-  );
-
-  expect(validationErrors).toEqual({
-    foo: "This field is invalid.",
-  });
-});
-
-it("validates nested object form data", async () => {
-  const codec = formCodec({
-    required: { foo: t.type({ bar: t.string }) },
-  });
-
-  const formData = {
-    foo: {
-      bar: undefined, // required string
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const examples: ReadonlyArray<readonly [t.Type<any>, object, object]> = [
+  // Flat
+  [
+    formCodec({
+      required: { foo: t.string },
+    }),
+    {
+      foo: undefined, // required string
     },
-  };
-
-  const result = codec.decode(formData);
-
-  if (isRight(result)) {
-    throw new Error("Expected result to be a left");
-  }
-
-  const validationErrors = toValidationErrors(
-    result.left,
-    () => "This field is invalid.",
-  );
-
-  expect(validationErrors).toEqual({
-    foo: { bar: "This field is invalid." },
-  });
-});
-
-it("validates nested object form data with sibling errors", async () => {
-  const codec = formCodec({
-    required: { foo: t.type({ bar: t.string, baz: t.string }) },
-  });
-
-  const formData = {
-    foo: {
-      bar: undefined, // required string
-      baz: undefined, // required string
+    {
+      foo: "This field is invalid.",
     },
-  };
-
-  const result = codec.decode(formData);
-
-  if (isRight(result)) {
-    throw new Error("Expected result to be a left");
-  }
-
-  const validationErrors = toValidationErrors(
-    result.left,
-    () => "This field is invalid.",
-  );
-
-  expect(validationErrors).toEqual({
-    foo: { bar: "This field is invalid.", baz: "This field is invalid." },
-  });
-});
-
-it("validates array form data", async () => {
-  const codec = formCodec({
-    required: { foo: t.readonlyArray(t.string) },
-  });
-
-  const formData = {
-    foo: ["a", undefined, "b"],
-  };
-
-  const result = codec.decode(formData);
-
-  if (isRight(result)) {
-    throw new Error("Expected result to be a left");
-  }
-
-  const validationErrors = toValidationErrors(
-    result.left,
-    () => "This field is invalid.",
-  );
-
-  expect(validationErrors).toEqual({
-    foo: [undefined, "This field is invalid."],
-  });
-});
-
-it("validates descendant of array", async () => {
-  const codec = formCodec({
-    required: { foo: t.readonlyArray(t.type({ bar: t.string })) },
-  });
-
-  const formData = {
-    foo: [{ bar: "a" }, {}, { bar: "a" }],
-  };
-
-  const result = codec.decode(formData);
-
-  if (isRight(result)) {
-    throw new Error("Expected result to be a left");
-  }
-
-  const validationErrors = toValidationErrors(
-    result.left,
-    () => "This field is invalid.",
-  );
-
-  expect(validationErrors).toEqual({
-    foo: [undefined, { bar: "This field is invalid." }],
-  });
-});
-
-it("combines descendant errors for same array element", async () => {
-  const codec = formCodec({
-    required: {
-      foo: t.readonlyArray(t.type({ bar: t.string, baz: t.string })),
+  ],
+  // Nested
+  [
+    formCodec({
+      required: { foo: t.type({ bar: t.string }) },
+    }),
+    {
+      foo: {
+        bar: undefined, // required string
+      },
     },
-  });
-
-  const formData = {
-    foo: [{ bar: "a", baz: "a" }, {}, { bar: "a", baz: "a" }],
-  };
-
-  const result = codec.decode(formData);
-
-  if (isRight(result)) {
-    throw new Error("Expected result to be a left");
-  }
-
-  const validationErrors = toValidationErrors(
-    result.left,
-    () => "This field is invalid.",
-  );
-
-  expect(validationErrors).toEqual({
-    foo: [
-      undefined,
-      { bar: "This field is invalid.", baz: "This field is invalid." },
-    ],
-  });
-});
-
-it("combines sibling errors in same array", async () => {
-  const codec = formCodec({
-    required: {
-      foo: t.readonlyArray(t.type({ bar: t.string })),
+    {
+      foo: { bar: "This field is invalid." },
     },
-  });
-
-  const formData = {
-    foo: [{}, {}],
-  };
-
-  const result = codec.decode(formData);
-
-  if (isRight(result)) {
-    throw new Error("Expected result to be a left");
-  }
-
-  const validationErrors = toValidationErrors(
-    result.left,
-    () => "This field is invalid.",
-  );
-
-  expect(validationErrors).toEqual({
-    foo: [{ bar: "This field is invalid." }, { bar: "This field is invalid." }],
-  });
-});
-
-it("handles combination of optional and required fields", async () => {
-  const codec = formCodec({
-    required: {
-      foo: t.string,
+  ],
+  // nested object form data with sibling errors
+  [
+    formCodec({
+      required: {
+        foo: t.readonly(
+          t.intersection([
+            t.type({ bar: t.string }),
+            t.type({ baz: t.string }),
+          ]),
+        ),
+      },
+    }),
+    {
+      foo: {
+        bar: undefined, // required string
+        baz: undefined, // required string
+      },
     },
-    optional: {
-      bar: t.string,
+    {
+      foo: { bar: "This field is invalid.", baz: "This field is invalid." },
     },
-  });
-
-  const formData = {
-    foo: undefined,
-    bar: undefined,
-  };
-
-  const result = codec.decode(formData);
-
-  if (isRight(result)) {
-    throw new Error("Expected result to be a left");
-  }
-
-  const validationErrors = toValidationErrors(
-    result.left,
-    () => "This field is invalid.",
-  );
-
-  expect(validationErrors).toEqual({
-    foo: "This field is invalid.",
-  });
-});
-
-it("handles combination of required and optional fields", async () => {
-  const codec = t.intersection([
-    t.type({ foo: t.string }),
-    t.partial({ bar: t.string }),
-  ]);
-
-  const formData = {
-    foo: undefined,
-    bar: undefined,
-  };
-
-  const result = codec.decode(formData);
-
-  if (isRight(result)) {
-    throw new Error("Expected result to be a left");
-  }
-
-  const validationErrors = toValidationErrors(
-    result.left,
-    () => "This field is invalid.",
-  );
-
-  expect(validationErrors).toEqual({
-    foo: "This field is invalid.",
-  });
-});
-
-it("handles integer field name", async () => {
-  const codec = formCodec({
-    required: {
-      0: t.string,
+  ],
+  // array form data
+  [
+    formCodec({
+      required: { foo: t.readonlyArray(t.string) },
+    }),
+    {
+      foo: ["a", undefined, "b"],
     },
-    optional: {
-      1: t.string,
+    {
+      foo: [undefined, "This field is invalid."],
     },
-  });
-
-  const result = codec.decode({});
-
-  if (isRight(result)) {
-    throw new Error("Expected result to be a left");
-  }
-
-  const validationErrors = toValidationErrors(
-    result.left,
-    () => "This field is invalid.",
-  );
-
-  expect(validationErrors).toEqual({
-    0: "This field is invalid.",
-  });
-});
-
-it("handles integer string field name", async () => {
-  const codec = formCodec({
-    required: {
-      "0": t.string,
+  ],
+  // descendant of array
+  [
+    formCodec({
+      required: { foo: t.readonlyArray(t.type({ bar: t.string })) },
+    }),
+    {
+      foo: [{ bar: "a" }, {}, { bar: "a" }],
     },
-    optional: {
-      "1": t.string,
+    {
+      foo: [undefined, { bar: "This field is invalid." }],
     },
-  });
+  ],
+  // combines descendant errors for same array element
+  [
+    formCodec({
+      required: {
+        foo: t.readonlyArray(t.type({ bar: t.string, baz: t.string })),
+      },
+    }),
+    {
+      foo: [{ bar: "a", baz: "a" }, {}, { bar: "a", baz: "a" }],
+    },
+    {
+      foo: [
+        undefined,
+        { bar: "This field is invalid.", baz: "This field is invalid." },
+      ],
+    },
+  ],
+  // combines sibling errors in same array
+  [
+    formCodec({
+      required: {
+        foo: t.readonlyArray(t.type({ bar: t.string })),
+      },
+    }),
+    {
+      foo: [{}, {}],
+    },
+    {
+      foo: [
+        { bar: "This field is invalid." },
+        { bar: "This field is invalid." },
+      ],
+    },
+  ],
+  // combination of optional and required fields
+  [
+    formCodec({
+      required: {
+        foo: t.string,
+      },
+      optional: {
+        bar: t.string,
+      },
+    }),
+    {
+      foo: undefined,
+      bar: undefined,
+    },
+    {
+      foo: "This field is invalid.",
+    },
+  ],
+  // combination of required and optional fields
+  [
+    t.intersection([t.type({ foo: t.string }), t.partial({ bar: t.string })]),
+    {
+      foo: undefined,
+      bar: undefined,
+    },
+    {
+      foo: "This field is invalid.",
+    },
+  ],
+  // integer field name
+  [
+    formCodec({
+      required: {
+        0: t.string,
+      },
+      optional: {
+        1: t.string,
+      },
+    }),
+    {},
+    {
+      0: "This field is invalid.",
+    },
+  ],
+  // integer string field name
+  [
+    formCodec({
+      required: {
+        "0": t.string,
+      },
+      optional: {
+        "1": t.string,
+      },
+    }),
+    {},
+    {
+      "0": "This field is invalid.",
+    },
+  ],
+];
 
-  const result = codec.decode({});
+test.each(examples)(
+  "produces expected validation errors",
+  (codec, formData, expected) => {
+    const result = codec.decode(formData);
 
-  if (isRight(result)) {
-    throw new Error("Expected result to be a left");
-  }
+    if (isRight(result)) {
+      throw new Error("Expected result to be a left");
+    }
 
-  const validationErrors = toValidationErrors(
-    result.left,
-    () => "This field is invalid.",
-  );
+    const validationErrors = toValidationErrors(
+      result.left,
+      () => "This field is invalid.",
+    );
 
-  expect(validationErrors).toEqual({
-    "0": "This field is invalid.",
-  });
-});
+    expect(validationErrors).toEqual(expected);
+  },
+);
