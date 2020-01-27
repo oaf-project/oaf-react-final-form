@@ -28,4 +28,42 @@ npm install oaf-react-final-form
 ```
 
 ## Usage
-See [Form.test.tsx](https://github.com/oaf-project/oaf-react-final-form/blob/master/src/components/Form.test.tsx) for an example.
+```typescript
+  // First, we define the form codec using io-ts.
+  // See https://github.com/gcanti/io-ts#the-idea
+  //
+  // `formCodec` is just a convenience function over the top of
+  // `intersection`, `type`, `partial` and `readonly` from io-ts.
+  // See https://github.com/gcanti/io-ts#mixing-required-and-optional-props
+  const codec = formCodec({
+    optional: {
+      foo: t.string,
+    },
+  });
+
+  // We derive React components for our form elements from the form codec. This
+  // gives us some type-safety benefits when rendering these form elements (below).
+  const { Form, Input } = elementsForCodec(codec);
+
+  type FormData = t.TypeOf<typeof codec>;
+
+  const onSubmit = (_: FormData): SubmissionResponse<FormData> => {
+    // Here we are guaranteed that `formData` has been parsed by our form codec.
+    // We can return submission errors here if necessary.
+    return undefined;
+  };
+
+  const form = (
+    <Form onSubmit={onSubmit}>
+      {/*
+        The `name` attr must be one of the values from the form codec.
+        The `type` and `required` attrs must be compatible with the corresponding property from the form codec.
+          * Because `foo` is optional in the codec, `required` must be either undefined or false.
+          * Because `foo` is a string in the codec, `type` cannot be one of the numeric input types (`number` or `range`).
+      */}
+      <Input label="foo" name="foo" type="text" />
+    </Form>
+  );
+```
+
+See [Form.test.tsx](https://github.com/oaf-project/oaf-react-final-form/blob/master/src/components/Form.test.tsx) for more examples.
