@@ -3,9 +3,9 @@ import * as t from "io-ts";
 import { toValidationErrors } from ".";
 import { formCodec } from "..";
 
-/* eslint-disable functional/no-throw-statement, sonarjs/no-duplicate-string, functional/functional-parameters, functional/no-expression-statement, functional/no-conditional-statement */
+/* eslint-disable functional/no-throw-statement, sonarjs/no-duplicate-string, functional/functional-parameters, functional/no-expression-statement, functional/no-conditional-statement, @typescript-eslint/no-explicit-any */
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// type-coverage:ignore-next-line
 const examples: ReadonlyArray<readonly [t.Type<any>, object, object]> = [
   // Flat
   [
@@ -174,9 +174,12 @@ const examples: ReadonlyArray<readonly [t.Type<any>, object, object]> = [
   ],
 ];
 
+// type-coverage:ignore-next-line
 test.each(examples)(
   "produces expected validation errors",
+  // type-coverage:ignore-next-line
   (codec, formData, expected) => {
+    // type-coverage:ignore-next-line
     const result = codec.decode(formData);
 
     if (isRight(result)) {
