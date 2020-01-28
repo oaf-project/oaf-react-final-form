@@ -10,9 +10,12 @@ module.exports = {
     "plugin:react/recommended",
     "plugin:sonarjs/recommended",
     "plugin:functional/recommended",
+    "plugin:functional/external-recommended",
     "plugin:jsx-a11y/recommended",
     "plugin:jest/recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
     "plugin:@typescript-eslint/recommended",
+    "plugin:@typescript-eslint/recommended-requiring-type-checking",
     "prettier/@typescript-eslint",
     "plugin:prettier/recommended",
   ],
@@ -38,9 +41,13 @@ module.exports = {
     "no-implied-eval": "error",
     "no-await-in-loop": "error",
     "no-new-wrappers": "error",
+    "eqeqeq": "error",
+    // https://reactjs.org/docs/hooks-rules.html
     "react-hooks/rules-of-hooks": "error",
     "react-hooks/exhaustive-deps": "error",
+    // Don't need prop types when you have... actual types
     "react/prop-types": 0,
+    // https://github.com/danielnixon/total-functions
     "no-array-subscript": "error",
     "@typescript-eslint/ban-types": [
       "error",
