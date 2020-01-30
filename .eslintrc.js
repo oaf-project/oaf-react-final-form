@@ -33,6 +33,8 @@ module.exports = {
     "react-hooks",
     "@typescript-eslint",
     "prettier",
+    // TODO replace tslint's no-any and no-unsafe-any
+    // See https://github.com/typescript-eslint/typescript-eslint/issues/791
   ],
   rules: {
     // Additional rules that are not part of `eslint:recommended`.
@@ -78,6 +80,7 @@ module.exports = {
       // Browser globals
       { name: "document" },
       { name: "window" },
+      { name: "navigator" },
       // https://github.com/danielnixon/readonly-types
       { name: "URL" },
       { name: "URLSearchParams" },

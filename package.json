@@ -8,7 +8,10 @@
     "url": "https://github.com/oaf-project/oaf-react-final-form.git"
   },
   "devDependencies": {
-    "@types/jest": "^25.1.0",
+    "@stryker-mutator/core": "^2.5.0",
+    "@stryker-mutator/jest-runner": "^2.5.0",
+    "@stryker-mutator/typescript": "^2.5.0",
+    "@types/jest": "^24.0.0",
     "@types/jest-axe": "^3.2.1",
     "@types/react": "^16.9.19",
     "@types/react-dom": "^16.9.5",
@@ -25,17 +28,20 @@
     "eslint-plugin-sonarjs": "^0.5.0",
     "final-form": "^4.18.7",
     "final-form-arrays": "^3.0.2",
-    "jest": "^25.1.0",
+    "jest": "^24.0.0",
     "jest-axe": "^3.3.0",
     "prettier": "^1.19.1",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "react-final-form": "^6.3.5",
     "react-final-form-arrays": "^3.1.1",
-    "ts-jest": "^25.0.0",
+    "ts-jest": "^24.0.0",
     "type-coverage": "^2.4.0",
     "typedoc": "^0.16.9",
     "typescript": "^3.7.5"
+  },
+  "resolutions": {
+    "jsdom": "^15.0.0"
   },
   "scripts": {
     "build": "tsc",
