@@ -11,16 +11,16 @@
     "@stryker-mutator/core": "^2.5.0",
     "@stryker-mutator/jest-runner": "^2.5.0",
     "@stryker-mutator/typescript": "^2.5.0",
-    "@types/jest": "^24.0.0",
+    "@types/jest": "^25.1.2",
     "@types/jest-axe": "^3.2.1",
     "@types/react": "^16.9.19",
     "@types/react-dom": "^16.9.5",
-    "@typescript-eslint/eslint-plugin": "^2.18.0",
-    "@typescript-eslint/parser": "^2.18.0",
+    "@typescript-eslint/eslint-plugin": "^2.19.0",
+    "@typescript-eslint/parser": "^2.19.0",
     "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.10.0",
     "eslint-plugin-functional": "^3.0.1",
-    "eslint-plugin-jest": "^23.6.0",
+    "eslint-plugin-jest": "^23.7.0",
     "eslint-plugin-jsx-a11y": "^6.2.3",
     "eslint-plugin-prettier": "^3.1.2",
     "eslint-plugin-react": "^7.18.3",
@@ -30,18 +30,17 @@
     "final-form-arrays": "^3.0.2",
     "jest": "^25.1.0",
     "jest-axe": "^3.3.0",
+    "patch-package": "^6.2.0",
+    "postinstall-postinstall": "^2.0.0",
     "prettier": "^1.19.1",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "react-final-form": "^6.3.5",
     "react-final-form-arrays": "^3.1.1",
-    "ts-jest": "^25.1.0",
+    "ts-jest": "^25.2.0",
     "type-coverage": "^2.4.0",
     "typedoc": "^0.16.9",
     "typescript": "^3.7.5"
-  },
-  "resolutions": {
-    "jsdom": "^15.0.0"
   },
   "scripts": {
     "build": "tsc",
@@ -49,13 +48,14 @@
     "type-coverage": "type-coverage --strict --detail",
     "documentation": "typedoc --excludeNotExported --excludePrivate --exclude \"**/*+(.test).tsx\" --out docs src && cp docs_config.yml ./docs/_config.yml",
     "test": "jest",
-    "release": "yarn build && yarn lint && yarn type-coverage && yarn publish"
+    "release": "yarn build && yarn lint && yarn type-coverage && yarn publish",
+    "postinstall": "patch-package"
   },
   "peerDependencies": {
     "react-final-form": "^6.3.3"
   },
   "dependencies": {
-    "fp-ts": "^2.4.3",
+    "fp-ts": "^2.4.4",
     "io-ts": "^2.0.6",
     "io-ts-types": "^0.5.5",
     "monocle-ts": "^2.1.0",
