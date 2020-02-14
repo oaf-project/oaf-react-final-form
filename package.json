@@ -55,7 +55,7 @@
     "react-final-form": "^6.3.3"
   },
   "dependencies": {
-    "fp-ts": "^2.4.4",
+    "fp-ts": "^2.5.0",
     "io-ts": "^2.0.6",
     "io-ts-types": "^0.5.5",
     "monocle-ts": "^2.1.0",
