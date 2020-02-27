@@ -2272,10 +2272,10 @@ interpret@^1.0.0:
   resolved "https://registry.yarnpkg.com/interpret/-/interpret-1.2.0.tgz#d5061a6224be58e8083985f5014d844359576296"
   integrity sha512-mT34yGKMNceBQUoVn7iCDKDntA7SC6gycMAWzGx1z/CMCTV7b2AAtXlo3nRyHZ1FelRkQbQjprHSYGwzLtkVbw==
 
-io-ts-types@^0.5.5:
-  version "0.5.5"
-  resolved "https://registry.yarnpkg.com/io-ts-types/-/io-ts-types-0.5.5.tgz#31df3fc14a1295d48e36d164f8399f755f750dad"
-  integrity sha512-REkSSrgkfxFzDy32dsrPiQqGERO2o4KUtSox96B4ZKFSiB5mg0zl4cXl072TvROzcvuc0zGPlFzrRTYWaTcj/w==
+io-ts-types@^0.5.6:
+  version "0.5.6"
+  resolved "https://registry.yarnpkg.com/io-ts-types/-/io-ts-types-0.5.6.tgz#4d9afdf7220d865c5bf74f30d9b2fcf1d51f11e3"
+  integrity sha512-E8mClvIN6sotGqICJQMyt8nMG9VkwejRYwOcKjAj5hndlWib9o8MRmP3HiyVK4Mn1lrpY6bB/B3LrMcV/HcWGQ==
 
 io-ts@^2.1.2:
   version "2.1.2"
