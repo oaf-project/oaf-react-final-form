@@ -60,7 +60,7 @@ export const focusInvalidFormDecorator = <FormValues>(
             const selector =
               invalidElementSelector ||
               Object.keys(formState.errors)
-                .map(id => `#${id}`)
+                .map((id) => `#${id}`)
                 .join(", ");
 
             // eslint-disable-next-line functional/no-conditional-statement

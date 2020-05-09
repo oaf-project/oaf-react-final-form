@@ -57,7 +57,9 @@ it("renders a simple example", async () => {
   const div = document.createElement("div");
   ReactDOM.render(form, div);
 
-  expect(await axe(div)).toHaveNoViolations();
+  expect(
+    await axe(div, { rules: { region: { enabled: false } } }),
+  ).toHaveNoViolations();
 
   expect(div.innerHTML).toBe(
     '<form action="." novalidate=""><label for="foo">foo</label><input type="text" id="foo" name="foo" aria-invalid="false" class="form-control" value=""></form>',
@@ -67,10 +69,12 @@ it("renders a simple example", async () => {
   div.querySelector("form")!.submit();
 
   // HACK: give react a chance to render.
-  await new Promise(resolve => setTimeout(() => resolve()));
-  await new Promise(resolve => setTimeout(() => resolve()));
+  await new Promise((resolve) => setTimeout(() => resolve()));
+  await new Promise((resolve) => setTimeout(() => resolve()));
 
-  expect(await axe(div)).toHaveNoViolations();
+  expect(
+    await axe(div, { rules: { region: { enabled: false } } }),
+  ).toHaveNoViolations();
 
   expect(div.innerHTML).toBe(
     '<form action="." novalidate=""><label for="foo">foo</label><input type="text" id="foo" name="foo" aria-invalid="false" class="form-control" value=""></form>',
@@ -107,7 +111,9 @@ it("renders field-specific submission errors", async () => {
   const div = document.createElement("div");
   ReactDOM.render(form, div);
 
-  expect(await axe(div)).toHaveNoViolations();
+  expect(
+    await axe(div, { rules: { region: { enabled: false } } }),
+  ).toHaveNoViolations();
 
   expect(div.innerHTML).toBe(
     '<form action="." novalidate=""><label for="foo">foo</label><input type="text" id="foo" name="foo" aria-invalid="false" class="form-control" value=""></form>',
@@ -117,10 +123,12 @@ it("renders field-specific submission errors", async () => {
   div.querySelector("form")!.submit();
 
   // HACK: give react a chance to render.
-  await new Promise(resolve => setTimeout(() => resolve()));
-  await new Promise(resolve => setTimeout(() => resolve()));
+  await new Promise((resolve) => setTimeout(() => resolve()));
+  await new Promise((resolve) => setTimeout(() => resolve()));
 
-  expect(await axe(div)).toHaveNoViolations();
+  expect(
+    await axe(div, { rules: { region: { enabled: false } } }),
+  ).toHaveNoViolations();
 
   expect(div.innerHTML).toBe(
     '<form action="." novalidate=""><label for="foo">foo</label><input type="text" id="foo" name="foo" aria-invalid="true" class="form-control is-invalid" value="" aria-describedby="foo-feedback" tabindex="-1"><div class="invalid-feedback" id="foo-feedback">Foo is invalid</div></form>',
@@ -160,7 +168,9 @@ it("renders global submission errors", async () => {
   const div = document.createElement("div");
   ReactDOM.render(form, div);
 
-  expect(await axe(div)).toHaveNoViolations();
+  expect(
+    await axe(div, { rules: { region: { enabled: false } } }),
+  ).toHaveNoViolations();
 
   expect(div.innerHTML).toBe(
     '<form action="." novalidate=""><label for="foo">foo</label><input type="text" id="foo" name="foo" aria-invalid="false" class="form-control" value=""></form>',
@@ -170,13 +180,15 @@ it("renders global submission errors", async () => {
   div.querySelector("form")!.submit();
 
   // HACK: give react a chance to render.
-  await new Promise(resolve => setTimeout(() => resolve()));
-  await new Promise(resolve => setTimeout(() => resolve()));
+  await new Promise((resolve) => setTimeout(() => resolve()));
+  await new Promise((resolve) => setTimeout(() => resolve()));
 
   // Hack: give focus a chance to update.
-  await new Promise(resolve => setTimeout(() => resolve()));
+  await new Promise((resolve) => setTimeout(() => resolve()));
 
-  expect(await axe(div)).toHaveNoViolations();
+  expect(
+    await axe(div, { rules: { region: { enabled: false } } }),
+  ).toHaveNoViolations();
 
   expect(div.innerHTML).toBe(
     '<form action="." novalidate=""><div class="alert alert-danger" role="alert" tabindex="-1">Form submission failed</div><label for="foo">foo</label><input type="text" id="foo" name="foo" aria-invalid="false" class="form-control is-valid" value=""></form>',
@@ -209,17 +221,19 @@ it("renders default validation error", async () => {
   expect(div.innerHTML).toBe(
     '<form action="." novalidate=""><label for="foo">foo</label><input required="" type="text" id="foo" name="foo" aria-invalid="false" class="form-control" value=""></form>',
   );
-  expect(await axe(div)).toHaveNoViolations();
+  expect(
+    await axe(div, { rules: { region: { enabled: false } } }),
+  ).toHaveNoViolations();
 
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   div.querySelector("form")!.submit();
 
   // HACK: give react a chance to render.
-  await new Promise(resolve => setTimeout(() => resolve()));
-  await new Promise(resolve => setTimeout(() => resolve()));
+  await new Promise((resolve) => setTimeout(() => resolve()));
+  await new Promise((resolve) => setTimeout(() => resolve()));
 
   // Hack: give focus a chance to update.
-  await new Promise(resolve => setTimeout(() => resolve()));
+  await new Promise((resolve) => setTimeout(() => resolve()));
 
   expect(div.innerHTML).toBe(
     '<form action="." novalidate=""><label for="foo">foo</label><input required="" type="text" id="foo" name="foo" aria-invalid="true" class="form-control is-invalid" value="" aria-describedby="foo-feedback" tabindex="-1"><div class="invalid-feedback" id="foo-feedback">This field is invalid.</div></form>',
@@ -228,7 +242,9 @@ it("renders default validation error", async () => {
   // Expect the invalid input to have received keyboard focus.
   expect(document.activeElement).toBe(document.querySelector("#foo"));
 
-  expect(await axe(div)).toHaveNoViolations();
+  expect(
+    await axe(div, { rules: { region: { enabled: false } } }),
+  ).toHaveNoViolations();
 
   ReactDOM.unmountComponentAtNode(div);
 });
@@ -253,20 +269,24 @@ it("renders custom validation error", async () => {
   expect(div.innerHTML).toBe(
     '<form action="." novalidate=""><label for="foo">foo</label><input required="" type="text" id="foo" name="foo" aria-invalid="false" class="form-control" value=""></form>',
   );
-  expect(await axe(div)).toHaveNoViolations();
+  expect(
+    await axe(div, { rules: { region: { enabled: false } } }),
+  ).toHaveNoViolations();
 
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   div.querySelector("form")!.submit();
 
   // HACK: give react a chance to render.
-  await new Promise(resolve => setTimeout(() => resolve()));
-  await new Promise(resolve => setTimeout(() => resolve()));
+  await new Promise((resolve) => setTimeout(() => resolve()));
+  await new Promise((resolve) => setTimeout(() => resolve()));
 
   expect(div.innerHTML).toBe(
     '<form action="." novalidate=""><label for="foo">foo</label><input required="" type="text" id="foo" name="foo" aria-invalid="true" class="form-control is-invalid" value="" aria-describedby="foo-feedback"><div class="invalid-feedback" id="foo-feedback">Foo is required</div></form>',
   );
 
-  expect(await axe(div)).toHaveNoViolations();
+  expect(
+    await axe(div, { rules: { region: { enabled: false } } }),
+  ).toHaveNoViolations();
 
   // Expect the invalid input to have received keyboard focus.
   expect(document.activeElement).toBe(document.querySelector("#foo"));
@@ -296,20 +316,24 @@ it("renders multiple validation errors", async () => {
   expect(div.innerHTML).toBe(
     '<form action="." novalidate=""><label for="foo">foo</label><input required="" type="text" id="foo" name="foo" aria-invalid="false" class="form-control" value=""><label for="bar">bar</label><input required="" type="text" id="bar" name="bar" aria-invalid="false" class="form-control" value=""></form>',
   );
-  expect(await axe(div)).toHaveNoViolations();
+  expect(
+    await axe(div, { rules: { region: { enabled: false } } }),
+  ).toHaveNoViolations();
 
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   div.querySelector("form")!.submit();
 
   // HACK: give react a chance to render.
-  await new Promise(resolve => setTimeout(() => resolve()));
-  await new Promise(resolve => setTimeout(() => resolve()));
+  await new Promise((resolve) => setTimeout(() => resolve()));
+  await new Promise((resolve) => setTimeout(() => resolve()));
 
   expect(div.innerHTML).toBe(
     '<form action="." novalidate=""><label for="foo">foo</label><input required="" type="text" id="foo" name="foo" aria-invalid="true" class="form-control is-invalid" value="" aria-describedby="foo-feedback"><div class="invalid-feedback" id="foo-feedback">This field is invalid.</div><label for="bar">bar</label><input required="" type="text" id="bar" name="bar" aria-invalid="true" class="form-control is-invalid" value="" aria-describedby="bar-feedback"><div class="invalid-feedback" id="bar-feedback">Bar is required</div></form>',
   );
 
-  expect(await axe(div)).toHaveNoViolations();
+  expect(
+    await axe(div, { rules: { region: { enabled: false } } }),
+  ).toHaveNoViolations();
 
   ReactDOM.unmountComponentAtNode(div);
 });
@@ -462,20 +486,24 @@ it("supports FieldArray", async () => {
   expect(div.innerHTML).toBe(
     '<form action="." novalidate=""><label for="foo">foo</label><input type="number" min="42" class="some-input-class" placeholder="Enter a number less than 42" id="foo" name="foo" aria-invalid="false" value="42"><label for="bar">bar</label><input required="" type="text" id="bar" name="bar" aria-invalid="false" class="form-control" value=""><label for="baz">baz</label><select class="some-select-class" id="baz" name="baz" aria-invalid="false"><option value=""></option><option value="first-option">first option</option><optgroup label="an opt group"><option value="second-option">second option</option></optgroup></select><label for="qux">qux</label><select multiple="" id="qux" name="qux" class="form-control" aria-invalid="false"><option value=""></option><option value="first-option">first option</option><optgroup label="an opt group"><option value="second-option">second option</option></optgroup></select><fieldset><legend>Radio Button Example</legend><input type="radio" id="radioOption-radio-option-one" name="radioOption" aria-invalid="false" class="form-check-input" value="radio-option-one" checked=""><label class="form-check-label" for="radioOption-radio-option-one">radio-option-one</label><input type="radio" disabled="" id="radioOption-radio-option-two" name="radioOption" aria-invalid="false" class="form-check-input" value="radio-option-two"><label class="form-check-label" for="radioOption-radio-option-two">radio-option-two</label></fieldset><label for="customers-0-firstName">First Name</label><input type="text" id="customers-0-firstName" name="customers[0].firstName" aria-invalid="false" class="form-control" value="Jane"><label for="customers-0-lastName">Last Name</label><input type="text" id="customers-0-lastName" name="customers[0].lastName" aria-invalid="false" class="form-control" value="Doe"></form>',
   );
-  expect(await axe(div)).toHaveNoViolations();
+  expect(
+    await axe(div, { rules: { region: { enabled: false } } }),
+  ).toHaveNoViolations();
 
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   div.querySelector("form")!.submit();
 
   // HACK: give react a chance to render.
-  await new Promise(resolve => setTimeout(() => resolve()));
-  await new Promise(resolve => setTimeout(() => resolve()));
+  await new Promise((resolve) => setTimeout(() => resolve()));
+  await new Promise((resolve) => setTimeout(() => resolve()));
 
   expect(div.innerHTML).toBe(
     '<form action="." novalidate=""><label for="foo">foo</label><input type="number" min="42" class="some-input-class is-valid" placeholder="Enter a number less than 42" id="foo" name="foo" aria-invalid="false" value="42"><label for="bar">bar</label><input required="" type="text" id="bar" name="bar" aria-invalid="true" class="form-control is-invalid" value="" aria-describedby="bar-feedback"><div class="invalid-feedback" id="bar-feedback">Bar is required.</div><label for="baz">baz</label><select class="some-select-class is-valid" id="baz" name="baz" aria-invalid="false"><option value=""></option><option value="first-option">first option</option><optgroup label="an opt group"><option value="second-option">second option</option></optgroup></select><label for="qux">qux</label><select multiple="" id="qux" name="qux" class="form-control is-valid" aria-invalid="false"><option value=""></option><option value="first-option">first option</option><optgroup label="an opt group"><option value="second-option">second option</option></optgroup></select><fieldset><legend>Radio Button Example</legend><input type="radio" id="radioOption-radio-option-one" name="radioOption" aria-invalid="false" class="form-check-input is-valid" value="radio-option-one" checked=""><label class="form-check-label" for="radioOption-radio-option-one">radio-option-one</label><input type="radio" disabled="" id="radioOption-radio-option-two" name="radioOption" aria-invalid="false" class="form-check-input is-valid" value="radio-option-two"><label class="form-check-label" for="radioOption-radio-option-two">radio-option-two</label></fieldset><label for="customers-0-firstName">First Name</label><input type="text" id="customers-0-firstName" name="customers[0].firstName" aria-invalid="false" class="form-control is-valid" value="Jane"><label for="customers-0-lastName">Last Name</label><input type="text" id="customers-0-lastName" name="customers[0].lastName" aria-invalid="false" class="form-control is-valid" value="Doe"></form>',
   );
 
-  expect(await axe(div)).toHaveNoViolations();
+  expect(
+    await axe(div, { rules: { region: { enabled: false } } }),
+  ).toHaveNoViolations();
 
   ReactDOM.unmountComponentAtNode(div);
 });
@@ -504,14 +532,16 @@ it("renders validation error when codec contains mix of required and optional fi
   div.querySelector("form")!.submit();
 
   // HACK: give react a chance to render.
-  await new Promise(resolve => setTimeout(() => resolve()));
-  await new Promise(resolve => setTimeout(() => resolve()));
+  await new Promise((resolve) => setTimeout(() => resolve()));
+  await new Promise((resolve) => setTimeout(() => resolve()));
 
   expect(div.innerHTML).toBe(
     '<form action="." novalidate=""><label for="bar">bar</label><input required="" type="text" id="bar" name="bar" aria-invalid="true" class="form-control is-invalid" value="" aria-describedby="bar-feedback"><div class="invalid-feedback" id="bar-feedback">This field is invalid.</div></form>',
   );
 
-  expect(await axe(div)).toHaveNoViolations();
+  expect(
+    await axe(div, { rules: { region: { enabled: false } } }),
+  ).toHaveNoViolations();
 
   ReactDOM.unmountComponentAtNode(div);
 });

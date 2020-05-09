@@ -91,7 +91,7 @@ export const RenderOptions = <
   readonly options: SelectOptions<FD[Name]>;
 }): JSX.Element => (
   <>
-    {options.map(o =>
+    {options.map((o) =>
       isSelectOption(o) ? (
         <option key={o.key} value={o.value} disabled={o.disabled}>
           {o.label}
