@@ -30,8 +30,6 @@
     "final-form-arrays": "^3.0.2",
     "jest": "^26.0.1",
     "jest-axe": "^3.4.0",
-    "patch-package": "^6.2.2",
-    "postinstall-postinstall": "^2.1.0",
     "prettier": "^2.0.5",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
@@ -48,8 +46,7 @@
     "type-coverage": "type-coverage --strict --detail",
     "documentation": "typedoc --excludeNotExported --excludePrivate --exclude \"**/*+(.test).tsx\" --out docs src && cp docs_config.yml ./docs/_config.yml",
     "test": "jest",
-    "release": "yarn build && yarn lint && yarn type-coverage && yarn publish",
-    "postinstall": "patch-package"
+    "release": "yarn build && yarn lint && yarn type-coverage && yarn publish"
   },
   "peerDependencies": {
     "react-final-form": "^6.3.3"
