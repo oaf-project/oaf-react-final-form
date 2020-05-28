@@ -9,11 +9,9 @@ export type TouchedHackProps = {
  */
 export const touchedHack = <FieldValue, T extends HTMLElement>(
   renderProps: FieldRenderProps<FieldValue, T>,
-  [touched, updateTouched]: readonly [
-    boolean | undefined,
-    // eslint-disable-next-line functional/no-return-void
-    (a: boolean | undefined) => void,
-  ],
+  touched: boolean | undefined,
+  // eslint-disable-next-line functional/no-return-void
+  updateTouched: (a: boolean | undefined) => void,
   keepTouchedOnReinitialize: boolean | undefined,
 ): FieldRenderProps<FieldValue, T> => {
   // eslint-disable-next-line functional/no-conditional-statement

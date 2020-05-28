@@ -37,7 +37,10 @@ export const Input = <
 >(
   props: InputProps<PFD, FD, Name>,
 ): JSX.Element => {
-  const touchedState = React.useState<boolean>();
+  const [touchedState, updateTouched] = React.useReducer(
+    (touched: boolean | undefined) => touched,
+    undefined,
+  );
 
   const {
     id,
@@ -57,6 +60,7 @@ export const Input = <
       renderProps: touchedHack(
         renderProps,
         touchedState,
+        updateTouched,
         keepTouchedOnReinitialize,
       ),
       id:

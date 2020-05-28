@@ -37,7 +37,10 @@ export const Select = <
 >(
   props: SelectProps<PFD, FD, Name>,
 ): JSX.Element => {
-  const touchedState = React.useState<boolean>();
+  const [touchedState, updateTouched] = React.useReducer(
+    (touched: boolean | undefined) => touched,
+    undefined,
+  );
 
   const {
     id,
@@ -62,6 +65,7 @@ export const Select = <
       renderProps: touchedHack(
         renderProps,
         touchedState,
+        updateTouched,
         keepTouchedOnReinitialize,
       ),
       id: id || name,
