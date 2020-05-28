@@ -85,6 +85,7 @@ type MapToErrorType<A> = {
     undefined | MapToErrorType<A extends Array<infer X> ? X : never>
   >;
   readonly string: string;
+  // eslint-disable-next-line @typescript-eslint/ban-types
 }[A extends object
   ? "object"
   : A extends unknown[]

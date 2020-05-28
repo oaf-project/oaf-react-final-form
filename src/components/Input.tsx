@@ -63,7 +63,9 @@ export const Input = <
         id ||
         // include value to ensure unique IDs for checkbox and radio inputs
         (props.type === "checkbox" || props.type === "radio"
-          ? `${name}-${value}`
+          ? // TODO enforce via types that value cannot be undefined if type is checkbox or radio
+            // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+            `${name}-${value}`
           : name),
       label,
       isInvalid: isInputInvalid(renderProps),

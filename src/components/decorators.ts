@@ -3,7 +3,7 @@ import { focusInvalidForm, Selector } from "oaf-side-effects";
 
 /* eslint-disable functional/functional-parameters, functional/no-expression-statement */
 
-const isInvalid = (state: FormState<unknown>): boolean =>
+const isInvalid = <FormValues>(state: FormState<FormValues>): boolean =>
   state.hasValidationErrors || state.hasSubmitErrors;
 
 /**
@@ -34,7 +34,7 @@ export const focusInvalidFormDecorator = <FormValues>(
   globalFormErrorSelector: Selector | undefined,
   smoothScroll: boolean | undefined = undefined,
 ): Decorator<FormValues> => {
-  // eslint-disable-next-line functional/no-return-void
+  // eslint-disable-next-line functional/no-return-void, @typescript-eslint/explicit-module-boundary-types
   return (form): (() => void) => {
     const originalSubmit = form.submit;
 
@@ -67,6 +67,7 @@ export const focusInvalidFormDecorator = <FormValues>(
             if (invalid) {
               // TODO: remove this setTimeout?
               setTimeout(() => {
+                // eslint-disable-next-line @typescript-eslint/no-floating-promises
                 focusInvalidForm(
                   formElement,
                   selector,

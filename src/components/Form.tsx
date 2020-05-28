@@ -44,7 +44,7 @@ export type FormProps<
   A extends ParsedFormData,
   O extends FormData
 > = FocusInvalidElementProps &
-  PropsWithChildren<{}> &
+  PropsWithChildren<unknown> &
   PropsFromFinalFormConfig<O> & {
     readonly onSubmit: (values: A, form: FormApi<O>) => SubmissionResponse<O>;
     readonly codec: Type<A, O>;
@@ -155,7 +155,7 @@ export const Form = <A extends ParsedFormData, O extends FormData>(
 
         {/* TODO: clean this up */}
         {typeof props.children === "function"
-          ? // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+          ? // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
             props.children(renderProps)
           : props.children}
@@ -202,6 +202,6 @@ export const formForCodec = <A extends ParsedFormData, O extends FormData>(
 ) => {
   // eslint-disable-next-line react/display-name
   return (props: FormForCodecProps<A, O>): JSX.Element => (
-    <Form {...defaultProps} {...props} codec={codec} />
+    <Form<A, O> {...defaultProps} {...props} codec={codec} />
   );
 };

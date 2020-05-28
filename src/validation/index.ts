@@ -72,7 +72,12 @@ const renderError = (
     if (Number.isNaN(index)) {
       return { [c.key]: `Index [${nextC.key}] not an integer` };
     }
-    return { [c.key]: [...new Array(index), nextResult(true)] };
+    return {
+      [c.key]: [
+        ...new Array<FinalFormValidationError>(index),
+        nextResult(true),
+      ],
+    };
   } else {
     return isArrayEntry || isIntersection
       ? nextResult(false)
@@ -108,7 +113,9 @@ const mergeDeepArrays = <
   b: B,
 ): FinalFormValidationArray => {
   const aExtended: FinalFormValidationArray =
-    a.length >= b.length ? a : [...a, ...new Array(b.length - a.length)];
+    a.length >= b.length
+      ? a
+      : [...a, ...new Array<FinalFormValidationError>(b.length - a.length)];
 
   return aExtended.map((value, index) =>
     // eslint-disable-next-line @typescript-eslint/no-use-before-define

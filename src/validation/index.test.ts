@@ -2,11 +2,18 @@ import { isRight } from "fp-ts/lib/Either";
 import * as t from "io-ts";
 import { toValidationErrors } from ".";
 import { formCodec } from "..";
+import { ReadonlyRecord } from "fp-ts/lib/ReadonlyRecord";
 
 /* eslint-disable functional/no-throw-statement, sonarjs/no-duplicate-string, functional/functional-parameters, functional/no-expression-statement, functional/no-conditional-statement, @typescript-eslint/no-explicit-any */
 
 // type-coverage:ignore-next-line
-const examples: ReadonlyArray<readonly [t.Type<any>, object, object]> = [
+const examples: ReadonlyArray<
+  readonly [
+    t.Type<any>,
+    ReadonlyRecord<string, unknown>,
+    ReadonlyRecord<string, unknown>,
+  ]
+> = [
   // Flat
   [
     formCodec({
