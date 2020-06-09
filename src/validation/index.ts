@@ -35,7 +35,7 @@ const isArrayType = (c: ContextEntry): boolean => {
 
 // Shenanigans to work around the fact that io-ts puts separate entries in the error array when an intersection type is used,
 // which will always be the case if a form codec has a required and an optional component.
-const isIntersectionType = (c: ContextEntry): boolean => {
+const isIntersectionType = (c: ContextEntry | undefined): boolean => {
   const typeWithTag = (c as unknown) as TypeWithTag;
   return (
     typeWithTag?.type?._tag === "IntersectionType" || // This might be "ReadonlyType", so we also have to check the descendant
@@ -50,6 +50,7 @@ const renderError = (
   isArrayEntry: boolean,
   isIntersection: boolean,
 ): FinalFormValidationError => {
+  // eslint-disable-next-line total-functions/no-array-destructuring
   const [nextC, ...nextCs] = cs;
 
   const nextResult = (nextIsArrayEntry: boolean): FinalFormValidationError =>
@@ -144,6 +145,7 @@ export const toValidationErrors = <FD extends FormData>(
   defaultMessage: (e: ValidationError) => string,
 ): ValidationErrors<FD> =>
   ioTsErrors.reduce((accumulator, error) => {
+    // eslint-disable-next-line total-functions/no-array-destructuring
     const [context0, c, ...cs] = error.context;
 
     const isArrayEntry = false;
