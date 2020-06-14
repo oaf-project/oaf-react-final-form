@@ -25,6 +25,7 @@ type TypeWithTag = {
 
 // TODO: make this smarter
 const isArrayType = (c: ContextEntry): boolean => {
+  // eslint-disable-next-line total-functions/no-unsafe-type-assertion
   const tag = ((c as unknown) as TypeWithTag).type?._tag;
   return (
     Array.isArray(c.actual) ||
@@ -36,6 +37,7 @@ const isArrayType = (c: ContextEntry): boolean => {
 // Shenanigans to work around the fact that io-ts puts separate entries in the error array when an intersection type is used,
 // which will always be the case if a form codec has a required and an optional component.
 const isIntersectionType = (c: ContextEntry | undefined): boolean => {
+  // eslint-disable-next-line total-functions/no-unsafe-type-assertion
   const typeWithTag = (c as unknown) as TypeWithTag;
   return (
     typeWithTag?.type?._tag === "IntersectionType" || // This might be "ReadonlyType", so we also have to check the descendant
@@ -97,6 +99,8 @@ const mergeDeepObjects = <
   a: A,
   b: B,
 ): A & B =>
+  // TODO remove this gnarly cast
+  // eslint-disable-next-line total-functions/no-unsafe-type-assertion
   Object.keys(b).reduce(
     (acc, key) => ({
       ...acc,
@@ -160,5 +164,6 @@ export const toValidationErrors = <FD extends FormData>(
       isIntersectionType(context0),
     );
     // TODO remove this gnarly cast
+    // eslint-disable-next-line total-functions/no-unsafe-type-assertion
     return mergeDeep(accumulator, nextError) as ValidationErrors<FD>;
   }, {});

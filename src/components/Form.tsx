@@ -93,6 +93,7 @@ export const Form = <A extends ParsedFormData, O extends FormData>(
     props.initialValues === undefined
       ? undefined
       : // `encode` will do the right thing here even when given a partial at runtime.
+        // eslint-disable-next-line total-functions/no-unsafe-type-assertion
         props.codec.encode(props.initialValues as A);
 
   const errorMessage =

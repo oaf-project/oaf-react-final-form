@@ -46,6 +46,16 @@ module.exports = {
     "no-await-in-loop": "error",
     "no-new-wrappers": "error",
     "eqeqeq": "error",
+    "no-caller": "error",
+    "require-unicode-regexp": "error",
+    "no-loss-of-precision": "error",
+    // Additional rules that are not part of `total-functions/recommended`.
+    "total-functions/no-unsafe-type-assertion": "error",
+    // Make typescript-eslint rules more aggressive.
+    "@typescript-eslint/consistent-type-assertions": ["error", {
+      "assertionStyle": "as",
+      "objectLiteralTypeAssertions": "never"
+    }],
     // https://reactjs.org/docs/hooks-rules.html
     "react-hooks/rules-of-hooks": "error",
     "react-hooks/exhaustive-deps": "error",

@@ -56,7 +56,7 @@ export function formCodec<R extends t.Props, O extends t.Props>(
     ? t.readonly(t.intersection([t.type(required), t.partial(optional)]))
     : required !== undefined
     ? t.readonly(t.type(required))
-    : t.readonly(t.partial(optional as O));
+    : t.readonly(t.partial(optional as O)); // eslint-disable-line total-functions/no-unsafe-type-assertion
 }
 
 export const elementsForCodecWithDefaults = <

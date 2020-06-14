@@ -33,7 +33,9 @@ type SelectOptionOrGroup<A extends string> =
 const isSelectOption = <A extends string>(
   o: SelectOptionOrGroup<A>,
 ): o is SelectOption<A> =>
+  // eslint-disable-next-line total-functions/no-unsafe-type-assertion
   (o as SelectOption<A>).label !== undefined &&
+  // eslint-disable-next-line total-functions/no-unsafe-type-assertion
   (o as SelectOption<A>).value !== undefined;
 
 export type SelectOptions<A extends unknown> = ReadonlyArray<
