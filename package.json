@@ -57,7 +57,7 @@
     "io-ts": "^2.2.5",
     "io-ts-types": "^0.5.7",
     "monocle-ts": "^2.2.0",
-    "oaf-side-effects": "^3.0.0",
+    "oaf-side-effects": "^3.1.0",
     "total-functions": "^3.0.0",
     "type-zoo": "^3.4.1"
   },
