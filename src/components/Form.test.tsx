@@ -125,6 +125,8 @@ it("renders field-specific submission errors", async () => {
   // HACK: give react a chance to render.
   await new Promise((resolve) => setTimeout(() => resolve()));
   await new Promise((resolve) => setTimeout(() => resolve()));
+  await new Promise((resolve) => setTimeout(() => resolve()));
+  await new Promise((resolve) => setTimeout(() => resolve()));
 
   expect(
     await axe(div, { rules: { region: { enabled: false } } }),
@@ -231,6 +233,7 @@ it("renders default validation error", async () => {
   // HACK: give react a chance to render.
   await new Promise((resolve) => setTimeout(() => resolve()));
   await new Promise((resolve) => setTimeout(() => resolve()));
+  await new Promise((resolve) => setTimeout(() => resolve()));
 
   // Hack: give focus a chance to update.
   await new Promise((resolve) => setTimeout(() => resolve()));
@@ -279,9 +282,11 @@ it("renders custom validation error", async () => {
   // HACK: give react a chance to render.
   await new Promise((resolve) => setTimeout(() => resolve()));
   await new Promise((resolve) => setTimeout(() => resolve()));
+  await new Promise((resolve) => setTimeout(() => resolve()));
+  await new Promise((resolve) => setTimeout(() => resolve()));
 
   expect(div.innerHTML).toBe(
-    '<form action="." novalidate=""><label for="foo">foo</label><input required="" type="text" id="foo" name="foo" aria-invalid="true" class="form-control is-invalid" value="" aria-describedby="foo-feedback"><div class="invalid-feedback" id="foo-feedback">Foo is required</div></form>',
+    '<form action="." novalidate=""><label for="foo">foo</label><input required="" type="text" id="foo" name="foo" aria-invalid="true" class="form-control is-invalid" value="" aria-describedby="foo-feedback" tabindex="-1"><div class="invalid-feedback" id="foo-feedback">Foo is required</div></form>',
   );
 
   expect(
