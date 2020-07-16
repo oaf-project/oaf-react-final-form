@@ -181,7 +181,7 @@ const examples: ReadonlyArray<
   ],
 ];
 
-// type-coverage:ignore-next-line
+// eslint-disable-next-line total-functions/no-unsafe-assignment
 test.each(examples)(
   "produces expected validation errors",
   // type-coverage:ignore-next-line
