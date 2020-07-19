@@ -151,5 +151,5 @@ export type Multiple<Value> = Value extends Array<unknown>
 
 // TODO expand this to enforce other constraints: max, min, maxlength, etc
 export type InputTypeConstraint<Value> = Value extends number // TODO: non-optional type?
-  ? { readonly type?: NumericInputType }
+  ? { readonly type?: InputType }
   : { readonly type?: ExcludeStrict<InputType, NumericInputType> };
