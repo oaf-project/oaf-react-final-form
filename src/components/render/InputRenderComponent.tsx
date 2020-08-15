@@ -63,6 +63,7 @@ export const InputRenderComponent = <
   Name extends keyof FD & string
 >(
   config: InputRenderComponentConfig,
+  // eslint-disable-next-line react/display-name
 ) => (props: InputRenderProps<FD, Name>): JSX.Element => (
   <FormElement
     inputId={props.id}

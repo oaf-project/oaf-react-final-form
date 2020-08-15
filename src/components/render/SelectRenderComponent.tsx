@@ -119,6 +119,7 @@ export const SelectRenderComponent = <
   Name extends keyof FD & string
 >(
   config: SelectRenderComponentConfig,
+  // eslint-disable-next-line react/display-name
 ) => (props: SelectRenderProps<FD, Name>): JSX.Element => (
   <FormElement
     inputId={props.id}
