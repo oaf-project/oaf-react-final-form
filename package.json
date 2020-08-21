@@ -29,7 +29,7 @@
     "eslint-plugin-total-functions": "^1.42.1",
     "final-form": "^4.20.1",
     "final-form-arrays": "^3.0.2",
-    "jest": "^26.4.0",
+    "jest": "^26.4.1",
     "jest-axe": "^3.5.0",
     "prettier": "^2.0.5",
     "react": "^16.13.1",
