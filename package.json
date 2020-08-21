@@ -55,7 +55,7 @@
   "dependencies": {
     "fp-ts": "^2.8.1",
     "io-ts": "^2.2.9",
-    "io-ts-types": "^0.5.9",
+    "io-ts-types": "^0.5.10",
     "monocle-ts": "^2.3.3",
     "oaf-side-effects": "^3.1.0",
     "total-functions": "^3.0.0",
