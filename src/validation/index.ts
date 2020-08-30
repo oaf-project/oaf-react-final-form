@@ -52,7 +52,7 @@ const renderError = (
   isArrayEntry: boolean,
   isIntersection: boolean,
 ): FinalFormValidationError => {
-  // eslint-disable-next-line total-functions/no-array-destructuring
+  // eslint-disable-next-line total-functions/no-unsafe-destructuring
   const [nextC, ...nextCs] = cs;
 
   const nextResult = (nextIsArrayEntry: boolean): FinalFormValidationError =>
@@ -149,7 +149,7 @@ export const toValidationErrors = <FD extends FormData>(
   defaultMessage: (e: ValidationError) => string,
 ): ValidationErrors<FD> =>
   ioTsErrors.reduce((accumulator, error) => {
-    // eslint-disable-next-line total-functions/no-array-destructuring
+    // eslint-disable-next-line total-functions/no-unsafe-destructuring
     const [context0, c, ...cs] = error.context;
 
     const isArrayEntry = false;
