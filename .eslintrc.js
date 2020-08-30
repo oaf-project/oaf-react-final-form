@@ -6,19 +6,13 @@ module.exports = {
     sourceType: "module",
   },
   extends: [
-    "eslint:recommended",
+    "typed-fp",
     "plugin:react/recommended",
     "plugin:sonarjs/recommended",
-    "plugin:functional/recommended",
-    "plugin:functional/external-recommended",
     "plugin:jsx-a11y/recommended",
     "plugin:jest/recommended",
-    "plugin:@typescript-eslint/eslint-recommended",
-    "plugin:@typescript-eslint/recommended",
-    "plugin:@typescript-eslint/recommended-requiring-type-checking",
     "prettier/@typescript-eslint",
     "plugin:prettier/recommended",
-    "plugin:total-functions/recommended",
   ],
   env: {
     "jest/globals": true,
@@ -35,25 +29,8 @@ module.exports = {
     "@typescript-eslint",
     "prettier",
     "total-functions",
-    // TODO replace tslint's no-any and no-unsafe-any
-    // See https://github.com/typescript-eslint/typescript-eslint/issues/791
   ],
   rules: {
-    // Additional rules that are not part of `eslint:recommended`.
-    // See https://eslint.org/docs/rules/
-    "no-eval": "error",
-    "no-implied-eval": "error",
-    "no-await-in-loop": "error",
-    "no-new-wrappers": "error",
-    "eqeqeq": "error",
-    "no-caller": "error",
-    "require-unicode-regexp": "error",
-    "no-loss-of-precision": "error",
-    // Make typescript-eslint rules more aggressive.
-    "@typescript-eslint/consistent-type-assertions": ["error", {
-      "assertionStyle": "as",
-      "objectLiteralTypeAssertions": "never"
-    }],
     // https://reactjs.org/docs/hooks-rules.html
     "react-hooks/rules-of-hooks": "error",
     "react-hooks/exhaustive-deps": "error",
