@@ -4878,10 +4878,10 @@ ts-jest@^26.3.0:
     semver "7.x"
     yargs-parser "18.x"
 
-ts-lib-utils@^2.10.0:
-  version "2.10.0"
-  resolved "https://registry.yarnpkg.com/ts-lib-utils/-/ts-lib-utils-2.10.0.tgz#f3392e0356cafd10ed588e8341b8aa8690ac371e"
-  integrity sha512-Lx+OqsAI9G7WKXec/Z1jiP7Gk8BETNT16rJAOyLdtqYKw7JCPpAivdNyBu1lINgFlGJxHqxpKgSiJhGdGFjZ5w==
+ts-lib-utils@^2.15.0:
+  version "2.15.0"
+  resolved "https://registry.yarnpkg.com/ts-lib-utils/-/ts-lib-utils-2.15.0.tgz#e2185291c2bcd049c101a2b6bb947baa0163fd4e"
+  integrity sha512-xEdyJeVrodiBBuxTULXqv2wTRgFMHx+pIIUq7tTrL0P+3Lf1q3dyJnWzkLAqEipl51iNnj+xZINovfLOrRxbqQ==
   dependencies:
     glob "7"
     tslib "1 || 2"
@@ -4934,23 +4934,23 @@ type-check@~0.3.2:
   dependencies:
     prelude-ls "~1.1.2"
 
-type-coverage-core@^2.10.0:
-  version "2.10.0"
-  resolved "https://registry.yarnpkg.com/type-coverage-core/-/type-coverage-core-2.10.0.tgz#f6a68e059f82d6d09f5bfaedb6d70a587530a17f"
-  integrity sha512-6glH6KWsTMIWMufhS4DXo7I0vVEW1MgAm/lQbqG2cFreS1pokHyktxzfJr0mw6EweP7WDfTYUO+xjkVkH831hA==
+type-coverage-core@^2.15.0:
+  version "2.15.0"
+  resolved "https://registry.yarnpkg.com/type-coverage-core/-/type-coverage-core-2.15.0.tgz#bb3b7d12af900424a5b1996d0d32357c1d5f200a"
+  integrity sha512-7vWuhxeppVb9HYVhxr5MQ2aRPsRcvPK9AUmZzP3tpuTLBChpv8tXRgN3WcJr2+vn3cNsVR3MOST4PB6ZY9HfDA==
   dependencies:
     minimatch "3"
-    ts-lib-utils "^2.10.0"
+    ts-lib-utils "^2.15.0"
     tslib "1 || 2"
     tsutils "3"
 
-type-coverage@^2.10.0:
-  version "2.10.0"
-  resolved "https://registry.yarnpkg.com/type-coverage/-/type-coverage-2.10.0.tgz#5bd21852161ffa324b2f083015fb93d367b46edf"
-  integrity sha512-ZOoG3A3ye2HERgjOS23lU4MLPMybJEf2UHvTjJkVmHAqVR4bCfcBXIXBLO3d1x+4S5OqvG+CGrykvjZW4ik13Q==
+type-coverage@^2.15.0:
+  version "2.15.0"
+  resolved "https://registry.yarnpkg.com/type-coverage/-/type-coverage-2.15.0.tgz#137862676215a193da688af2e36a6340e0316754"
+  integrity sha512-obsmXSqSVf1O8PxEoEUDNUUV8kGJyEEn1PziEerCI47/cQSt9UQmcTbubwlRGOvxVY/XU3omuDdHW15bnQ2PfA==
   dependencies:
     minimist "1"
-    type-coverage-core "^2.10.0"
+    type-coverage-core "^2.15.0"
 
 type-detect@4.0.8:
   version "4.0.8"
