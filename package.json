@@ -60,7 +60,7 @@
     "monocle-ts": "^2.3.3",
     "oaf-side-effects": "^3.1.0",
     "total-functions": "^3.0.0",
-    "ts-essentials": "^7.0.0",
+    "ts-essentials": "^8.0.0",
     "type-zoo": "^3.4.1"
   },
   "prettier": {
