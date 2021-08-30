@@ -35,7 +35,7 @@ export type FormElementChildProps = {
 
 type FormElementProps<
   FD extends FormData,
-  Name extends keyof FD
+  Name extends keyof FD,
 > = FieldMetaState<ExtractFormValue<FD[Name]>> &
   FormElementChildProps & {
     readonly inputId: string;
@@ -77,7 +77,7 @@ export const InvalidFeedback = (
   // TODO: remove bootstrap-specific class name
   <div className="invalid-feedback" {...props.feedbackProps} id={props.id}>
     {/* TODO i18n */}
-    {props.error || "This field is invalid."}
+    {props.error ?? "This field is invalid."}
   </div>
 );
 
@@ -96,11 +96,11 @@ export const FormElement = <FD extends FormData, Name extends keyof FD>(
 
   // TODO: remove bootstrap-specific class names
   const className = [
-    props.inputClassName ||
+    props.inputClassName ??
       (isCheckboxOrRadio ? "form-check-input" : "form-control"),
   ]
-    .concat(props.isInvalid ? [props.invalidClassName || "is-invalid"] : [])
-    .concat(props.isValid ? [props.validClassName || "is-valid"] : [])
+    .concat(props.isInvalid ? [props.invalidClassName ?? "is-invalid"] : [])
+    .concat(props.isValid ? [props.validClassName ?? "is-valid"] : [])
     .join(" ");
 
   const label = props.renderLabel({
@@ -115,7 +115,7 @@ export const FormElement = <FD extends FormData, Name extends keyof FD>(
       ? props.renderInvalidFeedback({
           feedbackProps: props.feedbackProps,
           id: invalidFeedbackId,
-          error: props.meta.error || props.meta.submitError,
+          error: props.meta.error ?? props.meta.submitError,
         })
       : null;
 

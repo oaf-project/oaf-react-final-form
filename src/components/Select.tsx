@@ -20,7 +20,7 @@ import { touchedHack, TouchedHackProps } from "./touched-hack";
 export type SelectProps<
   PFD extends ParsedFormData,
   FD extends FormData,
-  Name extends keyof PFD & keyof FD & string
+  Name extends keyof PFD & keyof FD & string,
 > = HTMLSelectProps &
   ExtraSelectProps<FD, Name> &
   TouchedHackProps & {
@@ -33,7 +33,7 @@ export type SelectProps<
 export const Select = <
   PFD extends ParsedFormData,
   FD extends FormData,
-  Name extends keyof PFD & keyof FD & string
+  Name extends keyof PFD & keyof FD & string,
 >(
   props: SelectProps<PFD, FD, Name>,
 ): JSX.Element => {
@@ -68,7 +68,7 @@ export const Select = <
         updateTouched,
         keepTouchedOnReinitialize,
       ),
-      id: id || name,
+      id: id ?? name,
       label,
       options,
       multiple,
@@ -92,7 +92,7 @@ export const Select = <
 
 export type DefaultSelectForCodecProps<
   PFD extends ParsedFormData,
-  FD extends FormData
+  FD extends FormData,
 > = Pick<
   SelectProps<PFD, FD, keyof PFD & keyof FD & string>,
   "render" | "keepTouchedOnReinitialize"
@@ -101,7 +101,7 @@ export type DefaultSelectForCodecProps<
 export type SelectForCodecProps<
   PFD extends ParsedFormData,
   FD extends FormData,
-  Name extends keyof PFD & keyof FD & string
+  Name extends keyof PFD & keyof FD & string,
 > = OmitStrict<SelectProps<PFD, FD, Name>, "render" | "multiple"> &
   Partial<Pick<SelectProps<PFD, FD, Name>, "render">> &
   Required<PFD[Name]> &

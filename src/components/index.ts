@@ -56,24 +56,23 @@ export function formCodec<R extends t.Props, O extends t.Props>(
     ? t.readonly(t.intersection([t.type(required), t.partial(optional)]))
     : required !== undefined
     ? t.readonly(t.type(required))
-    : t.readonly(t.partial(optional as O)); // eslint-disable-line total-functions/no-unsafe-type-assertion
+    : t.readonly(t.partial(optional as O)); // eslint-disable-line total-functions/no-unsafe-type-assertion, @typescript-eslint/consistent-type-assertions
 }
 
-export const elementsForCodecWithDefaults = <
-  A extends ParsedFormData,
-  O extends FormData
->(
-  defaultFormProps: DefaultFormForCodecProps<A, O>,
-  defaultInputProps: DefaultInputForCodecProps<A, O>,
-  defaultSelectProps: DefaultSelectForCodecProps<A, O>,
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-) => (codec: Type<A, O>) => ({
-  Form: formForCodec(codec, defaultFormProps),
-  Input: inputForCodec<A, O>(defaultInputProps),
-  Select: selectForCodec<A, O>(defaultSelectProps),
-  // TODO: text areas https://github.com/oaf-project/oaf-react-final-form/issues/4
-  // TODO: button, reset, file inputs ?
-});
+export const elementsForCodecWithDefaults =
+  <A extends ParsedFormData, O extends FormData>(
+    defaultFormProps: DefaultFormForCodecProps<A, O>,
+    defaultInputProps: DefaultInputForCodecProps<A, O>,
+    defaultSelectProps: DefaultSelectForCodecProps<A, O>,
+    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+  ) =>
+  (codec: Type<A, O>) => ({
+    Form: formForCodec(codec, defaultFormProps),
+    Input: inputForCodec<A, O>(defaultInputProps),
+    Select: selectForCodec<A, O>(defaultSelectProps),
+    // TODO: text areas https://github.com/oaf-project/oaf-react-final-form/issues/4
+    // TODO: button, reset, file inputs ?
+  });
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export const elementsForCodec = <A extends ParsedFormData, O extends FormData>(

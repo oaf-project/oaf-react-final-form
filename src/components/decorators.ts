@@ -57,14 +57,14 @@ export const focusInvalidFormDecorator = <FormValues>(
 
             const invalid = isInvalid(formState);
 
-            const selector =
-              invalidElementSelector ||
-              Object.keys(formState.errors)
-                .map((id) => `#${id}`)
-                .join(", ");
-
             // eslint-disable-next-line functional/no-conditional-statement
-            if (invalid) {
+            if (invalid && formState.errors !== undefined) {
+              const selector =
+                invalidElementSelector ??
+                Object.keys(formState.errors)
+                  .map((id) => `#${id}`)
+                  .join(", ");
+
               // TODO: remove this setTimeout?
               setTimeout(() => {
                 // eslint-disable-next-line @typescript-eslint/no-floating-promises

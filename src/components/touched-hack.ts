@@ -20,7 +20,7 @@ export const touchedHack = <FieldValue, T extends HTMLElement>(
   }
 
   // eslint-disable-next-line functional/no-conditional-statement
-  if (renderProps.meta.touched) {
+  if (renderProps.meta.touched === true) {
     // eslint-disable-next-line functional/no-expression-statement
     updateTouched(renderProps.meta.touched);
   }
@@ -29,7 +29,7 @@ export const touchedHack = <FieldValue, T extends HTMLElement>(
     ...renderProps,
     meta: {
       ...renderProps.meta,
-      touched: renderProps.meta.touched || touched,
+      touched: renderProps.meta.touched === true || touched,
     },
   };
 };

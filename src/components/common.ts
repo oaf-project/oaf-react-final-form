@@ -61,7 +61,7 @@ export type ParsedFormValue =
 
 export type ParsedFormData<
   I extends string = string,
-  J extends string = string
+  J extends string = string,
 > = {
   readonly [key in I]: FormDataValues<ParsedFormValue, ParsedFormData<J>>;
 };
@@ -133,10 +133,10 @@ export type FieldMetaState<FV> = {
 // 'To stop form controls from announcing as invalid by default, one can add aria-invalid="false" to any necessary element.'
 // See https://developer.paciellogroup.com/blog/2019/02/required-attribute-requirements/
 export const isInputInvalid = <FV>(props: FieldMetaState<FV>): boolean =>
-  (props.meta.touched && props.meta.invalid) || false;
+  (props.meta.touched === true && props.meta.invalid) || false;
 
 export const isInputValid = <FV>(props: FieldMetaState<FV>): boolean =>
-  (props.meta.touched && props.meta.valid) || false;
+  (props.meta.touched === true && props.meta.valid) || false;
 
 export type Required<Value> = undefined extends Value
   ? { readonly required?: false }

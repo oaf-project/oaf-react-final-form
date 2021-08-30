@@ -25,8 +25,8 @@ type TypeWithTag = {
 
 // TODO: make this smarter
 const isArrayType = (c: ContextEntry): boolean => {
-  // eslint-disable-next-line total-functions/no-unsafe-type-assertion
-  const tag = ((c as unknown) as TypeWithTag).type?._tag;
+  // eslint-disable-next-line total-functions/no-unsafe-type-assertion, @typescript-eslint/consistent-type-assertions
+  const tag = (c as unknown as TypeWithTag).type?._tag;
   return (
     Array.isArray(c.actual) ||
     (tag !== undefined &&
@@ -37,11 +37,11 @@ const isArrayType = (c: ContextEntry): boolean => {
 // Shenanigans to work around the fact that io-ts puts separate entries in the error array when an intersection type is used,
 // which will always be the case if a form codec has a required and an optional component.
 const isIntersectionType = (c: ContextEntry | undefined): boolean => {
-  // eslint-disable-next-line total-functions/no-unsafe-type-assertion
-  const typeWithTag = (c as unknown) as TypeWithTag;
+  // eslint-disable-next-line total-functions/no-unsafe-type-assertion, @typescript-eslint/consistent-type-assertions
+  const typeWithTag = c as unknown as TypeWithTag;
   return (
-    typeWithTag?.type?._tag === "IntersectionType" || // This might be "ReadonlyType", so we also have to check the descendant
-    typeWithTag?.type?.type?._tag === "IntersectionType"
+    typeWithTag.type?._tag === "IntersectionType" || // This might be "ReadonlyType", so we also have to check the descendant
+    typeWithTag.type?.type?._tag === "IntersectionType"
   );
 };
 
@@ -52,11 +52,10 @@ const renderError = (
   isArrayEntry: boolean,
   isIntersection: boolean,
 ): FinalFormValidationError => {
-  // eslint-disable-next-line total-functions/no-unsafe-destructuring
   const [nextC, ...nextCs] = cs;
 
   const nextResult = (nextIsArrayEntry: boolean): FinalFormValidationError =>
-    cs.length > 0
+    nextC !== undefined
       ? renderError(
           errorMessage,
           nextC,
@@ -90,17 +89,17 @@ const renderError = (
 };
 
 const isObject = (item: unknown): item is FinalFormValidationRecord =>
-  item && typeof item === "object" && !Array.isArray(item);
+  typeof item === "object" && item !== null && !Array.isArray(item);
 
 const mergeDeepObjects = <
   A extends FinalFormValidationRecord,
-  B extends FinalFormValidationRecord
+  B extends FinalFormValidationRecord,
 >(
   a: A,
   b: B,
 ): A & B =>
   // TODO remove this gnarly cast
-  // eslint-disable-next-line total-functions/no-unsafe-type-assertion
+  // eslint-disable-next-line total-functions/no-unsafe-type-assertion, @typescript-eslint/consistent-type-assertions, total-functions/no-unsafe-readonly-mutable-assignment
   Object.keys(b).reduce(
     (acc, key) => ({
       ...acc,
@@ -112,7 +111,7 @@ const mergeDeepObjects = <
 
 const mergeDeepArrays = <
   A extends FinalFormValidationArray,
-  B extends FinalFormValidationArray
+  B extends FinalFormValidationArray,
 >(
   a: A,
   b: B,
@@ -130,7 +129,7 @@ const mergeDeepArrays = <
 
 const mergeDeep = <
   A extends FinalFormValidationError,
-  B extends FinalFormValidationError
+  B extends FinalFormValidationError,
 >(
   a: A,
   b: B,
@@ -139,7 +138,7 @@ const mergeDeep = <
     ? mergeDeepObjects(a, b)
     : Array.isArray(a) && Array.isArray(b)
     ? mergeDeepArrays(a, b)
-    : a || b;
+    : a ?? b;
 
 /**
  * Converts an io-ts Errors to a (strongly typed version of) final-form ValidationErrors.
@@ -148,22 +147,27 @@ export const toValidationErrors = <FD extends FormData>(
   ioTsErrors: Errors,
   defaultMessage: (e: ValidationError) => string,
 ): ValidationErrors<FD> =>
+  // eslint-disable-next-line total-functions/no-unsafe-readonly-mutable-assignment
   ioTsErrors.reduce((accumulator, error) => {
-    // eslint-disable-next-line total-functions/no-unsafe-destructuring
     const [context0, c, ...cs] = error.context;
 
     const isArrayEntry = false;
 
-    const errorMessage = error.message || defaultMessage(error);
+    const errorMessage = error.message ?? defaultMessage(error);
 
-    const nextError = renderError(
-      errorMessage,
-      c,
-      cs,
-      isArrayEntry,
-      isIntersectionType(context0),
-    );
-    // TODO remove this gnarly cast
-    // eslint-disable-next-line total-functions/no-unsafe-type-assertion
-    return mergeDeep(accumulator, nextError) as ValidationErrors<FD>;
+    // eslint-disable-next-line functional/no-conditional-statement
+    if (c !== undefined) {
+      const nextError = renderError(
+        errorMessage,
+        c,
+        cs,
+        isArrayEntry,
+        isIntersectionType(context0),
+      );
+      // TODO remove this gnarly cast
+      // eslint-disable-next-line total-functions/no-unsafe-type-assertion, total-functions/no-unsafe-readonly-mutable-assignment, @typescript-eslint/consistent-type-assertions
+      return mergeDeep(accumulator, nextError) as ValidationErrors<FD>;
+    } else {
+      return accumulator;
+    }
   }, {});

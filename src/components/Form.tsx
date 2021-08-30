@@ -42,7 +42,7 @@ type FocusInvalidElementProps = {
 
 export type FormProps<
   A extends ParsedFormData,
-  O extends FormData
+  O extends FormData,
 > = FocusInvalidElementProps &
   PropsWithChildren<unknown> &
   PropsFromFinalFormConfig<O> & {
@@ -82,9 +82,9 @@ export const Form = <A extends ParsedFormData, O extends FormData>(
   const focusDecorator = React.useRef(
     focusInvalidFormDecorator<O>(
       () => formRef.current,
-      props.invalidElementSelector || "[aria-invalid=true]",
+      props.invalidElementSelector ?? "[aria-invalid=true]",
       props.elementWrapperSelector,
-      props.globalFormErrorSelector || "[role=alert]",
+      props.globalFormErrorSelector ?? "[role=alert]",
       props.smoothScroll,
     ),
   );
@@ -93,11 +93,11 @@ export const Form = <A extends ParsedFormData, O extends FormData>(
     props.initialValues === undefined
       ? undefined
       : // `encode` will do the right thing here even when given a partial at runtime.
-        // eslint-disable-next-line total-functions/no-unsafe-type-assertion
+        // eslint-disable-next-line total-functions/no-unsafe-type-assertion, @typescript-eslint/consistent-type-assertions
         props.codec.encode(props.initialValues as A);
 
   const errorMessage =
-    props.defaultErrorMessage || ((): string => "This field is invalid.");
+    props.defaultErrorMessage ?? (() => "This field is invalid.");
 
   // Better accessibility if we wait until blur to validate.
   // See e.g. https://developer.paciellogroup.com/blog/2019/02/required-attribute-requirements/
@@ -183,7 +183,7 @@ export const Form = <A extends ParsedFormData, O extends FormData>(
 
 export type DefaultFormForCodecProps<
   A extends ParsedFormData,
-  O extends FormData
+  O extends FormData,
 > = Pick<
   FormProps<A, O>,
   "defaultErrorMessage" | "formProps" | "renderFormError"
@@ -192,7 +192,7 @@ export type DefaultFormForCodecProps<
 
 export type FormForCodecProps<
   A extends ParsedFormData,
-  O extends FormData
+  O extends FormData,
 > = OmitStrict<FormProps<A, O>, "renderFormError" | "codec"> &
   Partial<Pick<FormProps<A, O>, "renderFormError">>;
 

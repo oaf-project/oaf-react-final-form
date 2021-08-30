@@ -6,12 +6,13 @@ module.exports = {
     "^.+\\.tsx?$": "ts-jest"
   },
   "collectCoverage": true,
+  "testEnvironment": "jsdom",
   "coverageThreshold": {
     "global": {
-      "branches": 89.22,
+      "branches": 87,
       "functions": 95.52,
-      "lines": 96.86,
-      "statements": 96.95
+      "lines": 96,
+      "statements": 96
     }
   },
   // We mess with globals (window, document) in the tests so

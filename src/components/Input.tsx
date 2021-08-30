@@ -20,7 +20,7 @@ import { touchedHack, TouchedHackProps } from "./touched-hack";
 export type InputProps<
   PFD extends ParsedFormData,
   FD extends FormData,
-  Name extends keyof PFD & keyof FD & string
+  Name extends keyof PFD & keyof FD & string,
 > = HTMLInputProps &
   ExtraInputProps &
   TouchedHackProps & {
@@ -33,7 +33,7 @@ export type InputProps<
 export const Input = <
   PFD extends ParsedFormData,
   FD extends FormData,
-  Name extends keyof PFD & keyof FD & string
+  Name extends keyof PFD & keyof FD & string,
 >(
   props: InputProps<PFD, FD, Name>,
 ): JSX.Element => {
@@ -64,7 +64,7 @@ export const Input = <
         keepTouchedOnReinitialize,
       ),
       id:
-        id ||
+        id ??
         // include value to ensure unique IDs for checkbox and radio inputs
         (props.type === "checkbox" || props.type === "radio"
           ? // TODO enforce via types that value cannot be undefined if type is checkbox or radio
@@ -86,7 +86,7 @@ export const Input = <
 
 export type DefaultInputForCodecProps<
   PFD extends ParsedFormData,
-  FD extends FormData
+  FD extends FormData,
 > = Pick<
   InputProps<PFD, FD, keyof PFD & keyof FD & string>,
   "render" | "keepTouchedOnReinitialize"
@@ -95,7 +95,7 @@ export type DefaultInputForCodecProps<
 export type InputForCodecProps<
   PFD extends ParsedFormData,
   FD extends FormData,
-  Name extends keyof PFD & keyof FD & string
+  Name extends keyof PFD & keyof FD & string,
 > = OmitStrict<InputProps<PFD, FD, Name>, "render" | "required" | "type"> &
   Partial<Pick<InputProps<PFD, FD, Name>, "render">> &
   Required<PFD[Name]> &

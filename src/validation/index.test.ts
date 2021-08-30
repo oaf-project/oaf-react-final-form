@@ -6,7 +6,7 @@ import { ReadonlyRecord } from "fp-ts/lib/ReadonlyRecord";
 
 /* eslint-disable functional/no-throw-statement, sonarjs/no-duplicate-string, functional/functional-parameters, functional/no-expression-statement, functional/no-conditional-statement, @typescript-eslint/no-explicit-any */
 
-// type-coverage:ignore-next-line
+// eslint-disable-next-line total-functions/no-unsafe-readonly-mutable-assignment
 const examples: ReadonlyArray<
   readonly [
     t.Type<any>,

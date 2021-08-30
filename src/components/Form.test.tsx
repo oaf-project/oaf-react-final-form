@@ -55,6 +55,7 @@ it("renders a simple example", async () => {
   );
 
   const div = document.createElement("div");
+  document.body.appendChild(div);
   ReactDOM.render(form, div);
 
   expect(
@@ -69,8 +70,8 @@ it("renders a simple example", async () => {
   div.querySelector("form")!.submit();
 
   // HACK: give react a chance to render.
-  await new Promise((resolve) => setTimeout(() => resolve()));
-  await new Promise((resolve) => setTimeout(() => resolve()));
+  await new Promise((resolve) => setTimeout(() => resolve(undefined)));
+  await new Promise((resolve) => setTimeout(() => resolve(undefined)));
 
   expect(
     await axe(div, { rules: { region: { enabled: false } } }),
@@ -109,6 +110,7 @@ it("renders field-specific submission errors", async () => {
   );
 
   const div = document.createElement("div");
+  document.body.appendChild(div);
   ReactDOM.render(form, div);
 
   expect(
@@ -123,10 +125,10 @@ it("renders field-specific submission errors", async () => {
   div.querySelector("form")!.submit();
 
   // HACK: give react a chance to render.
-  await new Promise((resolve) => setTimeout(() => resolve()));
-  await new Promise((resolve) => setTimeout(() => resolve()));
-  await new Promise((resolve) => setTimeout(() => resolve()));
-  await new Promise((resolve) => setTimeout(() => resolve()));
+  await new Promise((resolve) => setTimeout(() => resolve(undefined)));
+  await new Promise((resolve) => setTimeout(() => resolve(undefined)));
+  await new Promise((resolve) => setTimeout(() => resolve(undefined)));
+  await new Promise((resolve) => setTimeout(() => resolve(undefined)));
 
   expect(
     await axe(div, { rules: { region: { enabled: false } } }),
@@ -136,8 +138,11 @@ it("renders field-specific submission errors", async () => {
     '<form action="." novalidate=""><label for="foo">foo</label><input type="text" id="foo" name="foo" aria-invalid="true" class="form-control is-invalid" value="" aria-describedby="foo-feedback" tabindex="-1"><div class="invalid-feedback" id="foo-feedback">Foo is invalid</div></form>',
   );
 
+  const invalidInput = document.getElementById("foo");
+
   // Expect the invalid input to have received keyboard focus.
-  expect(document.activeElement).toBe(document.querySelector("#foo"));
+  expect(invalidInput).toBeDefined();
+  expect(document.activeElement).toBe(invalidInput);
 
   ReactDOM.unmountComponentAtNode(div);
 });
@@ -168,6 +173,7 @@ it("renders global submission errors", async () => {
   );
 
   const div = document.createElement("div");
+  document.body.appendChild(div);
   ReactDOM.render(form, div);
 
   expect(
@@ -182,11 +188,11 @@ it("renders global submission errors", async () => {
   div.querySelector("form")!.submit();
 
   // HACK: give react a chance to render.
-  await new Promise((resolve) => setTimeout(() => resolve()));
-  await new Promise((resolve) => setTimeout(() => resolve()));
+  await new Promise((resolve) => setTimeout(() => resolve(undefined)));
+  await new Promise((resolve) => setTimeout(() => resolve(undefined)));
 
   // Hack: give focus a chance to update.
-  await new Promise((resolve) => setTimeout(() => resolve()));
+  await new Promise((resolve) => setTimeout(() => resolve(undefined)));
 
   expect(
     await axe(div, { rules: { region: { enabled: false } } }),
@@ -213,6 +219,7 @@ it("renders default validation error", async () => {
   const { Form, Input } = elementsForCodec(codec);
 
   const div = document.createElement("div");
+  document.body.appendChild(div);
   ReactDOM.render(
     <Form onSubmit={(): undefined => undefined}>
       <Input label="foo" name="foo" type="text" required={true} />
@@ -231,12 +238,12 @@ it("renders default validation error", async () => {
   div.querySelector("form")!.submit();
 
   // HACK: give react a chance to render.
-  await new Promise((resolve) => setTimeout(() => resolve()));
-  await new Promise((resolve) => setTimeout(() => resolve()));
-  await new Promise((resolve) => setTimeout(() => resolve()));
+  await new Promise((resolve) => setTimeout(() => resolve(undefined)));
+  await new Promise((resolve) => setTimeout(() => resolve(undefined)));
+  await new Promise((resolve) => setTimeout(() => resolve(undefined)));
 
   // Hack: give focus a chance to update.
-  await new Promise((resolve) => setTimeout(() => resolve()));
+  await new Promise((resolve) => setTimeout(() => resolve(undefined)));
 
   expect(div.innerHTML).toBe(
     '<form action="." novalidate=""><label for="foo">foo</label><input required="" type="text" id="foo" name="foo" aria-invalid="true" class="form-control is-invalid" value="" aria-describedby="foo-feedback" tabindex="-1"><div class="invalid-feedback" id="foo-feedback">This field is invalid.</div></form>',
@@ -262,6 +269,7 @@ it("renders custom validation error", async () => {
   const { Form, Input } = elementsForCodec(codec);
 
   const div = document.createElement("div");
+  document.body.appendChild(div);
   ReactDOM.render(
     <Form onSubmit={(): undefined => undefined}>
       <Input label="foo" name="foo" type="text" required={true} />
@@ -280,10 +288,10 @@ it("renders custom validation error", async () => {
   div.querySelector("form")!.submit();
 
   // HACK: give react a chance to render.
-  await new Promise((resolve) => setTimeout(() => resolve()));
-  await new Promise((resolve) => setTimeout(() => resolve()));
-  await new Promise((resolve) => setTimeout(() => resolve()));
-  await new Promise((resolve) => setTimeout(() => resolve()));
+  await new Promise((resolve) => setTimeout(() => resolve(undefined)));
+  await new Promise((resolve) => setTimeout(() => resolve(undefined)));
+  await new Promise((resolve) => setTimeout(() => resolve(undefined)));
+  await new Promise((resolve) => setTimeout(() => resolve(undefined)));
 
   expect(div.innerHTML).toBe(
     '<form action="." novalidate=""><label for="foo">foo</label><input required="" type="text" id="foo" name="foo" aria-invalid="true" class="form-control is-invalid" value="" aria-describedby="foo-feedback" tabindex="-1"><div class="invalid-feedback" id="foo-feedback">Foo is required</div></form>',
@@ -310,6 +318,7 @@ it("renders multiple validation errors", async () => {
   const { Form, Input } = elementsForCodec(codec);
 
   const div = document.createElement("div");
+  document.body.appendChild(div);
   ReactDOM.render(
     <Form onSubmit={(): undefined => undefined}>
       <Input label="foo" name="foo" type="text" required={true} />
@@ -329,8 +338,8 @@ it("renders multiple validation errors", async () => {
   div.querySelector("form")!.submit();
 
   // HACK: give react a chance to render.
-  await new Promise((resolve) => setTimeout(() => resolve()));
-  await new Promise((resolve) => setTimeout(() => resolve()));
+  await new Promise((resolve) => setTimeout(() => resolve(undefined)));
+  await new Promise((resolve) => setTimeout(() => resolve(undefined)));
 
   expect(div.innerHTML).toBe(
     '<form action="." novalidate=""><label for="foo">foo</label><input required="" type="text" id="foo" name="foo" aria-invalid="true" class="form-control is-invalid" value="" aria-describedby="foo-feedback"><div class="invalid-feedback" id="foo-feedback">This field is invalid.</div><label for="bar">bar</label><input required="" type="text" id="bar" name="bar" aria-invalid="true" class="form-control is-invalid" value="" aria-describedby="bar-feedback"><div class="invalid-feedback" id="bar-feedback">Bar is required</div></form>',
@@ -414,6 +423,7 @@ it("supports FieldArray", async () => {
   ] as const;
 
   const div = document.createElement("div");
+  document.body.appendChild(div);
   ReactDOM.render(
     <Form
       onSubmit={onSubmit}
@@ -499,8 +509,8 @@ it("supports FieldArray", async () => {
   div.querySelector("form")!.submit();
 
   // HACK: give react a chance to render.
-  await new Promise((resolve) => setTimeout(() => resolve()));
-  await new Promise((resolve) => setTimeout(() => resolve()));
+  await new Promise((resolve) => setTimeout(() => resolve(undefined)));
+  await new Promise((resolve) => setTimeout(() => resolve(undefined)));
 
   expect(div.innerHTML).toBe(
     '<form action="." novalidate=""><label for="foo">foo</label><input type="number" min="42" class="some-input-class is-valid" placeholder="Enter a number less than 42" id="foo" name="foo" aria-invalid="false" value="42"><label for="bar">bar</label><input required="" type="text" id="bar" name="bar" aria-invalid="true" class="form-control is-invalid" value="" aria-describedby="bar-feedback"><div class="invalid-feedback" id="bar-feedback">Bar is required.</div><label for="baz">baz</label><select class="some-select-class is-valid" id="baz" name="baz" aria-invalid="false"><option value=""></option><option value="first-option">first option</option><optgroup label="an opt group"><option value="second-option">second option</option></optgroup></select><label for="qux">qux</label><select multiple="" id="qux" name="qux" class="form-control is-valid" aria-invalid="false"><option value=""></option><option value="first-option">first option</option><optgroup label="an opt group"><option value="second-option">second option</option></optgroup></select><fieldset><legend>Radio Button Example</legend><input type="radio" id="radioOption-radio-option-one" name="radioOption" aria-invalid="false" class="form-check-input is-valid" value="radio-option-one" checked=""><label class="form-check-label" for="radioOption-radio-option-one">radio-option-one</label><input type="radio" disabled="" id="radioOption-radio-option-two" name="radioOption" aria-invalid="false" class="form-check-input is-valid" value="radio-option-two"><label class="form-check-label" for="radioOption-radio-option-two">radio-option-two</label></fieldset><label for="customers-0-firstName">First Name</label><input type="text" id="customers-0-firstName" name="customers[0].firstName" aria-invalid="false" class="form-control is-valid" value="Jane"><label for="customers-0-lastName">Last Name</label><input type="text" id="customers-0-lastName" name="customers[0].lastName" aria-invalid="false" class="form-control is-valid" value="Doe"></form>',
@@ -526,6 +536,7 @@ it("renders validation error when codec contains mix of required and optional fi
   const onSubmit = (_: FormData): SubmissionResponse<FormData> => undefined;
 
   const div = document.createElement("div");
+  document.body.appendChild(div);
   ReactDOM.render(
     <Form onSubmit={onSubmit}>
       <Input label="bar" name="bar" type="text" required={true} />
@@ -537,8 +548,8 @@ it("renders validation error when codec contains mix of required and optional fi
   div.querySelector("form")!.submit();
 
   // HACK: give react a chance to render.
-  await new Promise((resolve) => setTimeout(() => resolve()));
-  await new Promise((resolve) => setTimeout(() => resolve()));
+  await new Promise((resolve) => setTimeout(() => resolve(undefined)));
+  await new Promise((resolve) => setTimeout(() => resolve(undefined)));
 
   expect(div.innerHTML).toBe(
     '<form action="." novalidate=""><label for="bar">bar</label><input required="" type="text" id="bar" name="bar" aria-invalid="true" class="form-control is-invalid" value="" aria-describedby="bar-feedback"><div class="invalid-feedback" id="bar-feedback">This field is invalid.</div></form>',
