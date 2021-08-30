@@ -1,7 +1,10 @@
 # Oaf React Final Form
 
-[![Build Status](https://travis-ci.org/oaf-project/oaf-react-final-form.svg?branch=master)](https://travis-ci.org/oaf-project/oaf-react-final-form)
+[![Build Status](https://github.com/oaf-project/oaf-react-final-form/actions/workflows/main.yml/badge.svg)](https://github.com/oaf-project/oaf-react-final-form/actions/workflows/main.yml)
 [![type-coverage](https://img.shields.io/badge/dynamic/json.svg?label=type-coverage&prefix=%E2%89%A5&suffix=%&query=$.typeCoverage.atLeast&uri=https%3A%2F%2Fraw.githubusercontent.com%2Foaf-project%2Foaf-react-final-form%2Fmaster%2Fpackage.json)](https://github.com/plantain-00/type-coverage)
+[![Codecov](https://img.shields.io/codecov/c/github/oaf-project/oaf-react-final-form.svg)](https://codecov.io/gh/oaf-project/oaf-react-final-form)
+[![Mutation testing badge](https://img.shields.io/endpoint?style=flat&url=https%3A%2F%2Fbadge-api.stryker-mutator.io%2Fgithub.com%2Foaf-project%2Foaf-react-final-form%2Fmaster)](https://dashboard.stryker-mutator.io/reports/github.com/oaf-project/oaf-react-final-form/master)
+
 [![Known Vulnerabilities](https://snyk.io/test/github/oaf-project/oaf-react-final-form/badge.svg?targetFile=package.json)](https://snyk.io/test/github/oaf-project/oaf-react-final-form?targetFile=package.json)
 [![npm](https://img.shields.io/npm/v/oaf-react-final-form.svg)](https://www.npmjs.com/package/oaf-react-final-form)
 
