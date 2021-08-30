@@ -15,10 +15,11 @@ An opinionated form library.
 * Accessible by default
   * `validateOnBlur` defaults to true. See https://github.com/final-form/final-form/issues/250
     * As a consequence, we include work-arounds for https://github.com/final-form/final-form/issues/213 and https://github.com/final-form/react-final-form/issues/458
-    * See also https://developer.paciellogroup.com/blog/2019/02/required-attribute-requirements/ for motivation
+    * See https://www.tpgi.com/required-attribute-requirements/ for motivation
   * By default we render accessible form labels and validation feedback (with `aria-invalid` and `aria-labelledby`)
   * After a failed form submission, we move focus to the first invalid form element (using https://github.com/oaf-project/oaf-side-effects)
-  * https://webaim.org/techniques/formvalidation/
+  * We follow the advice from https://webaim.org/techniques/formvalidation/
+  * To stop form controls from announcing as invalid by default, we set `aria-invalid="false"` (and then update as required after validation). See https://www.tpgi.com/required-attribute-requirements/ for rationale.
 
 ## Installation
 
