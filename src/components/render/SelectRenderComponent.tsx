@@ -2,11 +2,7 @@ import React, { Key, SelectHTMLAttributes } from "react";
 import { FieldRenderProps } from "react-final-form";
 import { OmitStrict } from "type-zoo";
 import { ExtractFormValue, FormData } from "../common";
-import {
-  FormElement,
-  RenderLabelProps,
-  RenderInvalidFeedbackProps,
-} from "./FormElement";
+import { FormElement, FormElementRenderConfig } from "./FormElement";
 
 export type SelectOption<A extends string> = {
   // Union with empty string to allow default empty value as first select option.
@@ -107,16 +103,9 @@ export const RenderOptions = <
   </>
 );
 
-export type SelectRenderComponentConfig = {
-  readonly renderLabel: (props: RenderLabelProps) => JSX.Element;
-  readonly renderInvalidFeedback: (
-    props: RenderInvalidFeedbackProps,
-  ) => JSX.Element;
-};
-
 export const SelectRenderComponent =
   <FD extends FormData, Name extends keyof FD & string>(
-    config: SelectRenderComponentConfig,
+    config: FormElementRenderConfig,
   ) =>
   // eslint-disable-next-line react/display-name
   (props: SelectRenderProps<FD, Name>): JSX.Element =>
@@ -137,7 +126,7 @@ export const SelectRenderComponent =
         isInvalid={props.isInvalid}
         isValid={props.isValid}
       >
-        {({ className, invalidFeedbackId }): JSX.Element => (
+        {({ invalidFeedbackId }): JSX.Element => (
           <select
             {...props.selectProps}
             id={props.id}
@@ -153,10 +142,17 @@ export const SelectRenderComponent =
             onChange={props.renderProps.input.onChange}
             onFocus={props.renderProps.input.onFocus}
             name={props.renderProps.input.name}
-            className={className}
             // 'To stop form controls from announcing as invalid by default, one can add aria-invalid="false" to any necessary element.'
             // See https://developer.paciellogroup.com/blog/2019/02/required-attribute-requirements/
             aria-invalid={props.isInvalid}
+            className={config.className({
+              inputClassName: props.selectProps.className,
+              invalidClassName: undefined,
+              validClassName: undefined,
+              inputType: undefined,
+              isValid: props.isValid,
+              isInvalid: props.isInvalid,
+            })}
             // See https://www.w3.org/WAI/WCAG21/Techniques/aria/ARIA1#example-2-using-aria-describedby-to-associate-instructions-with-form-fields
             aria-describedby={invalidFeedbackId}
           >

@@ -6,8 +6,7 @@ import { inputForCodec, DefaultInputForCodecProps } from "./Input";
 import { selectForCodec, DefaultSelectForCodecProps } from "./Select";
 import { SelectRenderComponent } from "./render/SelectRenderComponent";
 import { InputRenderComponent } from "./render/InputRenderComponent";
-import { FormError } from "./render/Form";
-import { Label, InvalidFeedback } from "./render/FormElement";
+import * as bootstrap4 from "./render/bootstrap4";
 
 export * from "./Form";
 export * from "./Input";
@@ -66,6 +65,7 @@ export const elementsForCodecWithDefaults =
     defaultSelectProps: DefaultSelectForCodecProps<A, O>,
     // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   ) =>
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   (codec: Type<A, O>) => ({
     Form: formForCodec(codec, defaultFormProps),
     Input: inputForCodec<A, O>(defaultInputProps),
@@ -74,22 +74,33 @@ export const elementsForCodecWithDefaults =
     // TODO: button, reset, file inputs ?
   });
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export const elementsForCodec = <A extends ParsedFormData, O extends FormData>(
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
+export const bootstrap4Elements = <
+  A extends ParsedFormData,
+  O extends FormData,
+>(
   codec: Type<A, O>,
 ) =>
   elementsForCodecWithDefaults<A, O>(
-    { renderFormError: FormError },
+    { renderFormError: bootstrap4.FormError },
     {
       render: InputRenderComponent({
-        renderLabel: Label,
-        renderInvalidFeedback: InvalidFeedback,
+        renderLabel: bootstrap4.Label,
+        renderInvalidFeedback: bootstrap4.InvalidFeedback,
+        className: bootstrap4.className,
       }),
     },
     {
       render: SelectRenderComponent({
-        renderLabel: Label,
-        renderInvalidFeedback: InvalidFeedback,
+        renderLabel: bootstrap4.Label,
+        renderInvalidFeedback: bootstrap4.InvalidFeedback,
+        className: bootstrap4.className,
       }),
     },
   )(codec);
+
+// TODO default form elements https://github.com/oaf-project/oaf-react-final-form/issues/18
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+export const elementsForCodec = bootstrap4Elements;
+
+// TODO add bootstrap 5 elements https://github.com/oaf-project/oaf-react-final-form/issues/496

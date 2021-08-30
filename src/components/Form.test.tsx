@@ -5,7 +5,7 @@ import { axe, toHaveNoViolations } from "jest-axe";
 import React from "react";
 import ReactDOM from "react-dom";
 import { FieldArray } from "react-final-form-arrays";
-import { elementsForCodec, SubmissionResponse, formCodec } from ".";
+import { bootstrap4Elements, SubmissionResponse, formCodec } from ".";
 import { withMessage, NumberFromString } from "../validation";
 
 /* eslint-disable sonarjs/no-duplicate-string, no-restricted-globals, @typescript-eslint/no-unused-vars, functional/functional-parameters, functional/no-expression-statement */
@@ -33,7 +33,7 @@ it("renders a simple example", async () => {
 
   // We derive React components for our form elements from the form codec. This
   // gives us some type-safety benefits when rendering these form elements (below).
-  const { Form, Input } = elementsForCodec(codec);
+  const { Form, Input } = bootstrap4Elements(codec);
 
   type FormData = t.TypeOf<typeof codec>;
 
@@ -93,7 +93,7 @@ it("renders field-specific submission errors", async () => {
 
   // We derive React components for our form elements from the form codec. This
   // gives us some type-safety benefits when rendering these form elements (below).
-  const { Form, Input } = elementsForCodec(codec);
+  const { Form, Input } = bootstrap4Elements(codec);
 
   type FormData = t.TypeOf<typeof codec>;
 
@@ -156,7 +156,7 @@ it("renders global submission errors", async () => {
 
   // We derive React components for our form elements from the form codec. This
   // gives us some type-safety benefits when rendering these form elements (below).
-  const { Form, Input } = elementsForCodec(codec);
+  const { Form, Input } = bootstrap4Elements(codec);
 
   type FormData = t.TypeOf<typeof codec>;
 
@@ -216,7 +216,7 @@ it("renders default validation error", async () => {
     },
   });
 
-  const { Form, Input } = elementsForCodec(codec);
+  const { Form, Input } = bootstrap4Elements(codec);
 
   const div = document.createElement("div");
   document.body.appendChild(div);
@@ -266,7 +266,7 @@ it("renders custom validation error", async () => {
     },
   });
 
-  const { Form, Input } = elementsForCodec(codec);
+  const { Form, Input } = bootstrap4Elements(codec);
 
   const div = document.createElement("div");
   document.body.appendChild(div);
@@ -315,7 +315,7 @@ it("renders multiple validation errors", async () => {
     },
   });
 
-  const { Form, Input } = elementsForCodec(codec);
+  const { Form, Input } = bootstrap4Elements(codec);
 
   const div = document.createElement("div");
   document.body.appendChild(div);
@@ -387,7 +387,7 @@ it("supports FieldArray", async () => {
 
   // We derive React components for our form elements from the form codec. This
   // gives us some type-safety benefits when rendering these form elements (below).
-  const { Form, Input, Select } = elementsForCodec(codec);
+  const { Form, Input, Select } = bootstrap4Elements(codec);
 
   type FormData = t.TypeOf<typeof codec>;
 
@@ -499,7 +499,7 @@ it("supports FieldArray", async () => {
   );
 
   expect(div.innerHTML).toBe(
-    '<form action="." novalidate=""><label for="foo">foo</label><input type="number" min="42" class="some-input-class" placeholder="Enter a number less than 42" id="foo" name="foo" aria-invalid="false" value="42"><label for="bar">bar</label><input required="" type="text" id="bar" name="bar" aria-invalid="false" class="form-control" value=""><label for="baz">baz</label><select class="some-select-class" id="baz" name="baz" aria-invalid="false"><option value=""></option><option value="first-option">first option</option><optgroup label="an opt group"><option value="second-option">second option</option></optgroup></select><label for="qux">qux</label><select multiple="" id="qux" name="qux" class="form-control" aria-invalid="false"><option value=""></option><option value="first-option">first option</option><optgroup label="an opt group"><option value="second-option">second option</option></optgroup></select><fieldset><legend>Radio Button Example</legend><input type="radio" id="radioOption-radio-option-one" name="radioOption" aria-invalid="false" class="form-check-input" value="radio-option-one" checked=""><label class="form-check-label" for="radioOption-radio-option-one">radio-option-one</label><input type="radio" disabled="" id="radioOption-radio-option-two" name="radioOption" aria-invalid="false" class="form-check-input" value="radio-option-two"><label class="form-check-label" for="radioOption-radio-option-two">radio-option-two</label></fieldset><label for="customers-0-firstName">First Name</label><input type="text" id="customers-0-firstName" name="customers[0].firstName" aria-invalid="false" class="form-control" value="Jane"><label for="customers-0-lastName">Last Name</label><input type="text" id="customers-0-lastName" name="customers[0].lastName" aria-invalid="false" class="form-control" value="Doe"></form>',
+    '<form action="." novalidate=""><label for="foo">foo</label><input type="number" min="42" class="some-input-class" placeholder="Enter a number less than 42" id="foo" name="foo" aria-invalid="false" value="42"><label for="bar">bar</label><input required="" type="text" id="bar" name="bar" aria-invalid="false" class="form-control" value=""><label for="baz">baz</label><select class="some-select-class" id="baz" name="baz" aria-invalid="false"><option value=""></option><option value="first-option">first option</option><optgroup label="an opt group"><option value="second-option">second option</option></optgroup></select><label for="qux">qux</label><select multiple="" id="qux" name="qux" aria-invalid="false" class="form-control"><option value=""></option><option value="first-option">first option</option><optgroup label="an opt group"><option value="second-option">second option</option></optgroup></select><fieldset><legend>Radio Button Example</legend><input type="radio" id="radioOption-radio-option-one" name="radioOption" aria-invalid="false" class="form-check-input" value="radio-option-one" checked=""><label class="form-check-label" for="radioOption-radio-option-one">radio-option-one</label><input type="radio" disabled="" id="radioOption-radio-option-two" name="radioOption" aria-invalid="false" class="form-check-input" value="radio-option-two"><label class="form-check-label" for="radioOption-radio-option-two">radio-option-two</label></fieldset><label for="customers-0-firstName">First Name</label><input type="text" id="customers-0-firstName" name="customers[0].firstName" aria-invalid="false" class="form-control" value="Jane"><label for="customers-0-lastName">Last Name</label><input type="text" id="customers-0-lastName" name="customers[0].lastName" aria-invalid="false" class="form-control" value="Doe"></form>',
   );
   expect(
     await axe(div, { rules: { region: { enabled: false } } }),
@@ -513,7 +513,7 @@ it("supports FieldArray", async () => {
   await new Promise((resolve) => setTimeout(() => resolve(undefined)));
 
   expect(div.innerHTML).toBe(
-    '<form action="." novalidate=""><label for="foo">foo</label><input type="number" min="42" class="some-input-class is-valid" placeholder="Enter a number less than 42" id="foo" name="foo" aria-invalid="false" value="42"><label for="bar">bar</label><input required="" type="text" id="bar" name="bar" aria-invalid="true" class="form-control is-invalid" value="" aria-describedby="bar-feedback"><div class="invalid-feedback" id="bar-feedback">Bar is required.</div><label for="baz">baz</label><select class="some-select-class is-valid" id="baz" name="baz" aria-invalid="false"><option value=""></option><option value="first-option">first option</option><optgroup label="an opt group"><option value="second-option">second option</option></optgroup></select><label for="qux">qux</label><select multiple="" id="qux" name="qux" class="form-control is-valid" aria-invalid="false"><option value=""></option><option value="first-option">first option</option><optgroup label="an opt group"><option value="second-option">second option</option></optgroup></select><fieldset><legend>Radio Button Example</legend><input type="radio" id="radioOption-radio-option-one" name="radioOption" aria-invalid="false" class="form-check-input is-valid" value="radio-option-one" checked=""><label class="form-check-label" for="radioOption-radio-option-one">radio-option-one</label><input type="radio" disabled="" id="radioOption-radio-option-two" name="radioOption" aria-invalid="false" class="form-check-input is-valid" value="radio-option-two"><label class="form-check-label" for="radioOption-radio-option-two">radio-option-two</label></fieldset><label for="customers-0-firstName">First Name</label><input type="text" id="customers-0-firstName" name="customers[0].firstName" aria-invalid="false" class="form-control is-valid" value="Jane"><label for="customers-0-lastName">Last Name</label><input type="text" id="customers-0-lastName" name="customers[0].lastName" aria-invalid="false" class="form-control is-valid" value="Doe"></form>',
+    '<form action="." novalidate=""><label for="foo">foo</label><input type="number" min="42" class="some-input-class is-valid" placeholder="Enter a number less than 42" id="foo" name="foo" aria-invalid="false" value="42"><label for="bar">bar</label><input required="" type="text" id="bar" name="bar" aria-invalid="true" class="form-control is-invalid" value="" aria-describedby="bar-feedback"><div class="invalid-feedback" id="bar-feedback">Bar is required.</div><label for="baz">baz</label><select class="some-select-class is-valid" id="baz" name="baz" aria-invalid="false"><option value=""></option><option value="first-option">first option</option><optgroup label="an opt group"><option value="second-option">second option</option></optgroup></select><label for="qux">qux</label><select multiple="" id="qux" name="qux" aria-invalid="false" class="form-control is-valid"><option value=""></option><option value="first-option">first option</option><optgroup label="an opt group"><option value="second-option">second option</option></optgroup></select><fieldset><legend>Radio Button Example</legend><input type="radio" id="radioOption-radio-option-one" name="radioOption" aria-invalid="false" class="form-check-input is-valid" value="radio-option-one" checked=""><label class="form-check-label" for="radioOption-radio-option-one">radio-option-one</label><input type="radio" disabled="" id="radioOption-radio-option-two" name="radioOption" aria-invalid="false" class="form-check-input is-valid" value="radio-option-two"><label class="form-check-label" for="radioOption-radio-option-two">radio-option-two</label></fieldset><label for="customers-0-firstName">First Name</label><input type="text" id="customers-0-firstName" name="customers[0].firstName" aria-invalid="false" class="form-control is-valid" value="Jane"><label for="customers-0-lastName">Last Name</label><input type="text" id="customers-0-lastName" name="customers[0].lastName" aria-invalid="false" class="form-control is-valid" value="Doe"></form>',
   );
 
   expect(
@@ -529,7 +529,7 @@ it("renders validation error when codec contains mix of required and optional fi
     optional: { foo: t.string },
   });
 
-  const { Form, Input } = elementsForCodec(codec);
+  const { Form, Input } = bootstrap4Elements(codec);
 
   type FormData = t.TypeOf<typeof codec>;
 

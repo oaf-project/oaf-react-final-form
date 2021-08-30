@@ -2,11 +2,7 @@ import React, { InputHTMLAttributes } from "react";
 import { FieldRenderProps } from "react-final-form";
 import { OmitStrict } from "type-zoo";
 import { ExtractFormValue, FormData, InputType } from "../common";
-import {
-  FormElement,
-  RenderLabelProps,
-  RenderInvalidFeedbackProps,
-} from "./FormElement";
+import { FormElement, FormElementRenderConfig } from "./FormElement";
 
 export type ExtraInputProps = {
   /**
@@ -51,16 +47,9 @@ export type InputRenderProps<
   readonly isValid: boolean;
 };
 
-export type InputRenderComponentConfig = {
-  readonly renderLabel: (props: RenderLabelProps) => JSX.Element;
-  readonly renderInvalidFeedback: (
-    props: RenderInvalidFeedbackProps,
-  ) => JSX.Element;
-};
-
 export const InputRenderComponent =
   <FD extends FormData, Name extends keyof FD & string>(
-    config: InputRenderComponentConfig,
+    config: FormElementRenderConfig,
   ) =>
   // eslint-disable-next-line react/display-name
   (props: InputRenderProps<FD, Name>): JSX.Element =>
@@ -81,9 +70,7 @@ export const InputRenderComponent =
         isInvalid={props.isInvalid}
         isValid={props.isValid}
       >
-        {({ className, invalidFeedbackId }): JSX.Element => (
-          // TODO extract RenderInput component (and RenderSelect?)
-          // Then className becomes easier to deal with in the bootstrap case where it changes for checkbox/radio labels
+        {({ invalidFeedbackId }): JSX.Element => (
           <input
             {...props.inputProps}
             id={props.id}
@@ -97,7 +84,14 @@ export const InputRenderComponent =
             // 'To stop form controls from announcing as invalid by default, one can add aria-invalid="false" to any necessary element.'
             // See https://developer.paciellogroup.com/blog/2019/02/required-attribute-requirements/
             aria-invalid={props.isInvalid}
-            className={className}
+            className={config.className({
+              inputClassName: props.inputProps.className,
+              invalidClassName: undefined,
+              validClassName: undefined,
+              inputType: props.inputProps.type,
+              isValid: props.isValid,
+              isInvalid: props.isInvalid,
+            })}
             // See https://www.w3.org/WAI/WCAG21/Techniques/aria/ARIA1#example-2-using-aria-describedby-to-associate-instructions-with-form-fields
             aria-describedby={invalidFeedbackId}
           />

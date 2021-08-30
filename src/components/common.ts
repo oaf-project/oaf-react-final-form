@@ -2,6 +2,9 @@ import { FORM_ERROR } from "final-form";
 import { FieldMetaState as RawFieldMetaState } from "react-final-form";
 import { ExcludeStrict, Overwrite } from "type-zoo";
 
+/* TODO i18n */
+export const defaultFieldErrorMessage = "This field is invalid.";
+
 export type NumericInputType = "number" | "range";
 
 // https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#Form_%3Cinput%3E_types

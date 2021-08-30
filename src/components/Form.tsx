@@ -12,9 +12,27 @@ import {
 import { DeepReadonly } from "ts-essentials";
 import { OmitStrict } from "type-zoo";
 import { toValidationErrors } from "../validation";
-import { FormData, ParsedFormData, ValidationErrors } from "./common";
+import {
+  defaultFieldErrorMessage,
+  FormData,
+  ParsedFormData,
+  ValidationErrors,
+} from "./common";
 import { focusInvalidFormDecorator } from "./decorators";
-import { FormRenderProps } from "./render/Form";
+import { FormRenderProps as ReactFinalFormRenderProps } from "react-final-form";
+
+/**
+ * Replace any with string for improved type-safety.
+ * io-ts error messages are strings, so we can get away
+ * with this here.
+ */
+export type FormRenderProps<FormValues> = OmitStrict<
+  ReactFinalFormRenderProps<FormValues>,
+  "error" | "submitError"
+> & {
+  readonly error?: string;
+  readonly submitError?: string;
+};
 
 export type SubmissionResponse<FD extends ParsedFormData> =
   | ValidationErrors<FD>
@@ -97,7 +115,7 @@ export const Form = <A extends ParsedFormData, O extends FormData>(
         props.codec.encode(props.initialValues as A);
 
   const errorMessage =
-    props.defaultErrorMessage ?? (() => "This field is invalid.");
+    props.defaultErrorMessage ?? (() => defaultFieldErrorMessage);
 
   // Better accessibility if we wait until blur to validate.
   // See e.g. https://developer.paciellogroup.com/blog/2019/02/required-attribute-requirements/
