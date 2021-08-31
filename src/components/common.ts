@@ -134,7 +134,7 @@ export type FieldMetaState<FV> = {
 };
 
 // 'To stop form controls from announcing as invalid by default, one can add aria-invalid="false" to any necessary element.'
-// See https://developer.paciellogroup.com/blog/2019/02/required-attribute-requirements/
+// See https://www.tpgi.com/required-attribute-requirements/
 export const isInputInvalid = <FV>(props: FieldMetaState<FV>): boolean =>
   (props.meta.touched === true && props.meta.invalid) || false;
 
@@ -154,5 +154,9 @@ export type Multiple<Value> = Value extends Array<unknown>
 
 // TODO expand this to enforce other constraints: max, min, maxlength, etc
 export type InputTypeConstraint<Value> = Value extends number // TODO: non-optional type?
-  ? { readonly type?: InputType }
-  : { readonly type?: ExcludeStrict<InputType, NumericInputType> };
+  ? // If the value is a `number`, any input type can be used.
+    { readonly type?: InputType }
+  : // If the value is not a `number`, The numeric input types cannot be used.
+    // For why we don't enforce usage of _only_ numeric input types in
+    // this case, see https://technology.blog.gov.uk/2020/02/24/why-the-gov-uk-design-system-team-changed-the-input-type-for-numbers/
+    { readonly type?: ExcludeStrict<InputType, NumericInputType> };

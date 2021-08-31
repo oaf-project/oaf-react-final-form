@@ -25,6 +25,8 @@ const isInvalid = <FormValues>(state: FormState<FormValues>): boolean =>
  * @param elementWrapperSelector the CSS selector that matches the "wrapper" element--the closest ancestor of the form input--that contains
  *                               both the form input and its label.
  *                               This wrapper element will be scrolled into view so that both the invalid input and its label are visible.
+ * @param globalFormErrorSelector the CSS selector that matches the "global" form error, i.e. an element at the top of the form that contains
+ *                                an error message that isn't specific to a any given form input.
  * @param smoothScroll true for smooth scrolling, false otherwise
  */
 export const focusInvalidFormDecorator = <FormValues>(

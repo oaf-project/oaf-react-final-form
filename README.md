@@ -13,13 +13,14 @@ An opinionated form library.
 * Strict type safety
 * Validation built with [io-ts](https://github.com/gcanti/io-ts)
 * Accessible by default
-  * `validateOnBlur` defaults to true. See https://github.com/final-form/final-form/issues/250
-    * As a consequence, we include work-arounds for https://github.com/final-form/final-form/issues/213 and https://github.com/final-form/react-final-form/issues/458
-    * See https://www.tpgi.com/required-attribute-requirements/ for motivation
   * By default we render accessible form labels and validation feedback (with `aria-invalid` and `aria-labelledby`)
+  * We follow the guidance from https://www.tpgi.com/required-attribute-requirements/
+    * We use the `novalidate` attribute on the `form` element to disable browsers’ client-side validation. Instead, we implement custom validation and accessible error messaging.
+    * To ensure most screen readers won’t default to announcing required form controls as invalid, we use `aria-invalid="false"`. We update this to `true` if the current value (or lack thereof) of a required control does not pass validation.
+    * We use `aria-describedby` on required form controls to point to the element that contains the inline error message.
+    * We wait until the control has lost focus before marking a form control as invalid and displaying the inline error message. We do this by defaulting React Final Form's `validateOnBlur` option to true. See https://github.com/final-form/final-form/issues/250. As a consequence, we include work-arounds for https://github.com/final-form/final-form/issues/213 and https://github.com/final-form/react-final-form/issues/458
   * After a failed form submission, we move focus to the first invalid form element (using https://github.com/oaf-project/oaf-side-effects)
   * We follow the advice from https://webaim.org/techniques/formvalidation/
-  * To stop form controls from announcing as invalid by default, we set `aria-invalid="false"` (and then update as required after validation). See https://www.tpgi.com/required-attribute-requirements/ for rationale.
 
 ## Installation
 

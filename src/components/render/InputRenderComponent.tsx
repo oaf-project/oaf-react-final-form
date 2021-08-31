@@ -82,7 +82,7 @@ export const InputRenderComponent =
             name={props.renderProps.input.name}
             type={props.renderProps.input.type}
             // 'To stop form controls from announcing as invalid by default, one can add aria-invalid="false" to any necessary element.'
-            // See https://developer.paciellogroup.com/blog/2019/02/required-attribute-requirements/
+            // See https://www.tpgi.com/required-attribute-requirements/
             aria-invalid={props.isInvalid}
             className={config.className({
               inputClassName: props.inputProps.className,

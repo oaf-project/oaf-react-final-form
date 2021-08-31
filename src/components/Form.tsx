@@ -118,7 +118,7 @@ export const Form = <A extends ParsedFormData, O extends FormData>(
     props.defaultErrorMessage ?? (() => defaultFieldErrorMessage);
 
   // Better accessibility if we wait until blur to validate.
-  // See e.g. https://developer.paciellogroup.com/blog/2019/02/required-attribute-requirements/
+  // See e.g. https://www.tpgi.com/required-attribute-requirements/
   const validateOnBlur =
     props.validateOnBlur !== undefined ? props.validateOnBlur : true;
 
@@ -167,16 +167,14 @@ export const Form = <A extends ParsedFormData, O extends FormData>(
         // See https://stackoverflow.com/a/26287843/2476884
         action={props.formProps?.action ?? "."}
         // Better accessibility if we do our own inline validation.
-        // See e.g. https://developer.paciellogroup.com/blog/2019/02/required-attribute-requirements/
+        // See e.g. https://www.tpgi.com/required-attribute-requirements/
         noValidate={props.formProps?.noValidate ?? true}
       >
         {props.renderFormError(renderProps)}
 
         {/* TODO: clean this up */}
         {typeof props.children === "function"
-          ? // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
-            props.children(renderProps)
+          ? props.children(renderProps)
           : props.children}
       </form>
     );
