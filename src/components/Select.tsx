@@ -14,7 +14,7 @@ import {
   ExtraSelectProps,
   HTMLSelectProps,
   SelectRenderProps,
-} from "./render/SelectRenderComponent";
+} from "./render/default/Select";
 import { touchedHack, TouchedHackProps } from "./touched-hack";
 
 export type SelectProps<

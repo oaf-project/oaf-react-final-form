@@ -1,5 +1,5 @@
 import React from "react";
-import { RenderLabelProps } from "../FormElement";
+import { RenderLabelProps } from "../default/common";
 
 export const Label = (props: RenderLabelProps): JSX.Element => (
   <label

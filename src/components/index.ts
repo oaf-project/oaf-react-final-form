@@ -4,15 +4,12 @@ import { FormData, ParsedFormData } from "./common";
 import { formForCodec, DefaultFormForCodecProps } from "./Form";
 import { inputForCodec, DefaultInputForCodecProps } from "./Input";
 import { selectForCodec, DefaultSelectForCodecProps } from "./Select";
-import { SelectRenderComponent } from "./render/SelectRenderComponent";
-import { InputRenderComponent } from "./render/InputRenderComponent";
-import * as bootstrap4 from "./render/bootstrap4";
+import * as defaultRenderComponents from "./render/default";
+import * as bootstrap4RenderComponents from "./render/bootstrap4";
 
 export * from "./Form";
 export * from "./Input";
-export * from "./render/InputRenderComponent";
 export * from "./Select";
-export * from "./render/SelectRenderComponent";
 
 /* eslint-disable functional/prefer-readonly-type */
 
@@ -82,19 +79,19 @@ export const bootstrap4Elements = <
   codec: Type<A, O>,
 ) =>
   elementsForCodecWithDefaults<A, O>(
-    { renderFormError: bootstrap4.FormError },
+    { renderFormError: bootstrap4RenderComponents.FormError },
     {
-      render: InputRenderComponent({
-        renderLabel: bootstrap4.Label,
-        renderInvalidFeedback: bootstrap4.InvalidFeedback,
-        className: bootstrap4.className,
+      render: defaultRenderComponents.Input({
+        renderLabel: bootstrap4RenderComponents.Label,
+        renderInvalidFeedback: bootstrap4RenderComponents.InvalidFeedback,
+        className: bootstrap4RenderComponents.className,
       }),
     },
     {
-      render: SelectRenderComponent({
-        renderLabel: bootstrap4.Label,
-        renderInvalidFeedback: bootstrap4.InvalidFeedback,
-        className: bootstrap4.className,
+      render: defaultRenderComponents.Select({
+        renderLabel: bootstrap4RenderComponents.Label,
+        renderInvalidFeedback: bootstrap4RenderComponents.InvalidFeedback,
+        className: bootstrap4RenderComponents.className,
       }),
     },
   )(codec);

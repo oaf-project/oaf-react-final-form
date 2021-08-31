@@ -68,7 +68,7 @@
     "trailingComma": "all"
   },
   "typeCoverage": {
-    "atLeast": 99.4,
+    "atLeast": 99,
     "strict": true,
     "detail": true
   }

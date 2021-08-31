@@ -14,7 +14,7 @@ import {
   ExtraInputProps,
   HTMLInputProps,
   InputRenderProps,
-} from "./render/InputRenderComponent";
+} from "./render/default/Input";
 import { touchedHack, TouchedHackProps } from "./touched-hack";
 
 export type InputProps<

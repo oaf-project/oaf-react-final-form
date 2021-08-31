@@ -1,8 +1,8 @@
 import React, { Key, SelectHTMLAttributes } from "react";
 import { FieldRenderProps } from "react-final-form";
 import { OmitStrict } from "type-zoo";
-import { ExtractFormValue, FormData } from "../common";
-import { FormElement, FormElementRenderConfig } from "./FormElement";
+import { ExtractFormValue, FormData } from "../../common";
+import { FormElementRenderConfig } from "./common";
 
 export type SelectOption<A extends string> = {
   // Union with empty string to allow default empty value as first select option.
@@ -103,61 +103,73 @@ export const RenderOptions = <
   </>
 );
 
-export const SelectRenderComponent =
+// TODO: factor out duplication between Select and Input
+export const Select =
   <FD extends FormData, Name extends keyof FD & string>(
     config: FormElementRenderConfig,
   ) =>
   // eslint-disable-next-line react/display-name
-  (props: SelectRenderProps<FD, Name>): JSX.Element =>
-    (
-      <FormElement
-        inputId={props.id}
-        inputType={undefined}
-        label={props.label}
-        renderLabel={config.renderLabel}
-        renderInvalidFeedback={config.renderInvalidFeedback}
-        inputClassName={props.selectProps.className}
-        // TODO plumb these through config, then move selectProps to the same place, then update inputClassName
-        invalidClassName={undefined}
-        validClassName={undefined}
-        labelProps={undefined}
-        feedbackProps={undefined}
-        meta={props.renderProps.meta}
-        isInvalid={props.isInvalid}
-        isValid={props.isValid}
-      >
-        {({ invalidFeedbackId }): JSX.Element => (
-          <select
-            {...props.selectProps}
-            id={props.id}
-            value={
-              props.multiple === true &&
-              !Array.isArray(props.renderProps.input.value)
-                ? []
-                : props.renderProps.input.value
-            }
-            // TODO why doesn't props.renderProps.input.multiple work here?
-            multiple={props.multiple}
-            onBlur={props.renderProps.input.onBlur}
-            onChange={props.renderProps.input.onChange}
-            onFocus={props.renderProps.input.onFocus}
-            name={props.renderProps.input.name}
-            // 'To stop form controls from announcing as invalid by default, one can add aria-invalid="false" to any necessary element.'
-            // See https://www.tpgi.com/required-attribute-requirements/
-            aria-invalid={props.isInvalid}
-            className={config.className({
-              inputClassName: props.selectProps.className,
-              invalidClassName: undefined,
-              validClassName: undefined,
-              inputType: undefined,
-              isValid: props.isValid,
-              isInvalid: props.isInvalid,
-            })}
-            // See https://www.w3.org/WAI/WCAG21/Techniques/aria/ARIA1#example-2-using-aria-describedby-to-associate-instructions-with-form-fields
-            aria-describedby={invalidFeedbackId}
-          >
-            <RenderOptions options={props.options} />
-          </select>
-        )}
-      </FormElement>
+  (props: SelectRenderProps<FD, Name>): JSX.Element => {
+    // TODO: make the derivation of feedback ID configurable
+    const invalidFeedbackId = props.isInvalid
+      ? `${props.id}-feedback`
+      : undefined;
+
+    const label = config.renderLabel({
+      labelProps: undefined, // TODO: either plumb this through or remove it
+      inputId: props.id,
+      label: props.label,
+      inputType: undefined, // This is a select so doesn't have an input type
+    });
+
+    const invalidFeedback =
+      invalidFeedbackId !== undefined
+        ? config.renderInvalidFeedback({
+            feedbackProps: undefined, // TODO: either plumb this through or remove it
+            id: invalidFeedbackId,
+            // TODO fix this `any`
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+            error:
+              props.renderProps.meta.error ??
+              props.renderProps.meta.submitError,
+          })
+        : null;
+
+    return (
+      <>
+        {label}
+        <select
+          {...props.selectProps}
+          id={props.id}
+          value={
+            props.multiple === true &&
+            !Array.isArray(props.renderProps.input.value)
+              ? []
+              : props.renderProps.input.value
+          }
+          // TODO why doesn't props.renderProps.input.multiple work here?
+          multiple={props.multiple}
+          onBlur={props.renderProps.input.onBlur}
+          onChange={props.renderProps.input.onChange}
+          onFocus={props.renderProps.input.onFocus}
+          name={props.renderProps.input.name}
+          // 'To stop form controls from announcing as invalid by default, one can add aria-invalid="false" to any necessary element.'
+          // See https://www.tpgi.com/required-attribute-requirements/
+          aria-invalid={props.isInvalid}
+          className={config.className({
+            inputClassName: props.selectProps.className,
+            invalidClassName: undefined, // TODO: either plumb this through or remove it
+            validClassName: undefined, // TODO: either plumb this through or remove it
+            inputType: undefined, // This is a select so doesn't have an input type
+            isValid: props.isValid,
+            isInvalid: props.isInvalid,
+          })}
+          // See https://www.w3.org/WAI/WCAG21/Techniques/aria/ARIA1#example-2-using-aria-describedby-to-associate-instructions-with-form-fields
+          aria-describedby={invalidFeedbackId}
+        >
+          <RenderOptions options={props.options} />
+        </select>
+        {props.isInvalid ? invalidFeedback : null}
+      </>
     );
+  };

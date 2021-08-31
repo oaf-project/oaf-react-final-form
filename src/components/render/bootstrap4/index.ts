@@ -1,4 +1,4 @@
-import { RenderClassNameProps } from "../FormElement";
+import { RenderClassNameProps } from "../default/common";
 
 export * from "./FormError";
 export * from "./InvalidFeedback";

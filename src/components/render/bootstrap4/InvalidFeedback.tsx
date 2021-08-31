@@ -1,6 +1,6 @@
 import React from "react";
 import { defaultFieldErrorMessage } from "../../common";
-import { RenderInvalidFeedbackProps } from "../FormElement";
+import { RenderInvalidFeedbackProps } from "../default/common";
 
 export const InvalidFeedback = (
   props: RenderInvalidFeedbackProps,
