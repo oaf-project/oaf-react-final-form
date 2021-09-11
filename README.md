@@ -72,3 +72,6 @@ npm install oaf-react-final-form
 ```
 
 See [Form.test.tsx](https://github.com/oaf-project/oaf-react-final-form/blob/master/src/components/Form.test.tsx) for more examples.
+
+## Other Form Accessibility Tips
+* Try not to use `input type="number"`. See https://technology.blog.gov.uk/2020/02/24/why-the-gov-uk-design-system-team-changed-the-input-type-for-numbers/ for why and an alternative.
