@@ -1,9 +1,5 @@
 import { RenderClassNameProps } from "../default/common";
 
-export * from "./FormError";
-export * from "./InvalidFeedback";
-export * from "./Label";
-
 /**
  * Determines the CSS class name to apply to the input or select, per bootstrap 4 markup conventions.
  */

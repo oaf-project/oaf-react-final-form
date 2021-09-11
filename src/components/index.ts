@@ -5,7 +5,7 @@ import { formForCodec, DefaultFormForCodecProps } from "./Form";
 import { inputForCodec, DefaultInputForCodecProps } from "./Input";
 import { selectForCodec, DefaultSelectForCodecProps } from "./Select";
 import * as defaultRenderComponents from "./render/default";
-import * as bootstrap4RenderComponents from "./render/bootstrap4";
+import * as bootstrap5RenderComponents from "./render/bootstrap5";
 
 export * from "./Form";
 export * from "./Input";
@@ -72,32 +72,32 @@ export const elementsForCodecWithDefaults =
   });
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
-export const bootstrap4Elements = <
+export const bootstrap5Elements = <
   A extends ParsedFormData,
   O extends FormData,
 >(
   codec: Type<A, O>,
 ) =>
   elementsForCodecWithDefaults<A, O>(
-    { renderFormError: bootstrap4RenderComponents.FormError },
+    { renderFormError: bootstrap5RenderComponents.FormError },
     {
       render: defaultRenderComponents.Input({
-        renderLabel: bootstrap4RenderComponents.Label,
-        renderInvalidFeedback: bootstrap4RenderComponents.InvalidFeedback,
-        className: bootstrap4RenderComponents.className,
+        renderLabel: bootstrap5RenderComponents.Label,
+        renderInvalidFeedback: bootstrap5RenderComponents.InvalidFeedback,
+        className: bootstrap5RenderComponents.className,
       }),
     },
     {
       render: defaultRenderComponents.Select({
-        renderLabel: bootstrap4RenderComponents.Label,
-        renderInvalidFeedback: bootstrap4RenderComponents.InvalidFeedback,
-        className: bootstrap4RenderComponents.className,
+        renderLabel: bootstrap5RenderComponents.Label,
+        renderInvalidFeedback: bootstrap5RenderComponents.InvalidFeedback,
+        className: bootstrap5RenderComponents.className,
       }),
     },
   )(codec);
 
 // TODO default form elements https://github.com/oaf-project/oaf-react-final-form/issues/18
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export const elementsForCodec = bootstrap4Elements;
+export const elementsForCodec = bootstrap5Elements;
 
 // TODO add bootstrap 5 elements https://github.com/oaf-project/oaf-react-final-form/issues/496
