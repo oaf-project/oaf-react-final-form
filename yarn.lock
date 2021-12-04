@@ -672,10 +672,10 @@
     mutation-testing-report-schema "1.7.4"
     tslib "~2.3.0"
 
-"@stryker-mutator/api@5.5.0":
-  version "5.5.0"
-  resolved "https://registry.yarnpkg.com/@stryker-mutator/api/-/api-5.5.0.tgz#899909e41ddcd6a7d2418e3a63e83d89f432cb74"
-  integrity sha512-zrpIR8rUAl/P+CC3sLRPSpsSj2dAcPRwnN5lFJ3HT0xeeJORchmpALynyElCbCXPhzVO54ycXWr+AbqNaY5Qhw==
+"@stryker-mutator/api@5.5.1":
+  version "5.5.1"
+  resolved "https://registry.yarnpkg.com/@stryker-mutator/api/-/api-5.5.1.tgz#8d33cf3b5c638b42086a0b55e2bcd573ea94d05a"
+  integrity sha512-B7o2wM2IDWT+90sy8ygmB9RjTS+VasN2assqtoiLch6ncYHD5ojtJL9cDKTI7oiZPmJiTO4EkpnJnJhtOFYB4w==
   dependencies:
     mutation-testing-metrics "1.7.6"
     mutation-testing-report-schema "1.7.6"
@@ -742,13 +742,13 @@
     semver "~7.3.5"
     tslib "~2.3.0"
 
-"@stryker-mutator/typescript-checker@5.5.0":
-  version "5.5.0"
-  resolved "https://registry.yarnpkg.com/@stryker-mutator/typescript-checker/-/typescript-checker-5.5.0.tgz#20f7fdd90313a182f4e3b0079b306f473471fbaf"
-  integrity sha512-xap2d6kJirxu/2sNXTq3wha6OukPDtRUB5TCO+O1AKsphdwFfTrkS8iMMaMv8BLFMPm076t+mTeX+CXZf95jwQ==
+"@stryker-mutator/typescript-checker@5.5.1":
+  version "5.5.1"
+  resolved "https://registry.yarnpkg.com/@stryker-mutator/typescript-checker/-/typescript-checker-5.5.1.tgz#057428dcf55cbb631a7889db314a8aed804770f3"
+  integrity sha512-LJPGQxu3mWwkITBQAePNmYccqkPrlsrh8n42QFyP+4n7QTafjRWE/zQcvAf5W8lavdZft75ioCI65D1tJlq+Bg==
   dependencies:
-    "@stryker-mutator/api" "5.5.0"
-    "@stryker-mutator/util" "5.5.0"
+    "@stryker-mutator/api" "5.5.1"
+    "@stryker-mutator/util" "5.5.1"
     semver "~7.3.2"
 
 "@stryker-mutator/util@5.3.0":
@@ -758,10 +758,10 @@
   dependencies:
     lodash.flatmap "~4.5.0"
 
-"@stryker-mutator/util@5.5.0":
-  version "5.5.0"
-  resolved "https://registry.yarnpkg.com/@stryker-mutator/util/-/util-5.5.0.tgz#a614677696578a43c25075402701e4c90b74c5e0"
-  integrity sha512-dMPK20uyPcazLV+KP2LN5CeTlh/Ui5RLhsFjxNK6szvS526ENpgPVg24WN0Ol2oyM2eHTFc8xcHBy+sgsFI9kg==
+"@stryker-mutator/util@5.5.1":
+  version "5.5.1"
+  resolved "https://registry.yarnpkg.com/@stryker-mutator/util/-/util-5.5.1.tgz#2e286cd70345e8b54303560081978107ded2deea"
+  integrity sha512-+g1FKS6zFpjidvRMBaqN1Cpjt2BwD5mPrkQ+Ry3cDg7ezZ7Ml3fHS0zrB1cVHfwsp1NWhzvo8FgVDFXD146J/w==
   dependencies:
     lodash.flatmap "~4.5.0"
 
